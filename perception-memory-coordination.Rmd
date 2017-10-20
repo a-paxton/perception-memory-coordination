@@ -152,3 +152,33 @@ info_df = info_files %>%
   # calculate error at each guess
   mutate(guess_error = length - guess)
 
+```
+
+## Identify and winnow down data to usable dyads
+
+Next, we identify all dyads in which both participants responded the same number of times. This ensures that we include only dyads who experienced the full and correct experimental protocol.
+
+```{r identify-complete-dyads}
+
+# identify usable dyads
+usable_dyads =  unique(setDT(info_df), by = c('experiment', 'dyad', 'participant', 
+         'trial_type', 'trial_number', 'response_counter', 'guess_counter', 'accept_type', 
+         'length', 'guess', 'guess_error', 'response_type', 'network_id')) %>%
+  group_by(experiment,participant) %>%
+  summarise(trials = max(trial_number),
+            dyad = unique(dyad),
+            responses = n()) %>%
+  ungroup() %>%
+  group_by(experiment, dyad) %>%
+  mutate(participant = paste('p',(participant - min(participant)),sep='')) %>%
+  spread(key = participant, value = responses) %>%
+  ungroup() %>%
+  dplyr::filter(p1 == p0 & trials == 24)
+
+```
+
+```{r print-usable-dyads, invisible=TRUE, echo=TRUE}
+
+paste('Total usable dyads included: ',dim(usable_dyads)[1], sep='')
+
+```
