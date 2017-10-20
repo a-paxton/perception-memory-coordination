@@ -142,7 +142,7 @@ info_df = info_files %>%
                 response_type = responseType) %>%
   
   # get rid of unnecessary variables, get unique columns, and arrange dataframe
-  select(-t, -property3, -finalAccuracy) %>%
+  select(-property3, -finalAccuracy) %>%
   distinct() %>%
   dplyr::arrange(experiment, dyad, participant, trial_number, response_counter) %>%
   
