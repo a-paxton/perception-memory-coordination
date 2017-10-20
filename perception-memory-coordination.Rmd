@@ -71,6 +71,8 @@ for (experiment in experiment_files){
 
 ## Identify dyads from vector data
 
+In order to figure out which participants' nodes were connected to one another in dyads, we use the creation time of vectors between nodes (excluding the stimulus-creating node). We then use that information to identify which stimuli were sent to which dyads.
+
 ```{r concatenate-data, warning = FALSE, error = FALSE, message = FALSE}
 
 # load in vector file to get partners' ids and number the dyads
@@ -99,7 +101,7 @@ dyad_df = full_join(vector_df, stimuli_df, by=c('t','dyad')) %>%
 
 ```
 
-## Process infos
+## Prepare info dataframe
 
 ```{r process-infos, warning = FALSE, error = FALSE, message = FALSE}
 
