@@ -7,3 +7,22 @@ output:
     keep_md: true
 ---
 
+***
+
+# Data preparation
+
+***
+
+## Preliminaries
+
+```{r prep-prelim, warning = FALSE, error = FALSE, message = FALSE}
+
+# clear our workspace
+rm(list=ls())
+
+# read in libraries and create functions
+source('./supplementary-code/required_packages-pmc.r')
+source('./supplementary-code/libraries_and_functions-pmc.r')
+
+```
+
