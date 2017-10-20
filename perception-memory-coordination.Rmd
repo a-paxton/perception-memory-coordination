@@ -69,6 +69,10 @@ for (experiment in experiment_files){
 
 ```
 
+## Identify dyads from vector data
+
+```{r concatenate-data, warning = FALSE, error = FALSE, message = FALSE}
+
 # load in vector file to get partners' ids and number the dyads
 vector_df = vector_files %>%
   mutate(t = round(as.numeric(ymd_hms(creation_time))),0) %>%
