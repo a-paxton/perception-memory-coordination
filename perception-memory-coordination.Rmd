@@ -70,7 +70,7 @@ for (experiment in experiment_files){
 ```
 
 # load in vector file to get partners' ids and number the dyads
-vector_df = vector_file %>%
+vector_df = vector_files %>%
   mutate(t = round(as.numeric(ymd_hms(creation_time))),0) %>%
   select(t,origin_id,destination_id,network_id) %>%
   dplyr::filter(!origin_id==1) %>%
@@ -81,7 +81,7 @@ vector_df = vector_file %>%
   as.data.frame
 
 # figure out which stimuli were sent to which dyads
-stimuli_df = info_file %>%
+stimuli_df = info_files %>%
   mutate(t = round(as.numeric(ymd_hms(creation_time))),0) %>%
   dplyr::filter(origin_id == 1) %>%
   select(t, contents) %>%
@@ -100,7 +100,7 @@ dyad_df = full_join(vector_df, stimuli_df, by=c('t','dyad')) %>%
 ```{r process-infos, warning = FALSE, error = FALSE, message = FALSE}
 
 # load in infos
-info_df = info_file %>%
+info_df = info_files %>%
   
   # filter out stimulus nodes
   dplyr::filter(!origin_id==1) %>%
