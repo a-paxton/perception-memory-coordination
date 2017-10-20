@@ -208,3 +208,42 @@ write.table(winnowed_info_df, './data/winnowed_data.csv', sep=',',
             append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)
 
 ```
+
+***
+
+# Data exploration and descriptive statistics
+
+## Preliminaries
+
+```{r exploration-prelim, warning = FALSE, error = FALSE, message = FALSE}
+
+# clear our workspace
+rm(list=ls())
+
+# read in libraries and create functions
+source('./supplementary-code/required_packages-pmc.r')
+
+```
+
+## Descriptive statistics
+
+```{r mean-experiment-duration}
+
+# get list of individual experiments included in the data
+experiment_files = list.dirs('./data', recursive=FALSE)
+
+# concatenate the files
+participant_files = data.frame()
+for (experiment in experiment_files){
+  
+  # read in the next experiment's files and add ID to each
+  exp_id = strsplit(as.character(experiment),"/|-")[[1]][3]
+  next_participant = read.table(paste(experiment,'/participant.csv',sep=''), sep=',',
+                           header=TRUE, stringsAsFactors = FALSE) %>%
+    mutate(experiment = exp_id)
+
+  # append to group files
+  participant_files = rbind.data.frame(participant_files, next_participant)
+}
+
+```
