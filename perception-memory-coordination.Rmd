@@ -182,3 +182,29 @@ usable_dyads =  unique(setDT(info_df), by = c('experiment', 'dyad', 'participant
 paste('Total usable dyads included: ',dim(usable_dyads)[1], sep='')
 
 ```
+
+Now that we've figured out which dyads we should use, let's winnow down the dataframe to include only those dyads.
+
+```{r winnow-data}
+
+# winnow and recorder columns
+winnowed_info_df = info_df %>%
+  dplyr::filter(dyad %in% usable_dyads$dyad) %>%
+  mutate(t = round(t,-1)) %>%
+  select(experiment, t, dyad, participant, 
+         trial_type, trial_number, response_counter, guess_counter, accept_type, 
+         length, guess, guess_error, response_type, network_id)
+winnowed_info_df = unique(setDT(winnowed_info_df), by = c('experiment', 'dyad', 'participant', 
+         'trial_type', 'trial_number', 'response_counter', 'guess_counter', 'accept_type', 
+         'length', 'guess', 'guess_error', 'response_type', 'network_id'))
+
+```
+
+## Export data
+
+```{r export-data}
+
+write.table(winnowed_info_df, './data/winnowed_data.csv', sep=',',
+            append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)
+
+```
