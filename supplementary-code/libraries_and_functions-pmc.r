@@ -26,7 +26,8 @@ required_packages = c(
   'gtable',
   'viridis',
   'jsonlite',
-  'lubridate'
+  'lubridate',
+  'tidyr'
 )
 
 # load required packages

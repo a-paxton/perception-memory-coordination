@@ -21,7 +21,8 @@ required_packages = c(
   'gtable',
   'viridis',
   'jsonlite',
-  'lubridate'
+  'lubridate',
+  'tidyr'
 )
 
 # install missing packages (adapted from <http://stackoverflow.com/a/4090208>)
