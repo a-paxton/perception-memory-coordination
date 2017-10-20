@@ -247,3 +247,16 @@ for (experiment in experiment_files){
 }
 
 ```
+
+```{r mean-participation-time}
+
+participant_df = participant_files %>%
+  select(id, creation_time, end_time, experiment, worker_id) %>%
+  mutate(creation_time = ymd_hms(creation_time)) %>%
+  mutate(end_time = ymd_hms(end_time)) %>%
+  mutate(duration = end_time - creation_time) %>%
+  dplyr::filter(duration > 5 & duration < 30)
+paste('Average participation: ',mean(participant_df$duration),' minutes',sep='')
+
+```
+
