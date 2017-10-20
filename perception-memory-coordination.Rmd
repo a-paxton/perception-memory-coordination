@@ -119,8 +119,8 @@ info_df = info_files %>%
   dplyr::filter(!origin_id == 1) %>%
   
   # convert time and get rid of unnecessary variables
-  select(t, property3, origin_id, network_id, contents) %>%
   mutate(t = round(as.numeric(ymd_hms(creation_time)), 0)) %>%
+  select(experiment, t, property3, origin_id, network_id, contents) %>%
   
   # read in `contents` as JSONs and nix the JSON column
   cbind(.,
@@ -129,7 +129,7 @@ info_df = info_files %>%
   
   # merge info datafarme with dyad number information
   full_join(., dyad_df,
-            by = c('origin_id','network_id')) %>%
+            by = c('experiment', 'origin_id')) %>%
   
   # rename a whole slew of variables
   dplyr::rename(participant = origin_id,
@@ -144,7 +144,7 @@ info_df = info_files %>%
   # get rid of unnecessary variables, get unique columns, and arrange dataframe
   select(-t, -property3, -finalAccuracy) %>%
   distinct() %>%
-  dplyr::arrange(dyad, participant, trial_number, response_counter) %>%
+  dplyr::arrange(experiment, dyad, participant, trial_number, response_counter) %>%
   
   # replace NAs from guesses
   mutate(guess = replace(guess, guess<0, NA)) %>%
