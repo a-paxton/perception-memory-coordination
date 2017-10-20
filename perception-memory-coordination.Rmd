@@ -7,6 +7,19 @@ output:
     keep_md: true
 ---
 
+This R markdown provides the basis for our manuscript, "Interpersonal coordination in perception and memory" (Paxton, Morgan, Suchow & Griffiths, *in peparation*).
+
+To run these analyses from scratch, you will need the following files:
+
+* `./data/`: Contains experimental data. All data for included dyads are freely available in the OSF repository for the project: `https://osf.io/8fu7x/`.
+* `./supplementary-code/required_packages-pmc.r`: Installs required libraries, if they are not already installed. **NOTE**: This should be run *before* running this script.
+* `./supplementary-code/libraries_and_functions-pmc.r`: Loads in necessary libraries and creates new functions for our analyses.
+
+Additional files will be created during the initial run that will help reduce processing time. Several of these files are available as CSVs from the OSF repository listed above.
+
+**Written by**: A. Paxton (University of California, Berkeley)
+<br>**Date last modified**: 19 October 2017
+
 ***
 
 # Data preparation
