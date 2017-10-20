@@ -41,19 +41,33 @@ source('./supplementary-code/libraries_and_functions-pmc.r')
 
 ***
 
-## Identify dyads from vector data
+## Read in all data
 
-```{r concatenate-data, warning = FALSE, error = FALSE, message = FALSE}
+```{r read-in-data, warning = FALSE, error = FALSE, message = FALSE}
 
 # get list of individual experiments included in the data
-all_experiments = list.dirs('./data',recursive=FALSE)
-next_experiment = all_experiments[1]
-setwd(next_experiment)
+experiment_files = list.dirs('./data', recursive=FALSE)
 
-# load in relevant files
-vector_file = read.table('./vector.csv',sep=',',
-                         header=TRUE, stringsAsFactors = FALSE) 
-info_file = read.table('./info.csv',sep=',',header=TRUE, stringsAsFactors = FALSE) 
+# concatenate the files
+vector_files = data.frame()
+info_files = data.frame()
+for (experiment in experiment_files){
+  
+  # read in the next experiment's files and add ID to each
+  exp_id = strsplit(as.character(experiment),"/|-")[[1]][3]
+  next_vector = read.table(paste(experiment,'/vector.csv',sep=''), sep=',',
+                           header=TRUE, stringsAsFactors = FALSE) %>%
+    mutate(experiment = exp_id)
+  next_info = read.table(paste(experiment,'/info.csv',sep=''), sep=',',
+                         header=TRUE, stringsAsFactors = FALSE) %>%
+    mutate(experiment = exp_id)
+
+  # append to group files
+  vector_files = rbind.data.frame(vector_files, next_vector)
+  info_files = rbind.data.frame(info_files, next_info)
+}
+
+```
 
 # load in vector file to get partners' ids and number the dyads
 vector_df = vector_file %>%
