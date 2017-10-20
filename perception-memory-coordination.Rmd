@@ -119,8 +119,8 @@ info_df = info_files %>%
   dplyr::filter(!origin_id == 1) %>%
   
   # convert time and get rid of unnecessary variables
-  mutate(t = round(as.numeric(ymd_hms(creation_time))),0) %>%
   select(t, property3, origin_id, network_id, contents) %>%
+  mutate(t = round(as.numeric(ymd_hms(creation_time)), 0)) %>%
   
   # read in `contents` as JSONs and nix the JSON column
   cbind(.,
