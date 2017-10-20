@@ -26,3 +26,45 @@ source('./supplementary-code/libraries_and_functions-pmc.r')
 
 ```
 
+***
+
+## Identify dyads from vector data
+
+```{r concatenate-data, warning = FALSE, error = FALSE, message = FALSE}
+
+# get list of individual experiments included in the data
+all_experiments = list.dirs('./data',recursive=FALSE)
+next_experiment = all_experiments[1]
+setwd(next_experiment)
+
+# load in relevant files
+vector_file = read.table('./vector.csv',sep=',',
+                         header=TRUE, stringsAsFactors = FALSE) 
+info_file = read.table('./info.csv',sep=',',header=TRUE, stringsAsFactors = FALSE) 
+
+# load in vector file to get partners' ids and number the dyads
+vector_df = vector_file %>%
+  mutate(t = round(as.numeric(ymd_hms(creation_time))),0) %>%
+  select(t,origin_id,destination_id,network_id) %>%
+  dplyr::filter(!origin_id==1) %>%
+  group_by(t) %>%
+  { mutate(ungroup(.), 
+           dyad = group_indices(.)) } %>%
+  ungroup() %>%
+  as.data.frame
+
+# figure out which stimuli were sent to which dyads
+stimuli_df = info_file %>%
+  mutate(t = round(as.numeric(ymd_hms(creation_time))),0) %>%
+  dplyr::filter(origin_id == 1) %>%
+  select(t, contents) %>%
+  full_join(distinct(select(vector_df,t,dyad)),
+            ., 
+            by='t')
+
+# combine dyad information and individual participant information
+dyad_df = full_join(vector_df, stimuli_df, by=c('t','dyad')) %>% 
+  select(-t)
+
+```
+
