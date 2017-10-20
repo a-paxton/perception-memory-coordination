@@ -68,3 +68,47 @@ dyad_df = full_join(vector_df, stimuli_df, by=c('t','dyad')) %>%
 
 ```
 
+## Process infos
+
+```{r process-infos, warning = FALSE, error = FALSE, message = FALSE}
+
+# load in infos
+info_df = info_file %>%
+  
+  # filter out stimulus nodes
+  dplyr::filter(!origin_id==1) %>%
+  
+  # convert time and get rid of unnecessary variables
+  mutate(t = round(as.numeric(ymd_hms(creation_time))),0) %>%
+  select(t, property3, origin_id, network_id, contents) %>%
+  
+  # read in `contents` as JSONs and nix the JSON column
+  cbind(.,
+        jsonlite::stream_in(textConnection(.$contents))) %>%
+  select(-contents) %>%
+  
+  # merge info datafarme with dyad number information
+  full_join(., dyad_df,
+            by = c('origin_id','network_id')) %>%
+  
+  # rename a whole slew of variables
+  dplyr::rename(participant = origin_id,
+                stimulus_list = contents,
+                trial_type = trialType,
+                trial_number = trialNumber,
+                guess_counter = guessCounter,
+                response_counter = responseCounter,
+                accept_type = acceptType,
+                response_type = responseType) %>%
+  
+  # get rid of unnecessary variables, get unique columns, and arrange dataframe
+  select(-t, -property3, -finalAccuracy) %>%
+  distinct() %>%
+  dplyr::arrange(dyad, participant, trial_number, response_counter) %>%
+  
+  # replace NAs from guesses
+  mutate(guess = replace(guess, guess<0, NA)) %>%
+  
+  # calculate error at each guess
+  mutate(guess_error = length - guess)
+
