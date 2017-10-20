@@ -72,8 +72,8 @@ for (experiment in experiment_files){
 # load in vector file to get partners' ids and number the dyads
 vector_df = vector_files %>%
   mutate(t = round(as.numeric(ymd_hms(creation_time))),0) %>%
-  select(t,origin_id,destination_id,network_id) %>%
-  dplyr::filter(!origin_id==1) %>%
+  select(t, origin_id, destination_id, network_id) %>%
+  dplyr::filter(!origin_id == 1) %>%
   group_by(t) %>%
   { mutate(ungroup(.), 
            dyad = group_indices(.)) } %>%
@@ -103,7 +103,7 @@ dyad_df = full_join(vector_df, stimuli_df, by=c('t','dyad')) %>%
 info_df = info_files %>%
   
   # filter out stimulus nodes
-  dplyr::filter(!origin_id==1) %>%
+  dplyr::filter(!origin_id == 1) %>%
   
   # convert time and get rid of unnecessary variables
   mutate(t = round(as.numeric(ymd_hms(creation_time))),0) %>%
