@@ -75,29 +75,36 @@ In order to figure out which participants' nodes were connected to one another i
 
 ```{r concatenate-data, warning = FALSE, error = FALSE, message = FALSE}
 
-# load in vector file to get partners' ids and number the dyads
+# identify time and nodes for distinct dyads
 vector_df = vector_files %>%
-  mutate(t = round(as.numeric(ymd_hms(creation_time))),0) %>%
-  select(t, origin_id, destination_id, network_id) %>%
+  
+  # convert time to integer and winnow out unnecessary variables and nodes
+  mutate(t = round(as.numeric(ymd_hms(creation_time)), 0)) %>%
+  select(experiment, t, origin_id, destination_id, network_id) %>%
   dplyr::filter(!origin_id == 1) %>%
-  group_by(t) %>%
+  
+  # group by experiment and time to identify possible dyads
+  group_by(experiment, t) %>%
   { mutate(ungroup(.), 
            dyad = group_indices(.)) } %>%
   ungroup() %>%
+  
+  # export only the necessary variables
+  select(experiment, t, dyad, origin_id) %>%
   as.data.frame
 
 # figure out which stimuli were sent to which dyads
 stimuli_df = info_files %>%
-  mutate(t = round(as.numeric(ymd_hms(creation_time))),0) %>%
+  mutate(t = round(as.numeric(ymd_hms(creation_time)), 0)) %>%
   dplyr::filter(origin_id == 1) %>%
-  select(t, contents) %>%
-  full_join(distinct(select(vector_df,t,dyad)),
-            ., 
-            by='t')
-
+  select(experiment, t, contents) %>%
+  full_join(., vector_df,
+            by = c('experiment', 't'))
+  
 # combine dyad information and individual participant information
-dyad_df = full_join(vector_df, stimuli_df, by=c('t','dyad')) %>% 
-  select(-t)
+dyad_df = full_join(vector_df, stimuli_df, by = c('t','experiment','dyad','origin_id')) %>% 
+  select(-t) %>%
+  distinct()
 
 ```
 
