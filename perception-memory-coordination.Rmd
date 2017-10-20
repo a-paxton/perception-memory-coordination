@@ -1,0 +1,9 @@
+---
+title: "Interpersonal coordination in perception and memory"
+author: "A. Paxton, T. J. H. Morgan, J. Suchow, & T. L. Griffiths"
+output: 
+  html_document:
+    number_sections: true
+    keep_md: true
+---
+
