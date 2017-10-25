@@ -117,8 +117,7 @@ The structure of the experiment sometimes led to near-duplicate rows to be sent 
 
 ```{r process-infos, warning = FALSE, error = FALSE, message = FALSE}
 
-# load in infos
-info_df = info_files %>%
+info_df = info_files %>% ungroup() %>%
   
   # filter out stimulus nodes
   dplyr::filter(!origin_id == 1) %>%
@@ -126,16 +125,10 @@ info_df = info_files %>%
   # convert time and get rid of unnecessary variables
   mutate(t = round(as.numeric(ymd_hms(creation_time)), 0)) %>%
   select(experiment, t, property3, origin_id, network_id, contents) %>%
-  
-  # read in `contents` as JSONs and nix the JSON column
-  cbind(.,
-        jsonlite::stream_in(textConnection(.$contents))) %>%
-  select(-contents) %>%
-  
-  # merge info datafarme with dyad number information
-  full_join(., dyad_df,
-            by = c('experiment', 'origin_id')) %>%
-  
+    
+  # read in `contents` as JSONs
+  cbind(., jsonlite::stream_in(textConnection(.$contents))) %>%
+
   # rename a whole slew of variables
   dplyr::rename(participant = origin_id,
                 stimulus_list = contents,
@@ -146,13 +139,30 @@ info_df = info_files %>%
                 accept_type = acceptType,
                 response_type = responseType) %>%
   
-  # get rid of unnecessary variables, get unique columns, and arrange dataframe
-  select(-property3, -finalAccuracy) %>%
-  distinct() %>%
-  dplyr::arrange(experiment, dyad, participant, trial_number, response_counter) %>%
+  # get rid of unnecessary variables and arrange rows
+  select(-property3, -finalAccuracy, -contents) %>%
+  dplyr::arrange(experiment, participant, trial_number, response_counter) %>%
   
-  # replace NAs from guesses
+  # remove the automatically generated infos that produced NAs in `guess`
+  dplyr::filter(!is.na(guess)) %>%
+  
+  # determine uniqueness without considering time or response_type
+  group_by(experiment, participant, network_id, trial_type,
+           trial_number, guess_counter, response_counter) %>%
+  summarise_all(first) %>%
+  ungroup() %>%
+  
+  # replace NAs from guesses and calculate error with each guess
   mutate(guess = replace(guess, guess<0, NA)) %>%
+  mutate(guess_error = length - guess) %>%
+  
+  # merge info dataframe with dyad number information
+  full_join(., dyad_df,
+            by = c('experiment', 'participant','network_id')) %>%
+  dplyr::rename(stimulus_list = contents)
+
+```
+
   
   # calculate error at each guess
   mutate(guess_error = length - guess)
