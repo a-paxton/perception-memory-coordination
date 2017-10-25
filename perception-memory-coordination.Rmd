@@ -163,9 +163,34 @@ info_df = info_files %>% ungroup() %>%
 
 ```
 
+```{r sanity-check}
+
+# sanity check
+sanity_df = info_df %>% ungroup() %>%
   
-  # calculate error at each guess
-  mutate(guess_error = length - guess)
+  # count number of times we see the same response counter
+  group_by(experiment, participant, trial_type, trial_number, guess_counter, response_counter) %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  
+  # filter to include only test-condition duplicates
+  dplyr::filter(n!=1 & trial_type=="test") %>%
+  
+  # join with the main dataset to check it out
+  inner_join(., info_df, 
+             by = c("experiment", "participant", "trial_type", 
+                    "trial_number", "guess_counter", "response_counter")) %>%
+  
+  # identify whether any identiifed duplicate rows have diferent accept_type values
+  group_by(experiment, participant, trial_type, trial_number, guess_counter, response_counter) %>%
+  dplyr::filter(length(unique(accept_type))!=1) %>%
+  ungroup()
+
+```
+
+```{r print-sanity-check, invisible=TRUE, echo=TRUE}
+
+cat('Problematic rows identified: ',dim(sanity_df)[1],sep='')
 
 ```
 
