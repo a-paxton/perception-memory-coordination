@@ -443,3 +443,60 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ```
 
+### Remove outliers and missed guesses
+
+Likely due to the timing-out mechanism, a minority of guesses provided wildly inaccurate estimates of the stimuli. 
+
+```{r print-likely-outliers, invisible=TRUE, echo=TRUE}
+
+# figure out how many outliers there were
+likely_outlier_responses = winnowed_info_df %>% ungroup() %>%
+  dplyr::filter(abs(guess_error) > 30)
+
+# figure out how many total guesses were submitted
+total_submitted_guesses = winnowed_info_df %>% ungroup() %>%
+  group_by(participant, trial_number) %>%
+  summarise(total_guesses = max(guess_counter))
+
+# print out raw number and proportion of outliers
+cat('Outlier guesses: ',dim(likely_outlier_responses)[1],' (',
+    round(dim(likely_outlier_responses)[1]/sum(total_submitted_guesses$total_guesses),4)
+    ,'% of total guesses)', sep='')
+
+```
+
+Given the low rate of occurrence, we consider these to be outliers and remove them from the dataset.
+
+```{r replace-likely-errors}
+
+# replace hugely off-base numbers with missing data and then remove all missing
+winnowed_info_df = winnowed_info_df %>%
+  mutate(guess = replace(guess, abs(guess_error)>30, NA)) %>%
+  mutate(guess_error = replace(guess_error, abs(guess_error)>30, NA)) %>%
+  na.omit()
+
+```
+
+```{r plot-normalized-error-over-all-trials, invisible=TRUE, echo=TRUE, warning = FALSE, error = FALSE, message = FALSE}
+ggplot(winnowed_info_df,
+       aes(x = normalized_error)) + 
+  geom_histogram(aes(fill = factor(trial_number)),bins=30) +
+  scale_fill_viridis(discrete=TRUE,
+                     breaks=c('1',
+                              '5',
+                              '10',
+                              '15',
+                              '20',
+                              '25'),
+                     labels=c('First',
+                              '',
+                              '',
+                              '',
+                              '',
+                              'Last'),
+                     name = "Trial") +
+  xlab('Normalized error') +
+  ylab('Count') +
+  ggtitle('Normalized error over all trials')
+  
+```
