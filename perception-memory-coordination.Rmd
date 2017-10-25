@@ -351,3 +351,36 @@ source('./supplementary-code/libraries_and_functions-pmc.r')
 winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
 
 ```
+
+## Data preparation
+
+### Create unique dyad and participant IDs across all experiments
+
+Dallinger provides numeric IDs for each participant that are unique only within each experiment. Therefore, we create participant and dyad identifiers that are unique across the entire dataset.
+
+```{r create-unique-ids}
+
+# create unique dyad IDs
+unique_dyad_ids = winnowed_info_df %>% ungroup() %>%
+  select(experiment, dyad) %>%
+  distinct() %>%
+  mutate(unique_dyad = row_number())
+
+# create unique participant IDs
+unique_participant_ids = winnowed_info_df %>% ungroup() %>%
+  select(experiment, participant) %>%
+  distinct() %>%
+  mutate(unique_participant = row_number())
+
+# merge both into the main dataframe and rename
+winnowed_info_df = right_join(unique_participant_ids, winnowed_info_df,
+                             by=c('experiment', 'participant')) %>%
+  right_join(unique_dyad_ids, ., by=c('experiment','dyad')) %>%
+  dplyr::rename(original_participant = participant,
+                original_dyad = dyad,
+                participant = unique_participant,
+                dyad = unique_dyad) %>%
+  dplyr::arrange(experiment, participant, trial_number, response_counter)
+
+```
+
