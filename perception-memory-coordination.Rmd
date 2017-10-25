@@ -384,3 +384,15 @@ winnowed_info_df = right_join(unique_participant_ids, winnowed_info_df,
 
 ```
 
+### Increment all counters by 1
+
+Data were collected using Pythonic counters (i.e., starting from 0). We'll here update the dataframe to reflect R conventions (i.e., starting from 1).
+
+```{r r-counters}
+
+winnowed_info_df = winnowed_info_df %>%
+  mutate(trial_number = trial_number + 1) %>%
+  mutate(response_counter = response_counter + 1) %>%
+  mutate(guess_counter = guess_counter + 1)
+
+```
