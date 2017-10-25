@@ -329,3 +329,25 @@ cat('Average participation: ',mean(participant_df$duration),' minutes',sep='')
 
 ```
 
+***
+
+# Psychonomics 2017 poster
+
+This section presents the data analysis for the Psychonomics 2017 poster, "Exploring social behavior with Dallinger, an open-source experiment automation tool" (A. Paxton, T. J. H. Morgan, J. Suchow, & T. L. Griffiths, forthcoming). The poster largely presents Dallinger and its specific capabilities of interest to individuals running social psychology experiments, but an analysis of the pilot data from the present study is included as a demonstration.
+
+## Preliminaries
+
+Clear the workspace, load in required libraries and functions, and read in the prepared dataset.
+
+```{r analysis-prelim, warning = FALSE, error = FALSE, message = FALSE}
+
+# clear our workspace
+rm(list=ls())
+
+# read in libraries and create functions
+source('./supplementary-code/libraries_and_functions-pmc.r')
+
+# read in dataset
+winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
+
+```
