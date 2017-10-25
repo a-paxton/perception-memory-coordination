@@ -407,3 +407,39 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
   mutate(normalized_error = guess_error/max(abs(100-length),abs(length-100)))
 
 ```
+
+### Create training accuracy metric
+
+```{r plot-training_slopes, invisible=TRUE, echo=TRUE, warning = FALSE, error = FALSE, message = FALSE}
+
+ggplot(dplyr::filter(winnowed_info_df, 
+                     trial_type=='train'), 
+       aes(x = trial_number,
+           y = normalized_error)) +
+  geom_line(aes(color=as.factor(participant))) +
+  scale_color_viridis(discrete=TRUE) +
+  stat_smooth() +
+  ylab('Absolute error of guess') +
+  scale_x_continuous(breaks=c(1,5,10)) +
+  xlab('Training trial') +
+  ggtitle('Accuracy of individual participants across training trials') +
+  theme(legend.position="none")
+
+```
+
+```{r training-improvmeent}
+
+# create a slope to see how quickly they improved
+winnowed_info_df = winnowed_info_df %>% ungroup() %>%
+  select(participant, trial_type, trial_number, normalized_error) %>%
+  dplyr::filter(trial_type == 'train') %>%
+  group_by(participant) %>%
+  do(broom::tidy(lm(abs(.$normalized_error) ~ .$trial_number))) %>%
+  dplyr::filter(term=='.$trial_number') %>%
+  select(participant, estimate) %>%
+  dplyr::rename(training_improvement = estimate) %>%
+  left_join(winnowed_info_df, .,
+            by='participant')
+
+```
+
