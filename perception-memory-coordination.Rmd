@@ -41,9 +41,9 @@ source('./supplementary-code/libraries_and_functions-pmc.r')
 
 ***
 
-## Read in all data
+## Concatenate experiment files
 
-```{r read-in-data, warning = FALSE, error = FALSE, message = FALSE}
+```{r concatenate-data, warning = FALSE, error = FALSE, message = FALSE}
 
 # get list of individual experiments included in the data
 experiment_files = list.dirs('./data', recursive=FALSE)
@@ -109,7 +109,11 @@ dyad_df = info_files %>%
 
 ```
 
-## Prepare info dataframe
+## Prepare dataframe
+
+We now take the concatenated files and begin processing, including de-duplication of dataset.
+
+The structure of the experiment sometimes led to near-duplicate rows to be sent to the server to manage partner communication. We must now identify these near-duplicates and strip them out. We can best identify these by using the `response_counter` variable: A properly de-duplicated dataset should have only 1 row per `response_counter` value in each trial for each participant.
 
 ```{r process-infos, warning = FALSE, error = FALSE, message = FALSE}
 
