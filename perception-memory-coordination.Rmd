@@ -71,11 +71,11 @@ for (experiment in experiment_files){
 
 ## Identify dyads from vector data
 
-In order to figure out which participants' nodes were connected to one another in dyads, we use the creation time of vectors between nodes (excluding the stimulus-creating node). We then use that information to identify which stimuli were sent to which dyads.
+In order to figure out which participants' nodes were connected to one another in dyads, we use the vectors created between nodes (excluding the stimulus-creating node). We then use that information to identify which stimuli were sent to which dyads.
 
-```{r concatenate-data, warning = FALSE, error = FALSE, message = FALSE}
+```{r identify-dyads, warning = FALSE, error = FALSE, message = FALSE}
 
-# identify time and nodes for distinct dyads
+# use the vectors connecting the nodes to identify pairs
 vector_df = vector_files %>%
   
   # convert time to integer and winnow out unnecessary variables and nodes
@@ -83,28 +83,29 @@ vector_df = vector_files %>%
   select(experiment, t, origin_id, destination_id, network_id) %>%
   dplyr::filter(!origin_id == 1) %>%
   
-  # group by experiment and time to identify possible dyads
+  # find pairs from vector files
   group_by(experiment, t) %>%
-  { mutate(ungroup(.), 
-           dyad = group_indices(.)) } %>%
+  mutate(min_id = pmin(origin_id,destination_id)) %>%
+  mutate(max_id = pmax(origin_id,destination_id)) %>%
   ungroup() %>%
   
-  # export only the necessary variables
-  select(experiment, t, dyad, origin_id) %>%
-  as.data.frame
+  # get unique pairs and number them
+  select(-origin_id, -destination_id) %>%
+  distinct() %>%
+  mutate(dyad = seq_along(min_id)) %>%
+
+  # gather the participants into a single column
+  gather(key="id",value="participant", min_id, max_id) %>%
+  select(-id)
 
 # figure out which stimuli were sent to which dyads
-stimuli_df = info_files %>%
+dyad_df = info_files %>%
   mutate(t = round(as.numeric(ymd_hms(creation_time)), 0)) %>%
   dplyr::filter(origin_id == 1) %>%
   select(experiment, t, contents) %>%
   full_join(., vector_df,
-            by = c('experiment', 't'))
-  
-# combine dyad information and individual participant information
-dyad_df = full_join(vector_df, stimuli_df, by = c('t','experiment','dyad','origin_id')) %>% 
-  select(-t) %>%
-  distinct()
+            by = c('experiment', 't')) %>%
+  select(-t)
 
 ```
 
