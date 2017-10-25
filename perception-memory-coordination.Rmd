@@ -396,3 +396,14 @@ winnowed_info_df = winnowed_info_df %>%
   mutate(guess_counter = guess_counter + 1)
 
 ```
+
+### Normalize error by maximum possible error
+
+Because stimuli line lengths could range from 1-100, each trial provided a bound on the total possible guess error.  As a result, we need to normalize each guess error by the maximum *possible* error for that trial.
+
+```{r normalize-error}
+
+winnowed_info_df = winnowed_info_df %>% ungroup() %>%
+  mutate(normalized_error = guess_error/max(abs(100-length),abs(length-100)))
+
+```
