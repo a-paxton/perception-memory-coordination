@@ -201,25 +201,34 @@ Next, we identify all dyads in which both participants responded the same number
 ```{r identify-complete-dyads}
 
 # identify usable dyads
-usable_dyads =  unique(setDT(info_df), by = c('experiment', 'dyad', 'participant', 
-         'trial_type', 'trial_number', 'response_counter', 'guess_counter', 'accept_type', 
-         'length', 'guess', 'guess_error', 'response_type', 'network_id')) %>%
+usable_dyads = info_df %>%
+  
+  # count the number of infos and trials per participant
   group_by(experiment,participant) %>%
   summarise(trials = max(trial_number),
-            dyad = unique(dyad),
-            responses = n()) %>%
+            dyad = ifelse(length(unique(dyad)==1),
+                          unique(dyad),
+                          NA),
+            infos = n()) %>%
   ungroup() %>%
+  na.omit() %>%
+  
+  # count the infos sent by each participant in each dyad
   group_by(experiment, dyad) %>%
   mutate(participant = paste('p',(participant - min(participant)),sep='')) %>%
-  spread(key = participant, value = responses) %>%
+  spread(key = participant, value = infos) %>%
   ungroup() %>%
-  dplyr::filter(p1 == p0 & trials == 24)
+  mutate(difference_in_responses = abs(p1-p0)) %>%
+  
+  # filter out anyone who didn't have the same number of infos and who didn't complete 24 trials
+  dplyr::filter(trials==24 & difference_in_responses==0) %>%
+  na.omit()
 
 ```
 
 ```{r print-usable-dyads, invisible=TRUE, echo=TRUE}
 
-paste('Total usable dyads included: ',dim(usable_dyads)[1], sep='')
+cat('Total usable dyads included: ',dim(usable_dyads)[1], sep='')
 
 ```
 
