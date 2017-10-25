@@ -325,7 +325,7 @@ participant_df = participant_files %>%
   mutate(end_time = ymd_hms(end_time)) %>%
   mutate(duration = end_time - creation_time) %>%
   dplyr::filter(duration > 5 & duration < 30)
-paste('Average participation: ',mean(participant_df$duration),' minutes',sep='')
+cat('Average participation: ',mean(participant_df$duration),' minutes',sep='')
 
 ```
 
