@@ -174,7 +174,7 @@ info_df = info_files %>% ungroup() %>%
 
 ```
 
-```{r sanity-check}
+```{r sanity-check-for-eliminating-problematic-rows}
 
 # sanity check
 sanity_df = info_df %>% ungroup() %>%
@@ -201,7 +201,7 @@ sanity_df = info_df %>% ungroup() %>%
 
 ```{r print-sanity-check, invisible=TRUE, echo=TRUE}
 
-cat('Problematic rows identified: ',dim(sanity_df)[1],sep='')
+cat('Problematic rows identified (i.e., duplicates with differing accept types): ',dim(sanity_df)[1],sep='')
 
 ```
 
@@ -239,7 +239,7 @@ usable_dyads = info_df %>%
 
 ```{r print-usable-dyads, invisible=TRUE, echo=TRUE}
 
-cat('Total usable dyads included: ',dim(usable_dyads)[1], sep='')
+cat('Total dyads with strictly paired data for all trials: ',dim(usable_dyads)[1], sep='')
 
 ```
 
@@ -262,7 +262,7 @@ winnowed_info_df = unique(setDT(winnowed_info_df), by = c('experiment', 'dyad', 
 
 For sanity, let's also check that everyone included in our winnowed dataset completed both training and test trials.
 
-```{r check-for-training-and-test}
+```{r sanity-check-for-training-and-test}
 
 # ensure that everyone completed both training and test
 only_one_trial_type = winnowed_info_df %>% ungroup() %>%
@@ -329,9 +329,7 @@ cat('Total dyads with all guess and questionnaire data: ',dim(usable_question_dy
 
 ```
 
-## Data preparation
-
-### Create unique dyad and participant IDs across all experiments
+## Create unique dyad and participant IDs across all experiments
 
 Dallinger provides numeric IDs for each participant that are unique only within each experiment. Therefore, we create participant and dyad identifiers that are unique across the entire dataset.
 
@@ -361,7 +359,8 @@ winnowed_info_df = right_join(unique_participant_ids, winnowed_info_df,
 
 ```
 
-### Increment all counters by 1
+
+## Increment all counters by 1
 
 Data were collected using Pythonic counters (i.e., starting from 0). We'll here update the dataframe to reflect R conventions (i.e., starting from 1).
 
@@ -374,7 +373,7 @@ winnowed_info_df = winnowed_info_df %>%
 
 ```
 
-### Normalize error by maximum possible error
+## Normalize error by maximum possible error
 
 Because stimuli line lengths could range from 1-100, each trial provided a bound on the total possible guess error.  As a result, we need to normalize each guess error by the maximum *possible* error for that trial.
 
@@ -385,7 +384,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ```
 
-### Create training accuracy metric
+## Create training accuracy metric
 
 ```{r plot-training_slopes, invisible=TRUE, echo=TRUE, warning = FALSE, error = FALSE, message = FALSE}
 
@@ -404,7 +403,7 @@ ggplot(dplyr::filter(winnowed_info_df,
 
 ```
 
-```{r training-improvmeent}
+```{r training-improvement}
 
 # create a slope to see how quickly they improved
 winnowed_info_df = winnowed_info_df %>% ungroup() %>%
@@ -420,7 +419,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ```
 
-### Remove outliers and missed guesses
+## Remove outliers and missed guesses
 
 Likely due to the timing-out mechanism, a minority of guesses provided wildly inaccurate estimates of the stimuli. 
 
@@ -446,11 +445,10 @@ Given the low rate of occurrence, we consider these to be outliers and remove th
 
 ```{r replace-likely-errors}
 
-# replace hugely off-base numbers with missing data and then remove all missing
+# replace hugely off-base numbers with missing data
 winnowed_info_df = winnowed_info_df %>%
   mutate(guess = replace(guess, abs(guess_error)>30, NA)) %>%
-  mutate(guess_error = replace(guess_error, abs(guess_error)>30, NA)) %>%
-  na.omit()
+  mutate(guess_error = replace(guess_error, abs(guess_error)>30, NA))
 
 ```
 
