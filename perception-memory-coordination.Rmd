@@ -420,7 +420,7 @@ ggplot(dplyr::filter(winnowed_info_df,
 
 Likely due to the timing-out mechanism, a minority of guesses provided wildly inaccurate estimates of the stimuli. 
 
-```{r print-likely-outliers, echo=FALSE}
+```{r identify-likely-outliers}
 
 # figure out how many outliers there were
 likely_outlier_responses = winnowed_info_df %>% ungroup() %>%
@@ -431,12 +431,17 @@ total_submitted_guesses = winnowed_info_df %>% ungroup() %>%
   group_by(participant, trial_number) %>%
   summarise(total_guesses = max(guess_counter))
 
+```
+
+```{r print-likely-outliers, echo=FALSE}
+
 # print out raw number and proportion of outliers
 cat('Outlier guesses: ',dim(likely_outlier_responses)[1],' (',
     round(dim(likely_outlier_responses)[1]/sum(total_submitted_guesses$total_guesses),4)
     ,'% of total guesses)', sep='')
 
 ```
+
 
 Given the low rate of occurrence, we consider these to be outliers and remove them from the dataset.
 
