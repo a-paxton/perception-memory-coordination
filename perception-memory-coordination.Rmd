@@ -545,3 +545,74 @@ cat('Average participation: ',mean(participant_df$duration),' minutes',sep='')
 
 ```
 
+***
+
+# Psychonomics 2017 poster
+
+This section presents the data analysis for the Psychonomics 2017 poster, "Exploring social behavior with Dallinger, an open-source experiment automation tool" (A. Paxton, T. J. H. Morgan, J. Suchow, & T. L. Griffiths, forthcoming). The poster largely presents Dallinger and its specific capabilities of interest to individuals running social psychology experiments, but an analysis of the pilot data from the present study is included as a demonstration.
+
+## Preliminaries
+
+Clear the workspace, load in required libraries and functions, and read in the prepared dataset.
+
+```{r analysis-prelim, warning = FALSE, error = FALSE, message = FALSE}
+
+# clear our workspace
+rm(list=ls())
+
+# read in libraries and create functions
+source('./supplementary-code/libraries_and_functions-pmc.r')
+
+# read in dataset
+winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
+
+```
+
+## Data preparation
+
+
+### Create interaction terms
+
+```{r create-orthogonal-polynomials}
+
+# create first- and second-order orthogonal polynomials for trial
+raw_lag = min(winnowed_info_df$trial_number):max(winnowed_info_df$trial_number)
+lag_vals = data.frame(raw_lag)
+lag_offset = (0-min(raw_lag)) + 1
+trial = stats::poly((raw_lag + lag_offset), 2)
+lag_vals[, paste("ot", 1:2, sep="")] = trial[lag_vals$raw_lag + lag_offset, 1:2]
+
+# join it to the original data table
+winnowed_info_df = left_join(winnowed_info_df,lag_vals, by = c("trial_number" = "raw_lag"))
+
+```
+
+```{r create-time-interactions}
+
+winnowed_info_df = winnowed_info_df %>% ungroup() %>%
+  plyr::rename(.,
+               c("conv.type"="convers",
+                 "cond"="condition")) %>%
+  mutate(condition = condition-.5) %>%
+  mutate(convers = convers-.5) %>%
+  mutate(condition.convers = condition * convers) %>%
+
+  # first-order polynomials
+  mutate(condition.ot1 = condition * ot1) %>%
+  mutate(convers.ot1 = convers * ot1) %>%
+  mutate(condition.convers.ot1 = condition * convers * ot1) %>%
+
+  # second-order polynomials
+  mutate(condition.ot2 = condition * ot2) %>%
+  mutate(convers.ot2 = convers * ot2) %>%
+  mutate(condition.convers.ot2 = condition * convers * ot2) %>%
+
+  # polynomial interactions
+  mutate(ot1.ot2 = ot1 * ot2) %>%
+  mutate(condition.ot1.ot2 = condition * ot1 * ot2) %>%
+  mutate(convers.ot1.ot2 = convers * ot1 * ot2) %>%
+  mutate(condition.convers.ot1.ot2 = condition * convers * ot1 * ot2)
+
+```
+
+### Create standardized dataset
