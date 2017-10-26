@@ -280,86 +280,52 @@ cat('Included participants who did not undergo training and testing rounds: ',di
 
 ```
 
-## Export data
+## Add questionnaire data
 
-```{r export-data}
+In the experiment's current form, different tables include different information, and some tables present the same information under different labels. This is true for questionnaire data. To accurately pair individuals' guess data with their questionnaire responses, we match the `participant_id` variables in `node_df` and `question_df`, and we join the `id` variable in `node_df` with the `participant` variable in `info_df`.
 
-write.table(winnowed_info_df, './data/winnowed_data.csv', sep=',',
-            append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)
+```{r add-questionnaire-data}
 
-```
+# clean up questionnaire data by converting the stringified JSONs to a new variable
+question_df = questionnaire_files %>% ungroup() %>%
+  select(experiment, participant_id, response) %>%
+  cbind(., jsonlite::stream_in(textConnection(.$response))) %>%
+  select(-response)
 
-***
+# clean up the node dataframe
+node_df = node_files %>% ungroup() %>%
+  select(experiment, participant_id, id) %>%
+  na.omit()
 
-# Data exploration and descriptive statistics
-
-## Preliminaries
-
-```{r exploration-prelim, warning = FALSE, error = FALSE, message = FALSE}
-
-# clear our workspace
-rm(list=ls())
-
-# read in libraries and create functions
-source('./supplementary-code/required_packages-pmc.r')
-
-```
-
-## Descriptive statistics
-
-```{r mean-experiment-duration}
-
-# get list of individual experiments included in the data
-experiment_files = list.dirs('./data', recursive=FALSE)
-
-# concatenate the files
-participant_files = data.frame()
-for (experiment in experiment_files){
-  
-  # read in the next experiment's files and add ID to each
-  exp_id = strsplit(as.character(experiment),"/|-")[[1]][3]
-  next_participant = read.table(paste(experiment,'/participant.csv',sep=''), sep=',',
-                           header=TRUE, stringsAsFactors = FALSE) %>%
-    mutate(experiment = exp_id)
-
-  # append to group files
-  participant_files = rbind.data.frame(participant_files, next_participant)
-}
+# join questionnaire data wth infos and remove any participants whose survey data we don't have
+winnowed_info_df = left_join(question_df, node_df,
+                                by=c('experiment','participant_id')) %>%
+  left_join(winnowed_info_df, .,
+                              by=c('experiment','participant' = 'id')) %>%
+  drop_na(cooperative_partner, cooperative_self, trust_partner, trust_self, engagement, difficulty)
 
 ```
 
-```{r mean-participation-time}
+```{r identify-questionnaire-dyads}
 
-participant_df = participant_files %>%
-  select(id, creation_time, end_time, experiment, worker_id) %>%
-  mutate(creation_time = ymd_hms(creation_time)) %>%
-  mutate(end_time = ymd_hms(end_time)) %>%
-  mutate(duration = end_time - creation_time) %>%
-  dplyr::filter(duration > 5 & duration < 30)
-cat('Average participation: ',mean(participant_df$duration),' minutes',sep='')
+# identify how many dyads have matching infos and complete questionnaire data
+usable_question_dyads = winnowed_info_df %>% ungroup() %>%
+  select(experiment, dyad, participant) %>%
+  distinct() %>%
+  group_by(experiment, dyad) %>%
+  summarise(included_p = n()) %>%
+  ungroup() %>%
+  dplyr::filter(included_p==2)
+
+# if needed, remove dyads who didn't have questionnaire data
+winnowed_info_df = winnowed_info_df %>% ungroup() %>%
+  dplyr::filter(dyad %in% usable_question_dyads$dyad)
 
 ```
 
-***
+```{r print-quesionnaire-dyads, invisible=TRUE, echo=TRUE}
 
-# Psychonomics 2017 poster
-
-This section presents the data analysis for the Psychonomics 2017 poster, "Exploring social behavior with Dallinger, an open-source experiment automation tool" (A. Paxton, T. J. H. Morgan, J. Suchow, & T. L. Griffiths, forthcoming). The poster largely presents Dallinger and its specific capabilities of interest to individuals running social psychology experiments, but an analysis of the pilot data from the present study is included as a demonstration.
-
-## Preliminaries
-
-Clear the workspace, load in required libraries and functions, and read in the prepared dataset.
-
-```{r analysis-prelim, warning = FALSE, error = FALSE, message = FALSE}
-
-# clear our workspace
-rm(list=ls())
-
-# read in libraries and create functions
-source('./supplementary-code/libraries_and_functions-pmc.r')
-
-# read in dataset
-winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
+cat('Total dyads with all guess and questionnaire data: ',dim(usable_question_dyads)[1], sep='')
 
 ```
 
