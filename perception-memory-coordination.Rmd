@@ -173,7 +173,7 @@ info_df = info_files %>% ungroup() %>%
 
 ```
 
-```{r sanity-check-for-eliminating-problematic-rows}
+```{r print-sanity-check-for-duplicate-issues, invisible=TRUE, echo=FALSE}
 
 # sanity check
 sanity_df = info_df %>% ungroup() %>%
@@ -196,10 +196,7 @@ sanity_df = info_df %>% ungroup() %>%
   dplyr::filter(length(unique(accept_type))!=1) %>%
   ungroup()
 
-```
-
-```{r print-sanity-check, invisible=TRUE, echo=TRUE}
-
+# print sanity check
 cat('Problematic rows identified (i.e., duplicates with differing accept types): ',dim(sanity_df)[1],sep='')
 
 ```
@@ -236,7 +233,7 @@ usable_dyads = info_df %>%
 
 ```
 
-```{r print-usable-dyads, invisible=TRUE, echo=TRUE}
+```{r print-usable-dyads, invisible=TRUE, echo=FALSE}
 
 cat('Total dyads with strictly paired data for all trials: ',dim(usable_dyads)[1], sep='')
 
@@ -273,7 +270,7 @@ only_one_trial_type = winnowed_info_df %>% ungroup() %>%
 
 ```
 
-```{r print-problem-participants, invisible=TRUE, echo=TRUE}
+```{r print-problem-participants, invisible=TRUE, echo=FALSE}
 
 cat('Included participants who did not undergo training and testing rounds: ',dim(only_one_trial_type)[1], sep='')
 
@@ -322,7 +319,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ```
 
-```{r print-quesionnaire-dyads, invisible=TRUE, echo=TRUE}
+```{r print-quesionnaire-dyads, invisible=TRUE, echo=FALSE}
 
 cat('Total dyads with all guess and questionnaire data: ',dim(usable_question_dyads)[1], sep='')
 
@@ -385,7 +382,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ## Create training accuracy metric
 
-```{r plot-training_slopes, invisible=TRUE, echo=TRUE, warning = FALSE, error = FALSE, message = FALSE}
+```{r plot-training_slopes, echo=FALSE, warning = FALSE, error = FALSE, message = FALSE}
 
 ggplot(dplyr::filter(winnowed_info_df, 
                      trial_type=='train'), 
@@ -423,7 +420,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 Likely due to the timing-out mechanism, a minority of guesses provided wildly inaccurate estimates of the stimuli. 
 
-```{r print-likely-outliers, invisible=TRUE, echo=TRUE}
+```{r print-likely-outliers, echo=FALSE}
 
 # figure out how many outliers there were
 likely_outlier_responses = winnowed_info_df %>% ungroup() %>%
@@ -452,7 +449,7 @@ winnowed_info_df = winnowed_info_df %>%
 
 ```
 
-```{r plot-normalized-error-over-all-trials, invisible=TRUE, echo=TRUE, warning = FALSE, error = FALSE, message = FALSE}
+```{r plot-normalized-error-over-all-trials, echo=FALSE, warning = FALSE, error = FALSE, message = FALSE}
 
 # figure out what our equal x-axis limits will be
 x_limit = winnowed_info_df %>% ungroup() %>%
