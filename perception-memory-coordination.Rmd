@@ -453,6 +453,14 @@ winnowed_info_df = winnowed_info_df %>%
 ```
 
 ```{r plot-normalized-error-over-all-trials, invisible=TRUE, echo=TRUE, warning = FALSE, error = FALSE, message = FALSE}
+
+# figure out what our equal x-axis limits will be
+x_limit = winnowed_info_df %>% ungroup() %>%
+  na.omit() %>%
+  summarise(lim = max(abs(normalized_error))) %>%
+  .$lim
+
+# create plot
 ggplot(winnowed_info_df,
        aes(x = normalized_error)) + 
   geom_histogram(aes(fill = factor(trial_number)),bins=30) +
@@ -472,6 +480,7 @@ ggplot(winnowed_info_df,
                      name = "Trial") +
   xlab('Normalized error') +
   ylab('Count') +
+  xlim(-x_limit, x_limit) +
   ggtitle('Normalized error over all trials')
   
 ```
