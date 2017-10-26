@@ -408,6 +408,7 @@ ggplot(dplyr::filter(winnowed_info_df,
 # create a slope to see how quickly they improved
 winnowed_info_df = winnowed_info_df %>% ungroup() %>%
   select(participant, trial_type, trial_number, normalized_error) %>%
+  na.omit() %>%
   dplyr::filter(trial_type == 'train') %>%
   group_by(participant) %>%
   do(broom::tidy(lm(abs(.$normalized_error) ~ .$trial_number))) %>%
