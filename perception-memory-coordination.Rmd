@@ -142,7 +142,6 @@ info_df = info_files %>% ungroup() %>%
 
   # rename a whole slew of variables
   dplyr::rename(participant = origin_id,
-                stimulus_list = contents,
                 trial_type = trialType,
                 trial_number = trialNumber,
                 guess_counter = guessCounter,
