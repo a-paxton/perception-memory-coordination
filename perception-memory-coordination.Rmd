@@ -273,7 +273,7 @@ only_one_trial_type = winnowed_info_df %>% ungroup() %>%
 
 ```
 
-```{r print-usable-dyads, invisible=TRUE, echo=TRUE}
+```{r print-problem-participants, invisible=TRUE, echo=TRUE}
 
 cat('Included participants who did not undergo training and testing rounds: ',dim(only_one_trial_type)[1], sep='')
 
