@@ -965,11 +965,12 @@ Here are our preliminary questions:
 
 * **Are partners temporally coordinated in their guess accuracy across time?** Yes.
 
-* **Do partners' ratings of their own and their partners' trustworthiness and cooperativity influence the dynamics of perceptual coordination?** No.
+* **Do partners' ratings of their own and their partners' trustworthiness influence the dynamics of perceptual coordination?** No.
 
 We also have some ideas that will shape future analyses.
 
 * When we have more time:
+    * *Do partners' ratings of their own and their partners' cooperativity influence the dynamics of perceptual coordination?*
     * *Are post-experiment ratings of cooperativity related to the directionality of change?  (That is, are people perceived as being more cooperative if they change their opinion to be more like their partner?)*
     * *Are post-experiment ratings of trustworthiness related to unwillingness to change? (That is, are people perceived as being more trustworthy if they stick to their initial guess?)*
     * *Are partners of consistently more reliable guessers more likely to adopt a strategy to minimize their own first-guess effort and then to simply mimic their partner?*
@@ -1070,35 +1071,35 @@ first_guess_error = first_guess_plot %>%
   geom_jitter(width=.1,
               height=.05,
               alpha=.5) +
+  coord_cartesian(ylim=c(-.2,.2)) +
   geom_smooth(method = "lm", se = TRUE) +
   
   # add labeling
   theme(legend.position='bottom') +
   scale_color_manual(breaks=c(0,1),
-                      #colors=c('darkred','darkgreen'),
                       values=c('red','blue'),
-                      name="Training (mean split)",
-                      labels=c('Low improvement','High improvement')) +
+                      name="Improvement",
+                      labels=c('Low','High')) +
   ylab('Normalized error') +
   xlab('Trial') +
-  ggtitle('Normalized error of first guess on each trial')
+  ggtitle('Normalized error\nof first guess by trial\nand training improvement')
 
 # save a high-resolution version of the plot
 ggsave(plot = first_guess_error,
        height = 4,
-       width = 5,
+       width = 3,
        filename = './figures/pmc-first_guess.jpg')
 
 # save a smaller version of the plot for knitr
 ggsave(plot = first_guess_error,
-       height = 5,
-       width = 5,
+       height = 4,
+       width = 3,
        dpi=100,
        filename = './figures/pmc-first_guess-knitr.jpg')
 
 ```
 
-![**Figure**. Density plots of questionnaire responses, normalized error, and improvement over training trials.](./figures/pmc-all_variables-knitr.jpg)
+![**Figure**. Density plots of questionnaire responses, normalized error, and improvement over training trials. Truncated to not display high-error guesses, using a cutoff of absolute normalized error of 0.20.](./figures/pmc-all_variables-knitr.jpg)
 
 **Note**: We should consider what to do with some of these high-error guesses. At least some of them may be an artifact of the incentives of the experiment (i.e., not wanting to not guess during a turn).
 
