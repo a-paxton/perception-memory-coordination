@@ -22,8 +22,10 @@ required_packages = c(
   'viridis',
   'jsonlite',
   'lubridate',
-  'tidyr'
+  'tidyr',
+  'tibble'
 )
+
 
 # install missing packages (adapted from <http://stackoverflow.com/a/4090208>)
 missing_packages = required_packages[!(required_packages %in% installed.packages()[,"Package"])]

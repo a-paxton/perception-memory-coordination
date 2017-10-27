@@ -3,9 +3,6 @@
 # This script loads libraries and creates a number of 
 # additional functions to facilitate data prep and analysis.
 #
-# The script `required_packages-pmc.r` should be run once first
-# to ensure that the all required packages have been installed.
-#
 # Written by: A. Paxton (University of California, Berkeley)
 # Date last modified: 19 October 2017
 #####################################################################################
@@ -27,11 +24,28 @@ required_packages = c(
   'viridis',
   'jsonlite',
   'lubridate',
-  'tidyr'
+  'tidyr',
+  'tibble'
 )
 
 # load required packages
 invisible(lapply(required_packages, require, character.only = TRUE))
+
+#### Prevent scientific notation ####
+options(scipen=999)
+
+#### Create useful global variables ####
+
+# identify desired max lag
+ccf_max_lag = 5
+
+# get a list of named questionnaire variables
+questionnaire_variables = c("cooperative_partner",
+                            "cooperative_self",
+                            "trust_partner",
+                            "trust_self",
+                            "engagement",
+                            "difficulty")
 
 #### Create functions we'll need ####
 
