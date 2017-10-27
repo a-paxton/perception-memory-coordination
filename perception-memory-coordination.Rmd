@@ -911,3 +911,21 @@ ccf_st = ccf_df %>%
             funs(factor))
 
 ```
+
+```{r plot-all-variables}
+
+# adapted from https://drsimonj.svbtle.com/quick-plot-of-all-variables
+ccf_plot %>%
+  mutate_all(funs(as.numeric)) %>%
+  select(-contains("lag")) %>%
+  select(-contains(".")) %>%
+  gather() %>%                
+  ggplot(aes(value)) +
+    facet_wrap(~ key, scales = "free") +
+    geom_density() +
+    xlab('Value') +
+    ylab('Density') +
+    ggtitle('Density plots of all variables (excluding lag and interactions)')
+
+```
+
