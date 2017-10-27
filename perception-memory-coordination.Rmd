@@ -411,20 +411,36 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ```{r plot-training_slopes, echo=FALSE, warning = FALSE, error = FALSE, message = FALSE}
 
-ggplot(dplyr::filter(winnowed_info_df, 
-                     trial_type=='train'), 
-       aes(x = trial_number,
-           y = abs(normalized_error))) +
+# create a plot to show training slopes
+training_slope_plot = ggplot(dplyr::filter(winnowed_info_df, 
+                                           trial_type=='train'), 
+                             aes(x = trial_number,
+                                 y = abs(normalized_error))) +
   geom_line(aes(color=as.factor(participant))) +
   scale_color_viridis(discrete=TRUE) +
   stat_smooth() +
   ylab('Absolute error of guess') +
   scale_x_continuous(breaks=c(1,5,10)) +
   xlab('Training trial') +
-  ggtitle('Accuracy of individual participants across training trials') +
+  ggtitle('Accuracy of individual participants over training') +
   theme(legend.position="none")
 
+# save a high-resolution version of the plot
+ggsave(plot = training_slope_plot,
+       height = 3,
+       width = 5,
+       filename = './figures/pmc-training_slopes.jpg')
+
+# save a smaller version of the plot for knitr
+ggsave(plot = training_slope_plot,
+       height = 3,
+       width = 5,
+       dpi=100,
+       filename = './figures/pmc-training_slopes-knitr.jpg')
+
 ```
+
+![**Figure**. Included participants' absolute normalized error over all training trials and best-fit line (in blue).](./figures/pmc-training_slopes-knitr.jpg)
 
 ```{r plot-normalized-error-over-all-trials, echo=FALSE, warning = FALSE, error = FALSE, message = FALSE}
 
@@ -435,8 +451,8 @@ x_limit = winnowed_info_df %>% ungroup() %>%
   .$lim
 
 # create plot
-ggplot(winnowed_info_df,
-       aes(x = normalized_error)) + 
+normalized_error_hist = ggplot(winnowed_info_df,
+                               aes(x = normalized_error)) + 
   geom_histogram(aes(fill = factor(trial_number)),bins=30) +
   scale_fill_viridis(discrete=TRUE,
                      breaks=c('1',
@@ -457,7 +473,22 @@ ggplot(winnowed_info_df,
   xlim(-x_limit, x_limit) +
   ggtitle('Normalized error over all trials')
   
+# save a high-resolution version of the plot
+ggsave(plot = normalized_error_hist,
+       height = 4,
+       width = 5,
+       filename = './figures/pmc-error_hist.jpg')
+
+# save a smaller version of the plot for knitr
+ggsave(plot = normalized_error_hist,
+       height = 4,
+       width = 5,
+       dpi=100,
+       filename = './figures/pmc-error_hist-knitr.jpg')
+
 ```
+
+![**Figure**. Histogram of individual participants' normalized error for each guess over all trials. Histogram is further broken down by the trial number at which each guess was given.](./figures/pmc-error_hist-knitr.jpg)
 
 ## Widen data to include partner's guess
 
@@ -571,29 +602,39 @@ cat('Average participation: ',mean(included_participant_time$duration),' minutes
 
 We'd intended for each experimental session to last 20 minutes, but the mean duration for included participants in these pilot data is about half of that.  Future pilot studies should increase the number of trials.
 
-## Survey response distributions
+## Variable distributions
 
-```{r plot-histograms-of-survey, echo=FALSE}
+```{r plot-all-variables, echo = FALSE}
 
-ggplot(winnowed_info_df,
-       aes(x = cooperative_self)) + 
-  geom_histogram(bins=30) +
-  xlab('Cooperative rating for self\n(1-10)') +
-  ylab('Count') +
-  xlim(0, 10) +
-  ylim(0, 800) +
-  ggtitle("Players' ratings of own cooperativeness")
+# adapted from https://drsimonj.svbtle.com/quick-plot-of-all-variables
+all_variable_plot = winnowed_info_df %>%
+  mutate_all(funs(as.numeric)) %>%
+  select(one_of(questionnaire_variables),
+         normalized_error, experiment, dyad, training_improvement) %>%
+  gather() %>%                
+  ggplot(aes(value)) +
+    facet_wrap(~ key, scales = "free") +
+    geom_density() +
+    xlab('Value') +
+    ylab('Density') +
+    ggtitle('Density plots of questionnaire data and outcome variables')
 
-ggplot(winnowed_info_df,
-       aes(x = cooperative_partner)) + 
-  geom_histogram(bins=30) +
-  xlab("Cooperative rating for partner\n(1-10)") +
-  ylab('Count') +
-  xlim(0, 10) +
-  ylim(0, 800) +
-  ggtitle("Players' ratings of partners' cooperativeness")
+# save a high-resolution version of the plot
+ggsave(plot = all_variable_plot,
+       height = 4,
+       width = 8,
+       filename = './figures/pmc-all_variables.jpg')
+
+# save a smaller version of the plot for knitr
+ggsave(plot = all_variable_plot,
+       height = 4,
+       width = 8,
+       dpi=100,
+       filename = './figures/pmc-all_variables-knitr.jpg')
 
 ```
+
+![**Figure**. Density plots of questionnaire responses, normalized error, and improvement over training trials.](./figures/pmc-all_variables-knitr.jpg)
 
 ***
 
@@ -913,23 +954,6 @@ ccf_st = ccf_df %>%
 
 ```
 
-```{r plot-all-variables, echo = FALSE}
-
-# adapted from https://drsimonj.svbtle.com/quick-plot-of-all-variables
-ccf_plot %>%
-  mutate_all(funs(as.numeric)) %>%
-  select(-contains("lag")) %>%
-  select(-contains(".")) %>%
-  gather() %>%                
-  ggplot(aes(value)) +
-    facet_wrap(~ key, scales = "free") +
-    geom_density() +
-    xlab('Value') +
-    ylab('Density') +
-    ggtitle('Density plots of all variables (excluding lag and interactions)')
-
-```
-
 ## Data analysis
 
 Here are our preliminary questions:
@@ -1033,17 +1057,48 @@ pander_lme(more_accurate_first_guesses_raw, stats.caption = TRUE)
 
 ```{r plot-error-of-first-guess, echo=FALSE}
 
-ggplot(first_guess_plot, aes(x = trial_number,
-                             y = normalized_error)) +
-  geom_line(aes(color=factor(participant))) +
-  scale_color_viridis(discrete=TRUE) +
-  geom_smooth(method = "lm", se = FALSE) +
-  theme(legend.position='none') +
+# plot normalized error of the first guess submitted on each trial
+first_guess_error = first_guess_plot %>%
+  
+  # dummy-code training as above or below/at mean
+  mutate(training_improvement = factor((training_improvement > mean(training_improvement))*1)) %>%
+
+  # create the plot, adding each guess as jitter
+  ggplot(., aes(x = trial_number,
+                y = normalized_error,
+                color = training_improvement)) +
+  geom_jitter(width=.1,
+              height=.05,
+              alpha=.5) +
+  geom_smooth(method = "lm", se = TRUE) +
+  
+  # add labeling
+  theme(legend.position='bottom') +
+  scale_color_manual(breaks=c(0,1),
+                      #colors=c('darkred','darkgreen'),
+                      values=c('red','blue'),
+                      name="Training (mean split)",
+                      labels=c('Low improvement','High improvement')) +
   ylab('Normalized error') +
   xlab('Trial') +
   ggtitle('Normalized error of first guess on each trial')
 
+# save a high-resolution version of the plot
+ggsave(plot = first_guess_error,
+       height = 4,
+       width = 5,
+       filename = './figures/pmc-first_guess.jpg')
+
+# save a smaller version of the plot for knitr
+ggsave(plot = first_guess_error,
+       height = 5,
+       width = 5,
+       dpi=100,
+       filename = './figures/pmc-first_guess-knitr.jpg')
+
 ```
+
+![**Figure**. Density plots of questionnaire responses, normalized error, and improvement over training trials.](./figures/pmc-all_variables-knitr.jpg)
 
 ### Do partners provide similar guesses?
 
@@ -1065,8 +1120,9 @@ pander_lme(similar_partners_raw, stats.caption=TRUE)
 
 ```{r plot-ccf, echo=FALSE}
 
-ggplot(ccf_df, aes(x = lag,
-                     y = r)) +
+# plot cross-correlation coefficients
+cross_corr_plot = ggplot(ccf_df, aes(x = lag,
+                              y = r)) +
   geom_jitter(aes(color = factor(dyad)), 
               height = 0,
               width = .15) +
@@ -1076,7 +1132,22 @@ ggplot(ccf_df, aes(x = lag,
   xlab('Lag (in turns)') +
   ggtitle("Cross-correlation of partners' normalized error")
 
+# save a high-resolution version of the plot
+ggsave(plot = cross_corr_plot,
+       height = 4,
+       width = 5,
+       filename = './figures/pmc-cross_corr_plot.jpg')
+
+# save a smaller version of the plot for knitr
+ggsave(plot = cross_corr_plot,
+       height = 5,
+       width = 5,
+       dpi=100,
+       filename = './figures/pmc-cross_corr_plot.jpg-knitr.jpg')
+
 ```
+
+![**Figure**. Cross-correlation of partners' normalized error across turns, overlaid with best-fit line.](./figures/pmc-cross_corr_plot.jpg-knitr.jpg)
 
 ### Do ratings of cooperativity and trustworthiness influence adaptation?
 
