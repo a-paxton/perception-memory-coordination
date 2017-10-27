@@ -596,7 +596,9 @@ ggplot(winnowed_info_df,
 
 # Psychonomics 2017 poster
 
-This section presents the data analysis for the Psychonomics 2017 poster, "Exploring social behavior with Dallinger, an open-source experiment automation tool" (A. Paxton, T. J. H. Morgan, J. Suchow, & T. L. Griffiths, forthcoming). The poster largely presents Dallinger and its specific capabilities of interest to individuals running social psychology experiments, but an analysis of the pilot data from the present study is included as a demonstration.
+This section presents the data analysis for the Psychonomics 2017 poster, "Exploring social behavior with Dallinger, an open-source experiment automation tool" (A. Paxton, J. Suchow, T. J. H. Morgan, & T. L. Griffiths, forthcoming). The poster largely presents Dallinger and its specific capabilities of interest to individuals running social psychology experiments, but an analysis of the pilot data from the present study is included as a demonstration.
+
+Because of each dyad in the pilot data only completes 15 trials together, we are unable to do cross-recurrence quantification analysis (CRQA) on the `normalized_error` data. As a result, we instead do cross-correlation. Future pilot studies should increase the number of trials to create a sufficiently long time `normalized_error` time series for each dyad to permit CRQA.
 
 ## Preliminaries
 
