@@ -619,6 +619,108 @@ winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
 
 ## Data preparation
 
+### Calculate cross-correlation between partners' normalized error
+
+First, we prepare the dataframe for cross-correlation by transitioning from long-form data for both participants within the dyad to using wide-form data for each dyad, with one column for each constituent participant's `normalized_error` at each `trial_number` and `response_counter`.
+
+```{r reformat-df-for-cross-corr}
+
+# strip out unnecessary information
+infos = winnowed_info_df %>% ungroup() %>%
+  select(experiment,dyad,participant,t,normalized_error,trial_number,response_counter) %>%
+  
+  # create participant binary values
+  group_by(experiment, dyad) %>%
+  mutate(partner_id = (min(participant)+max(participant)) - participant) %>%
+  mutate(self_id = participant) %>%
+  ungroup() %>%
+  
+  # create binary ID
+  group_by(experiment, dyad) %>%
+  mutate(partner_binary = participant - min(participant)) %>%
+  ungroup() %>%
+  
+  # remove training trials
+  dplyr::filter(trial_number > 10)
+
+# create a dataframe with one dyad per row and separate columns for each participant's error data
+binary_dfs = split(infos, infos$partner_binary)
+p0_df = data.frame(binary_dfs[[1]]) %>%
+  dplyr::rename(error0 = normalized_error) %>%
+  select(experiment, dyad, trial_number, response_counter, error0)
+p1_df = data.frame(binary_dfs[[2]]) %>%
+  dplyr::rename(error1 = normalized_error) %>%
+  select(experiment, dyad, trial_number, response_counter, error1)
+
+```
+
+Once the data are prepared, we calculate the cross-correlation coefficients between participants' `normalized_error` during all test rounds. The maximum lag is specified within the `libraries_and_functions-pmc.r` file.
+
+```{r calculate-cross-correlation}
+
+# calculate cross-correlation
+ccf_df = full_join(p0_df,p1_df,
+                   by= c("experiment", "dyad", "trial_number", "response_counter")) %>%
+  
+  # calculate cross-correlation for each dyad's error scores
+  group_by(experiment,dyad) %>%
+  do(ccf = ccf(.$error0, .$error1, lag.max = ccf_max_lag, type = 'correlation',
+               na.action = na.pass, plot=FALSE)) %>%
+  ungroup() %>%
+  
+  # extract cross-correlations from the embedded list
+  select(ccf) %>%
+  dplyr::pull(ccf) %>%
+  unlist() %>%
+  matrix(.,ncol=length(unique(winnowed_info_df$dyad))) %>%
+  
+  # convert it into a proper dataframe and select only the coefficients
+  as.data.frame() %>%
+  slice(1:(ccf_max_lag*2+1)) %>%
+  t() %>%
+  as.data.frame %>%
+  rowid_to_column(var='dyad') %>%
+
+  # rename variables and strip rownames
+  rename_(.dots=setNames(names(.), 
+                         gsub("V", "", names(.)))) %>%
+  remove_rownames() %>%
+  
+  # reshape the data to combine lag and r
+  gather(key = 'lag' , value='r', -dyad) %>%
+  mutate_all(as.numeric) %>%
+  mutate(lag = lag - ccf_max_lag - 1)
+
+```
+
+Once we've calculated the cross-correlation coefficients for each dyad, we merge it into the questionnaire data.
+
+```{r merge-into-main-df}
+
+# grab just the questionnaire data and create a mean training improvement score
+questions_only = select(winnowed_info_df, 
+                        one_of(c('experiment','dyad','participant',
+                                 questionnaire_variables,
+                                 'training_improvement'))) %>%
+  group_by(experiment, dyad) %>%
+  mutate(training_improvement = mean(training_improvement)) %>%
+  ungroup() %>%
+  distinct()
+
+# merge into the ccf dataframe
+ccf_df = full_join(questions_only, ccf_df,
+                   by='dyad','experiment')
+
+```
+
+Let's clean up a bit before we move on.
+
+```{r clean-up-variables}
+
+# clean up unneeded variables
+rm(p0_df,p1_df,binary_dfs, infos, questions_only)
+
+```
 
 ### Create interaction terms
 
