@@ -233,12 +233,6 @@ usable_dyads = info_df %>%
 
 ```
 
-```{r print-usable-dyads, invisible=TRUE, echo=FALSE}
-
-cat('Total dyads with strictly paired data for all trials: ',dim(usable_dyads)[1], sep='')
-
-```
-
 Now that we've figured out which dyads we should use, let's winnow down the dataframe to include only those dyads.
 
 ```{r winnow-data, eval=FALSE}
@@ -253,6 +247,16 @@ winnowed_info_df = info_df %>%
 winnowed_info_df = unique(setDT(winnowed_info_df), by = c('experiment', 'dyad', 'participant', 
          'trial_type', 'trial_number', 'response_counter', 'guess_counter', 'accept_type', 
          'length', 'guess', 'guess_error', 'response_type', 'network_id'))
+
+```
+
+```{r print-usable-dyads, invisible=TRUE, echo=FALSE, eval=FALSE}
+
+unique_included_dyads = winnowed_info_df %>% ungroup() %>%
+  group_by(experiment, dyad) %>%
+  distinct()
+
+cat('Total dyads with strictly paired data for all trials: ',dim(unique_included_dyads)[1], sep='')
 
 ```
 
