@@ -385,6 +385,8 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ## Create training accuracy metric
 
+We next create a training metric that quantifies the *non-directional* improvement over the training rounds. Essentially, this captures the change in relative accuracy over training, regardless of whether participants began by over- or under-estimating line lengths.
+
 ```{r training-improvement, eval=FALSE}
 
 # create a slope to see how quickly they improved
@@ -419,7 +421,7 @@ ggplot(dplyr::filter(winnowed_info_df,
 
 ```
 
-```{r plot-normalized-error-over-all-trials, echo=FALSE, warning = FALSE, error = FALSE, message = FALSE}
+```{r plot-normalized-error-over-all-trials, echo=FALSE, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
 
 # figure out what our equal x-axis limits will be
 x_limit = winnowed_info_df %>% ungroup() %>%
