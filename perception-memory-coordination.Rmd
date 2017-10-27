@@ -939,12 +939,9 @@ Here are our preliminary questions:
     * **... across all guesses?** No, with non-significant trend toward "yes."
     * **... in their first guesses?** While training improvement significantly predicts accuracy of first guess, there is also a non-significant trend toward "yes."
 
-* **Do partners provide similar guesses...**
-    * **... generally?** Yes.
+* **Are partners temporally coordinated in their guess accuracy across time?** Yes.
 
-* **Do partners' ratings of their own and their partners' trustworthiness and cooperativity...**
-    * **... influence the dynamics of perceptual coordination?** No.
-    * Future questions when we have more time:
+* **Do partners' ratings of their own and their partners' trustworthiness and cooperativity influence the dynamics of perceptual coordination?** No.
 
 We also have some ideas that will shape future analyses.
 
@@ -960,6 +957,7 @@ We also have some ideas that will shape future analyses.
     * *Do partners become more similar within trials in their changes to their guesses?*
 
 Notes for future work:
+
 * Partners might think of this as a competition. If so, we should as a question to capture that.
 
 ### Do individuals become more accurate over time?
