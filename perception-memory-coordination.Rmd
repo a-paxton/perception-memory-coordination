@@ -796,13 +796,19 @@ final_guess_df = winnowed_info_df %>% ungroup() %>%
 
 ```
 
+#### For `ccf_df`
+
+```{r create-orthogonal-polynomials-ccf}
+
+# create first- and second-order orthogonal polynomials for lag 
+raw_lag = min(ccf_df$lag):max(ccf_df$lag)
 lag_vals = data.frame(raw_lag)
 lag_offset = (0-min(raw_lag)) + 1
-trial = stats::poly((raw_lag + lag_offset), 2)
-lag_vals[, paste("ot", 1:2, sep="")] = trial[lag_vals$raw_lag + lag_offset, 1:2]
+t = stats::poly((raw_lag + lag_offset), 2)
+lag_vals[, paste("lag_ot", 1:2, sep="")] = t[lag_vals$raw_lag + lag_offset, 1:2]
 
 # join it to the original data table
-winnowed_info_df = left_join(winnowed_info_df,lag_vals, by = c("trial_number" = "raw_lag"))
+ccf_df = left_join(ccf_df,lag_vals, by = c("lag" = "raw_lag"))
 
 ```
 
