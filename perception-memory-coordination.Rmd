@@ -1,13 +1,15 @@
 ---
 title: "Interpersonal coordination in perception and memory"
 author: "A. Paxton, T. J. H. Morgan, J. Suchow, & T. L. Griffiths"
-output: 
+output:
+  pdf_document: 
+    number_sections: yes
   html_document:
-    number_sections: true
-    keep_md: true
+    keep_md: yes
+    number_sections: yes
 ---
 
-This R markdown provides the basis for our manuscript, "Interpersonal coordination in perception and memory" (Paxton, Morgan, Suchow & Griffiths, *in peparation*).
+This R markdown provides the basis for our manuscript, "Interpersonal coordination in perception and memory" (Paxton, Morgan, Suchow & Griffiths, *in preparation*).
 
 To run these analyses from scratch, you will need the following files:
 
@@ -17,8 +19,9 @@ To run these analyses from scratch, you will need the following files:
 
 Additional files will be created during the initial run that will help reduce processing time. Several of these files are available as CSVs from the OSF repository listed above.
 
-**Written by**: A. Paxton (University of California, Berkeley)
-<br>**Date last modified**: 26 October 2017
+**Code written by**: A. Paxton (University of California, Berkeley)
+
+**Date last modified**: 26 October 2017
 
 ***
 
