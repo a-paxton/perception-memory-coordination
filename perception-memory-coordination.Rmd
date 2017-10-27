@@ -31,7 +31,7 @@ Additional files will be created during the initial run that will help reduce pr
 
 ## Preliminaries
 
-```{r prep-prelim, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
+```{r prep-prelim, warning = FALSE, error = FALSE, message = FALSE}
 
 # clear our workspace
 rm(list=ls())
@@ -46,7 +46,7 @@ source('./supplementary-code/libraries_and_functions-pmc.r')
 
 ## Concatenate experiment files
 
-```{r concatenate-data, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
+```{r concatenate-data, warning = FALSE, error = FALSE, message = FALSE}
 
 # get list of individual experiments included in the data
 experiment_files = list.dirs('./data', recursive=FALSE)
@@ -87,7 +87,7 @@ for (experiment in experiment_files){
 
 In order to figure out which participants' nodes were connected to one another in dyads, we use the vectors created between nodes (excluding the stimulus-creating node). We then use that information to identify which stimuli were sent to which dyads.
 
-```{r identify-dyads, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
+```{r identify-dyads, warning = FALSE, error = FALSE, message = FALSE}
 
 # use the vectors connecting the nodes to identify pairs
 vector_df = vector_files %>%
@@ -129,7 +129,7 @@ We now take the concatenated files and begin processing, including de-duplicatio
 
 The structure of the experiment sometimes led to near-duplicate rows to be sent to the server to manage partner communication. We must now identify these near-duplicates and strip them out. We can best identify these by using the `response_counter` variable: A properly de-duplicated dataset should have only 1 row per `response_counter` value in each trial for each participant.
 
-```{r process-infos, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
+```{r process-infos, warning = FALSE, error = FALSE, message = FALSE}
 
 info_df = info_files %>% ungroup() %>%
   
@@ -176,7 +176,7 @@ info_df = info_files %>% ungroup() %>%
 
 ```
 
-```{r print-sanity-check-for-duplicate-issues, invisible=TRUE, echo=FALSE, eval=FALSE}
+```{r print-sanity-check-for-duplicate-issues, invisible=TRUE, echo=FALSE}
 
 # sanity check
 sanity_df = info_df %>% ungroup() %>%
@@ -208,7 +208,7 @@ cat('Problematic rows identified (i.e., duplicates with differing accept types):
 
 Next, we identify all dyads in which both participants responded the same number of times. This ensures that we include only dyads who experienced the full and correct experimental protocol.
 
-```{r identify-complete-dyads, eval=FALSE}
+```{r identify-complete-dyads}
 
 # identify usable dyads
 usable_dyads = info_df %>%
@@ -238,7 +238,7 @@ usable_dyads = info_df %>%
 
 Now that we've figured out which dyads we should use, let's winnow down the dataframe to include only those dyads.
 
-```{r winnow-data, eval=FALSE}
+```{r winnow-data}
 
 # winnow and recorder columns
 winnowed_info_df = info_df %>%
@@ -255,10 +255,10 @@ winnowed_info_df = unique(setDT(winnowed_info_df), by = c('experiment', 'dyad', 
 
 ```
 
-```{r print-usable-dyads, invisible=TRUE, echo=FALSE, eval=FALSE}
+```{r print-usable-dyads, invisible=TRUE, echo=FALSE}
 
 unique_included_dyads = winnowed_info_df %>% ungroup() %>%
-  group_by(experiment, dyad) %>%
+  select(experiment, dyad) %>%
   distinct()
 
 cat('Total dyads with strictly paired data for all trials: ',dim(unique_included_dyads)[1], sep='')
@@ -267,7 +267,7 @@ cat('Total dyads with strictly paired data for all trials: ',dim(unique_included
 
 For sanity, let's also check that everyone included in our winnowed dataset completed both training and test trials.
 
-```{r sanity-check-for-training-and-test, eval=FALSE}
+```{r sanity-check-for-training-and-test}
 
 # ensure that everyone completed both training and test
 only_one_trial_type = winnowed_info_df %>% ungroup() %>%
@@ -279,7 +279,7 @@ only_one_trial_type = winnowed_info_df %>% ungroup() %>%
 
 ```
 
-```{r print-problem-participants, invisible=TRUE, echo=FALSE, eval=FALSE}
+```{r print-problem-participants, invisible=TRUE, echo=FALSE}
 
 cat('Included participants who did not undergo training and testing rounds: ',dim(only_one_trial_type)[1], sep='')
 
@@ -289,7 +289,7 @@ cat('Included participants who did not undergo training and testing rounds: ',di
 
 In the experiment's current form, different tables include different information, and some tables present the same information under different labels. This is true for questionnaire data. To accurately pair individuals' guess data with their questionnaire responses, we match the `participant_id` variables in `node_df` and `question_df`, and we join the `id` variable in `node_df` with the `participant` variable in `info_df`.
 
-```{r add-questionnaire-data, eval=FALSE}
+```{r add-questionnaire-data}
 
 # clean up questionnaire data by converting the stringified JSONs to a new variable
 question_df = questionnaire_files %>% ungroup() %>%
@@ -311,7 +311,7 @@ winnowed_info_df = left_join(question_df, node_df,
 
 ```
 
-```{r identify-questionnaire-dyads, eval=FALSE}
+```{r identify-questionnaire-dyads}
 
 # identify how many dyads have matching infos and complete questionnaire data
 usable_question_dyads = winnowed_info_df %>% ungroup() %>%
@@ -328,7 +328,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ```
 
-```{r print-quesionnaire-dyads, invisible=TRUE, echo=FALSE, eval=FALSE}
+```{r print-quesionnaire-dyads, invisible=TRUE, echo=FALSE}
 
 cat('Total dyads with all guess and questionnaire data: ',dim(usable_question_dyads)[1], sep='')
 
@@ -338,7 +338,7 @@ cat('Total dyads with all guess and questionnaire data: ',dim(usable_question_dy
 
 Dallinger provides numeric IDs for each participant that are unique only within each experiment. Therefore, we create participant and dyad identifiers that are unique across the entire dataset.
 
-```{r create-unique-ids, eval=FALSE}
+```{r create-unique-ids}
 
 # create unique dyad IDs
 unique_dyad_ids = winnowed_info_df %>% ungroup() %>%
@@ -368,7 +368,7 @@ winnowed_info_df = right_join(unique_participant_ids, winnowed_info_df,
 
 Data were collected using Pythonic counters (i.e., starting from 0). We'll here update the dataframe to reflect R conventions (i.e., starting from 1).
 
-```{r r-counters, eval=FALSE}
+```{r r-counters}
 
 winnowed_info_df = winnowed_info_df %>%
   mutate(trial_number = trial_number + 1) %>%
@@ -381,7 +381,7 @@ winnowed_info_df = winnowed_info_df %>%
 
 Because stimuli line lengths could range from 1-100, each trial provided a bound on the total possible guess error.  As a result, we need to normalize each guess error by the maximum *possible* error for that trial.
 
-```{r normalize-error, eval=FALSE}
+```{r normalize-error}
 
 winnowed_info_df = winnowed_info_df %>% ungroup() %>%
   mutate(normalized_error = guess_error/max(abs(100-length),abs(length-100)))
@@ -392,7 +392,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 We next create a training metric that quantifies the *non-directional* improvement over the training rounds. Essentially, this captures the change in relative accuracy over training, regardless of whether participants began by over- or under-estimating line lengths.
 
-```{r training-improvement, eval=FALSE}
+```{r training-improvement}
 
 # create a slope to see how quickly they improved
 winnowed_info_df = winnowed_info_df %>% ungroup() %>%
@@ -409,7 +409,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ```
 
-```{r plot-training_slopes, echo=FALSE, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
+```{r plot-training_slopes, echo=FALSE, warning = FALSE, error = FALSE, message = FALSE}
 
 ggplot(dplyr::filter(winnowed_info_df, 
                      trial_type=='train'), 
@@ -426,7 +426,7 @@ ggplot(dplyr::filter(winnowed_info_df,
 
 ```
 
-```{r plot-normalized-error-over-all-trials, echo=FALSE, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
+```{r plot-normalized-error-over-all-trials, echo=FALSE, warning = FALSE, error = FALSE, message = FALSE}
 
 # figure out what our equal x-axis limits will be
 x_limit = winnowed_info_df %>% ungroup() %>%
@@ -461,7 +461,7 @@ ggplot(winnowed_info_df,
 
 ## Widen data to include partner's guess
 
-```{r create-column-for-partner-guess, eval=FALSE}
+```{r create-column-for-partner-guess}
 
 # create a column for the partner's guess at that time
 winnowed_info_df = winnowed_info_df %>% ungroup() %>%
@@ -488,7 +488,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ## Export data
 
-```{r export-data, eval=FALSE}
+```{r export-data}
 
 write.table(winnowed_info_df, './data/winnowed_data.csv', sep=',',
             append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)
@@ -501,7 +501,7 @@ write.table(winnowed_info_df, './data/winnowed_data.csv', sep=',',
 
 ## Preliminaries
 
-```{r exploration-prelim, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
+```{r exploration-prelim, warning = FALSE, error = FALSE, message = FALSE}
 
 # clear our workspace
 rm(list=ls())
@@ -516,7 +516,7 @@ winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
 
 ## Descriptive statistics
 
-```{r mean-experiment-duration, eval=FALSE}
+```{r mean-experiment-duration}
 
 # get list of individual experiments included in the data
 experiment_files = list.dirs('./data', recursive=FALSE)
@@ -544,7 +544,7 @@ participant_time_df = participant_files %>%
 
 ```
 
-```{r mean-time-for-all-participants, eval=FALSE}
+```{r mean-time-for-all-participants}
 
 # identify how long all participants took to complete the experiment
 all_participant_time = participant_time_df %>%
@@ -553,11 +553,11 @@ all_participant_time = participant_time_df %>%
   
 ```
 
-```{r print-mean-time-for-all-participants, echo=FALSE, eval=FALSE}
+```{r print-mean-time-for-all-participants, echo=FALSE}
 cat('Average participation: ',mean(all_participant_time$duration),' minutes',sep='')
 ```
 
-```{r mean-time-for-included-participants, eval=FALSE}
+```{r mean-time-for-included-participants}
 
 # identify how long included participants took to complete the experiment
 included_participant_time = participant_time_df %>%
@@ -565,7 +565,7 @@ included_participant_time = participant_time_df %>%
 
 ```
 
-```{r print-mean-time-for-included-participants, echo=FALSE, eval=FALSE}
+```{r print-mean-time-for-included-participants, echo=FALSE}
 cat('Average participation: ',mean(included_participant_time$duration),' minutes',sep='')
 ```
 
@@ -915,7 +915,7 @@ ccf_st = ccf_df %>%
 
 ```
 
-```{r plot-all-variables}
+```{r plot-all-variables, echo = FALSE}
 
 # adapted from https://drsimonj.svbtle.com/quick-plot-of-all-variables
 ccf_plot %>%
