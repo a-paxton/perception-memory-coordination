@@ -243,7 +243,9 @@ winnowed_info_df = info_df %>%
   mutate(t = round(t,-1)) %>%
   select(experiment, t, dyad, participant, 
          trial_type, trial_number, response_counter, guess_counter, accept_type, 
-         length, guess, guess_error, response_type, network_id)
+         length, guess, guess_error, response_type, network_id) %>%
+  na.omit()
+
 winnowed_info_df = unique(setDT(winnowed_info_df), by = c('experiment', 'dyad', 'participant', 
          'trial_type', 'trial_number', 'response_counter', 'guess_counter', 'accept_type', 
          'length', 'guess', 'guess_error', 'response_type', 'network_id'))
