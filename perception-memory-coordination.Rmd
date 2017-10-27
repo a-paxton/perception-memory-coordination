@@ -409,7 +409,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 ggplot(dplyr::filter(winnowed_info_df, 
                      trial_type=='train'), 
        aes(x = trial_number,
-           y = normalized_error)) +
+           y = abs(normalized_error))) +
   geom_line(aes(color=as.factor(participant))) +
   scale_color_viridis(discrete=TRUE) +
   stat_smooth() +
