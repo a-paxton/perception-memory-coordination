@@ -812,31 +812,34 @@ ccf_df = left_join(ccf_df,lag_vals, by = c("lag" = "raw_lag"))
 
 ```
 
-```{r create-time-interactions}
+```{r create-interactions-ccf}
 
-winnowed_info_df = winnowed_info_df %>% ungroup() %>%
-  plyr::rename(.,
-               c("conv.type"="convers",
-                 "cond"="condition")) %>%
-  mutate(condition = condition-.5) %>%
-  mutate(convers = convers-.5) %>%
-  mutate(condition.convers = condition * convers) %>%
+ccf_df = ccf_df %>% ungroup() %>%
+  
+  # create interactions among static variables of interest
+  mutate(cooperative.both = cooperative_self * cooperative_partner) %>%
+  mutate(trust.both = trust_self * trust_partner) %>%
+  mutate(cooperative.trust.self = cooperative_self * trust_self) %>%
+  mutate(cooperative.trust.partner = cooperative_partner * trust_partner) %>%
 
-  # first-order polynomials
-  mutate(condition.ot1 = condition * ot1) %>%
-  mutate(convers.ot1 = convers * ot1) %>%
-  mutate(condition.convers.ot1 = condition * convers * ot1) %>%
+  # first-order polynomials with lag
+  mutate(cooperative_self.lag_ot1 = cooperative_self * lag_ot1) %>%
+  mutate(cooperative_partner.lag_ot1 = cooperative_partner * lag_ot1) %>%
+  mutate(trust_self.lag_ot1 = trust_self * lag_ot1) %>%
+  mutate(trust_partner.lag_ot1 = trust_partner * lag_ot1) %>%
 
-  # second-order polynomials
-  mutate(condition.ot2 = condition * ot2) %>%
-  mutate(convers.ot2 = convers * ot2) %>%
-  mutate(condition.convers.ot2 = condition * convers * ot2) %>%
-
+  # first-order polynomials with lag
+  mutate(cooperative_self.lag_ot2 = cooperative_self * lag_ot2) %>%
+  mutate(cooperative_partner.lag_ot2 = cooperative_partner * lag_ot2) %>%
+  mutate(trust_self.lag_ot2 = trust_self * lag_ot2) %>%
+  mutate(trust_partner.lag_ot2 = trust_partner * lag_ot2) %>%
+  
   # polynomial interactions
-  mutate(ot1.ot2 = ot1 * ot2) %>%
-  mutate(condition.ot1.ot2 = condition * ot1 * ot2) %>%
-  mutate(convers.ot1.ot2 = convers * ot1 * ot2) %>%
-  mutate(condition.convers.ot1.ot2 = condition * convers * ot1 * ot2)
+  mutate(lag_ot1.lag_ot2 = lag_ot1 * lag_ot2) %>%
+  mutate(cooperative.both.lag_ot1.lag_ot2 = cooperative.both * lag_ot1 * lag_ot2) %>%
+  mutate(trust.both.lag_ot1.lag_ot2 = trust_self * trust_partner * lag_ot1 * lag_ot2) %>%
+  mutate(cooperative.trust.self.lag_ot1.lag_ot2 = cooperative_self * trust_self * lag_ot1 * lag_ot2) %>%
+  mutate(cooperative.trust.partner.lag_ot1.lag_ot2 = cooperative_partner * trust_partner * lag_ot1 * lag_ot2)
 
 ```
 
