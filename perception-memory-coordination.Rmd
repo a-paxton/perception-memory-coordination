@@ -18,7 +18,7 @@ To run these analyses from scratch, you will need the following files:
 Additional files will be created during the initial run that will help reduce processing time. Several of these files are available as CSVs from the OSF repository listed above.
 
 **Written by**: A. Paxton (University of California, Berkeley)
-<br>**Date last modified**: 19 October 2017
+<br>**Date last modified**: 26 October 2017
 
 ***
 
