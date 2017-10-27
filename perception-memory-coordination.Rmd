@@ -271,9 +271,9 @@ For sanity, let's also check that everyone included in our winnowed dataset comp
 
 # ensure that everyone completed both training and test
 only_one_trial_type = winnowed_info_df %>% ungroup() %>%
-  group_by(experiment, participant, trial_type) %>%
+  select(experiment, participant, trial_type) %>%
   distinct() %>%
-  group_by(experiment, participant)%>%
+  group_by(experiment, participant) %>%
   summarize(n=n()) %>%
   dplyr::filter(n!=2)
 
@@ -507,7 +507,7 @@ write.table(winnowed_info_df, './data/winnowed_data.csv', sep=',',
 rm(list=ls())
 
 # read in libraries and create functions
-source('./supplementary-code/required_packages-pmc.r')
+source('./supplementary-code/libraries_and_functions-pmc.r')
 
 # read in dataset
 winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
@@ -712,15 +712,18 @@ Once we've calculated the cross-correlation coefficients for each dyad, we merge
 
 ```{r merge-into-main-df}
 
-# grab just the questionnaire data and create a mean training improvement score
-questions_only = select(winnowed_info_df, 
-                        one_of(c('experiment','dyad','participant',
-                                 questionnaire_variables,
-                                 'training_improvement'))) %>%
+# grab what we need for the cross-correlation analyses
+questions_only = winnowed_info_df %>%
+  select(one_of(c('experiment','dyad','participant',
+                  questionnaire_variables, 'training_improvement'))) %>%
+  
+  # create a mean training improvement score for the dyad
   group_by(experiment, dyad) %>%
   mutate(training_improvement = mean(training_improvement)) %>%
   ungroup() %>%
-  distinct()
+  
+  # select only the unique rows
+  distinct() 
 
 # merge into the ccf dataframe
 ccf_df = full_join(questions_only, ccf_df,
@@ -865,46 +868,33 @@ ccf_df = ccf_df %>% ungroup() %>%
 ```{r standardize-winnowed}
 
 info_plot = winnowed_info_df %>% ungroup() %>%
-  mutate_at(vars(one_of(questionnaire_variables)),
-            funs(ordered)) %>%
   mutate_at(vars(participant,dyad),
             funs(factor))
 
 info_st = winnowed_info_df %>% ungroup() %>%
   mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
-  mutate_at(vars(one_of(questionnaire_variables)),
-            funs(ordered)) %>%
   mutate_at(vars(participant,dyad),
             funs(factor))
 
 first_guess_plot = first_guess_df %>% ungroup() %>%
-  mutate_at(vars(one_of(questionnaire_variables)),
-            funs(ordered)) %>%
   mutate_at(vars(participant,dyad),
             funs(factor))
 
 first_guess_st = first_guess_df %>% ungroup() %>%
   mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
-  mutate_at(vars(one_of(questionnaire_variables)),
-            funs(ordered)) %>%
   mutate_at(vars(participant,dyad),
             funs(factor))
   
 final_guess_plot = final_guess_df %>% ungroup() %>%
-  mutate_at(vars(one_of(questionnaire_variables)),
-            funs(ordered)) %>%
   mutate_at(vars(participant,dyad),
             funs(factor))
   
 final_guess_st = final_guess_df %>% ungroup() %>%
   mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
-  mutate_at(vars(one_of(questionnaire_variables)),
-            funs(ordered)) %>%
   mutate_at(vars(participant,dyad),
             funs(factor))
 
 ```
-
 
 #### For `ccf_df`
 
@@ -912,16 +902,12 @@ final_guess_st = final_guess_df %>% ungroup() %>%
 
 # create unstandardized dataframe and convert relevant variables to factors
 ccf_plot = ccf_df %>% ungroup() %>%
-  mutate_at(vars(one_of(questionnaire_variables)),
-            funs(ordered))  %>%
   mutate_at(vars(participant,dyad),
             funs(factor))
   
 # create standardized dataframe and convert relevant variables to factors
 ccf_st = ccf_df %>%
   mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
-  mutate_at(vars(one_of(questionnaire_variables)),
-            funs(ordered)) %>%
   mutate_at(vars(participant,dyad),
             funs(factor))
 
