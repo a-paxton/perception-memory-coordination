@@ -1046,3 +1046,36 @@ ggplot(first_guess_plot, aes(x = trial_number,
   ggtitle('Normalized error of first guess on each trial')
 
 ```
+
+### Do partners provide similar guesses?
+
+```{r}
+
+# standardized estimates
+similar_partners_st = lmer(r ~ lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 + training_improvement +
+                               (1 + lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 | dyad),
+                             data = ccf_st)
+pander_lme(similar_partners_st, stats.caption=TRUE)
+
+# unstandardized estimates
+similar_partners_raw = lmer(r ~ lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 + training_improvement +
+                               (1 + lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 | dyad),
+                             data = ccf_plot)
+pander_lme(similar_partners_raw, stats.caption=TRUE)
+
+```
+
+```{r plot-ccf, echo=FALSE}
+
+ggplot(ccf_df, aes(x = lag,
+                     y = r)) +
+  geom_jitter(aes(color = factor(dyad)), 
+              height = 0,
+              width = .15) +
+  stat_smooth(method = "lm", formula = y ~ x + I(x^2), size = 1) +
+  scale_color_viridis(discrete=TRUE) +
+  theme(legend.position='none') + 
+  xlab('Lag (in turns)') +
+  ggtitle("Cross-correlation of partners' normalized error")
+
+```
