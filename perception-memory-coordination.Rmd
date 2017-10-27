@@ -696,6 +696,18 @@ ccf_df = full_join(p0_df,p1_df,
 
 ```
 
+Because we don't have any theoretical expectations about or experimental manipulations to change *who* might be leading and following, we ignore directionality for this first-pass analysis.
+
+```{r ignore-lag-directionality}
+
+# ignore lag directionality
+ccf_df = ccf_df %>% ungroup() %>%
+  mutate(lag = abs(lag)) %>%
+  group_by(dyad,lag) %>%
+  summarise(r = mean(r))
+
+```
+
 Once we've calculated the cross-correlation coefficients for each dyad, we merge it into the questionnaire data.
 
 ```{r merge-into-main-df}
