@@ -28,7 +28,7 @@ Additional files will be created during the initial run that will help reduce pr
 
 ## Preliminaries
 
-```{r prep-prelim, warning = FALSE, error = FALSE, message = FALSE}
+```{r prep-prelim, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
 
 # clear our workspace
 rm(list=ls())
@@ -43,7 +43,7 @@ source('./supplementary-code/libraries_and_functions-pmc.r')
 
 ## Concatenate experiment files
 
-```{r concatenate-data, warning = FALSE, error = FALSE, message = FALSE}
+```{r concatenate-data, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
 
 # get list of individual experiments included in the data
 experiment_files = list.dirs('./data', recursive=FALSE)
@@ -84,7 +84,7 @@ for (experiment in experiment_files){
 
 In order to figure out which participants' nodes were connected to one another in dyads, we use the vectors created between nodes (excluding the stimulus-creating node). We then use that information to identify which stimuli were sent to which dyads.
 
-```{r identify-dyads, warning = FALSE, error = FALSE, message = FALSE}
+```{r identify-dyads, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
 
 # use the vectors connecting the nodes to identify pairs
 vector_df = vector_files %>%
@@ -126,7 +126,7 @@ We now take the concatenated files and begin processing, including de-duplicatio
 
 The structure of the experiment sometimes led to near-duplicate rows to be sent to the server to manage partner communication. We must now identify these near-duplicates and strip them out. We can best identify these by using the `response_counter` variable: A properly de-duplicated dataset should have only 1 row per `response_counter` value in each trial for each participant.
 
-```{r process-infos, warning = FALSE, error = FALSE, message = FALSE}
+```{r process-infos, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
 
 info_df = info_files %>% ungroup() %>%
   
@@ -173,7 +173,7 @@ info_df = info_files %>% ungroup() %>%
 
 ```
 
-```{r print-sanity-check-for-duplicate-issues, invisible=TRUE, echo=FALSE}
+```{r print-sanity-check-for-duplicate-issues, invisible=TRUE, echo=FALSE, eval=FALSE}
 
 # sanity check
 sanity_df = info_df %>% ungroup() %>%
@@ -191,7 +191,7 @@ sanity_df = info_df %>% ungroup() %>%
              by = c("experiment", "participant", "trial_type", 
                     "trial_number", "guess_counter", "response_counter")) %>%
   
-  # identify whether any identiifed duplicate rows have diferent accept_type values
+  # identify whether any identified duplicate rows have diferent accept_type values
   group_by(experiment, participant, trial_type, trial_number, guess_counter, response_counter) %>%
   dplyr::filter(length(unique(accept_type))!=1) %>%
   ungroup()
@@ -205,7 +205,7 @@ cat('Problematic rows identified (i.e., duplicates with differing accept types):
 
 Next, we identify all dyads in which both participants responded the same number of times. This ensures that we include only dyads who experienced the full and correct experimental protocol.
 
-```{r identify-complete-dyads}
+```{r identify-complete-dyads, eval=FALSE}
 
 # identify usable dyads
 usable_dyads = info_df %>%
@@ -241,7 +241,7 @@ cat('Total dyads with strictly paired data for all trials: ',dim(usable_dyads)[1
 
 Now that we've figured out which dyads we should use, let's winnow down the dataframe to include only those dyads.
 
-```{r winnow-data}
+```{r winnow-data, eval=FALSE}
 
 # winnow and recorder columns
 winnowed_info_df = info_df %>%
@@ -258,7 +258,7 @@ winnowed_info_df = unique(setDT(winnowed_info_df), by = c('experiment', 'dyad', 
 
 For sanity, let's also check that everyone included in our winnowed dataset completed both training and test trials.
 
-```{r sanity-check-for-training-and-test}
+```{r sanity-check-for-training-and-test, eval=FALSE}
 
 # ensure that everyone completed both training and test
 only_one_trial_type = winnowed_info_df %>% ungroup() %>%
@@ -270,7 +270,7 @@ only_one_trial_type = winnowed_info_df %>% ungroup() %>%
 
 ```
 
-```{r print-problem-participants, invisible=TRUE, echo=FALSE}
+```{r print-problem-participants, invisible=TRUE, echo=FALSE, eval=FALSE}
 
 cat('Included participants who did not undergo training and testing rounds: ',dim(only_one_trial_type)[1], sep='')
 
@@ -280,7 +280,7 @@ cat('Included participants who did not undergo training and testing rounds: ',di
 
 In the experiment's current form, different tables include different information, and some tables present the same information under different labels. This is true for questionnaire data. To accurately pair individuals' guess data with their questionnaire responses, we match the `participant_id` variables in `node_df` and `question_df`, and we join the `id` variable in `node_df` with the `participant` variable in `info_df`.
 
-```{r add-questionnaire-data}
+```{r add-questionnaire-data, eval=FALSE}
 
 # clean up questionnaire data by converting the stringified JSONs to a new variable
 question_df = questionnaire_files %>% ungroup() %>%
@@ -302,7 +302,7 @@ winnowed_info_df = left_join(question_df, node_df,
 
 ```
 
-```{r identify-questionnaire-dyads}
+```{r identify-questionnaire-dyads, eval=FALSE}
 
 # identify how many dyads have matching infos and complete questionnaire data
 usable_question_dyads = winnowed_info_df %>% ungroup() %>%
@@ -319,7 +319,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ```
 
-```{r print-quesionnaire-dyads, invisible=TRUE, echo=FALSE}
+```{r print-quesionnaire-dyads, invisible=TRUE, echo=FALSE, eval=FALSE}
 
 cat('Total dyads with all guess and questionnaire data: ',dim(usable_question_dyads)[1], sep='')
 
@@ -329,7 +329,7 @@ cat('Total dyads with all guess and questionnaire data: ',dim(usable_question_dy
 
 Dallinger provides numeric IDs for each participant that are unique only within each experiment. Therefore, we create participant and dyad identifiers that are unique across the entire dataset.
 
-```{r create-unique-ids}
+```{r create-unique-ids, eval=FALSE}
 
 # create unique dyad IDs
 unique_dyad_ids = winnowed_info_df %>% ungroup() %>%
@@ -355,12 +355,11 @@ winnowed_info_df = right_join(unique_participant_ids, winnowed_info_df,
 
 ```
 
-
 ## Increment all counters by 1
 
 Data were collected using Pythonic counters (i.e., starting from 0). We'll here update the dataframe to reflect R conventions (i.e., starting from 1).
 
-```{r r-counters}
+```{r r-counters, eval=FALSE}
 
 winnowed_info_df = winnowed_info_df %>%
   mutate(trial_number = trial_number + 1) %>%
@@ -373,7 +372,7 @@ winnowed_info_df = winnowed_info_df %>%
 
 Because stimuli line lengths could range from 1-100, each trial provided a bound on the total possible guess error.  As a result, we need to normalize each guess error by the maximum *possible* error for that trial.
 
-```{r normalize-error}
+```{r normalize-error, eval=FALSE}
 
 winnowed_info_df = winnowed_info_df %>% ungroup() %>%
   mutate(normalized_error = guess_error/max(abs(100-length),abs(length-100)))
@@ -382,7 +381,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ## Create training accuracy metric
 
-```{r training-improvement}
+```{r training-improvement, eval=FALSE}
 
 # create a slope to see how quickly they improved
 winnowed_info_df = winnowed_info_df %>% ungroup() %>%
@@ -399,7 +398,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ```
 
-```{r plot-training_slopes, echo=FALSE, warning = FALSE, error = FALSE, message = FALSE}
+```{r plot-training_slopes, echo=FALSE, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
 
 ggplot(dplyr::filter(winnowed_info_df, 
                      trial_type=='train'), 
@@ -413,44 +412,6 @@ ggplot(dplyr::filter(winnowed_info_df,
   xlab('Training trial') +
   ggtitle('Accuracy of individual participants across training trials') +
   theme(legend.position="none")
-
-```
-
-## Remove outliers and missed guesses
-
-Likely due to the timing-out mechanism, a minority of guesses provided wildly inaccurate estimates of the stimuli. 
-
-```{r identify-likely-outliers}
-
-# figure out how many outliers there were
-likely_outlier_responses = winnowed_info_df %>% ungroup() %>%
-  dplyr::filter(abs(guess_error) > 30)
-
-# figure out how many total guesses were submitted
-total_submitted_guesses = winnowed_info_df %>% ungroup() %>%
-  group_by(participant, trial_number) %>%
-  summarise(total_guesses = max(guess_counter))
-
-```
-
-```{r print-likely-outliers, echo=FALSE}
-
-# print out raw number and proportion of outliers
-cat('Outlier guesses: ',dim(likely_outlier_responses)[1],' (',
-    round(dim(likely_outlier_responses)[1]/sum(total_submitted_guesses$total_guesses),4)
-    ,'% of total guesses)', sep='')
-
-```
-
-
-Given the low rate of occurrence, we consider these to be outliers and remove them from the dataset.
-
-```{r replace-likely-errors}
-
-# replace hugely off-base numbers with missing data
-winnowed_info_df = winnowed_info_df %>%
-  mutate(guess = replace(guess, abs(guess_error)>30, NA)) %>%
-  mutate(guess_error = replace(guess_error, abs(guess_error)>30, NA))
 
 ```
 
@@ -489,7 +450,7 @@ ggplot(winnowed_info_df,
 
 ## Export data
 
-```{r export-data}
+```{r export-data, eval=FALSE}
 
 write.table(winnowed_info_df, './data/winnowed_data.csv', sep=',',
             append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)
@@ -502,7 +463,7 @@ write.table(winnowed_info_df, './data/winnowed_data.csv', sep=',',
 
 ## Preliminaries
 
-```{r exploration-prelim, warning = FALSE, error = FALSE, message = FALSE}
+```{r exploration-prelim, warning = FALSE, error = FALSE, message = FALSE, eval=FALSE}
 
 # clear our workspace
 rm(list=ls())
@@ -514,7 +475,7 @@ source('./supplementary-code/required_packages-pmc.r')
 
 ## Descriptive statistics
 
-```{r mean-experiment-duration}
+```{r mean-experiment-duration, eval=FALSE}
 
 # get list of individual experiments included in the data
 experiment_files = list.dirs('./data', recursive=FALSE)
@@ -535,7 +496,7 @@ for (experiment in experiment_files){
 
 ```
 
-```{r mean-participation-time}
+```{r mean-time-for-all-participants, eval=FALSE}
 
 participant_df = participant_files %>%
   select(id, creation_time, end_time, experiment, worker_id) %>%
