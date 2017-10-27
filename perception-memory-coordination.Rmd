@@ -843,4 +843,71 @@ ccf_df = ccf_df %>% ungroup() %>%
 
 ```
 
-### Create standardized dataset
+### Create standardized datasets
+
+#### For `winnowed_info_df`
+
+```{r standardize-winnowed}
+
+info_plot = winnowed_info_df %>% ungroup() %>%
+  mutate_at(vars(one_of(questionnaire_variables)),
+            funs(ordered)) %>%
+  mutate_at(vars(participant,dyad),
+            funs(factor))
+
+info_st = winnowed_info_df %>% ungroup() %>%
+  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
+  mutate_at(vars(one_of(questionnaire_variables)),
+            funs(ordered)) %>%
+  mutate_at(vars(participant,dyad),
+            funs(factor))
+
+first_guess_plot = first_guess_df %>% ungroup() %>%
+  mutate_at(vars(one_of(questionnaire_variables)),
+            funs(ordered)) %>%
+  mutate_at(vars(participant,dyad),
+            funs(factor))
+
+first_guess_st = first_guess_df %>% ungroup() %>%
+  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
+  mutate_at(vars(one_of(questionnaire_variables)),
+            funs(ordered)) %>%
+  mutate_at(vars(participant,dyad),
+            funs(factor))
+  
+final_guess_plot = final_guess_df %>% ungroup() %>%
+  mutate_at(vars(one_of(questionnaire_variables)),
+            funs(ordered)) %>%
+  mutate_at(vars(participant,dyad),
+            funs(factor))
+  
+final_guess_st = final_guess_df %>% ungroup() %>%
+  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
+  mutate_at(vars(one_of(questionnaire_variables)),
+            funs(ordered)) %>%
+  mutate_at(vars(participant,dyad),
+            funs(factor))
+
+```
+
+
+#### For `ccf_df`
+
+```{r standardize-ccf}
+
+# create unstandardized dataframe and convert relevant variables to factors
+ccf_plot = ccf_df %>% ungroup() %>%
+  mutate_at(vars(one_of(questionnaire_variables)),
+            funs(ordered))  %>%
+  mutate_at(vars(participant,dyad),
+            funs(factor))
+  
+# create standardized dataframe and convert relevant variables to factors
+ccf_st = ccf_df %>%
+  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
+  mutate_at(vars(one_of(questionnaire_variables)),
+            funs(ordered)) %>%
+  mutate_at(vars(participant,dyad),
+            funs(factor))
+
+```
