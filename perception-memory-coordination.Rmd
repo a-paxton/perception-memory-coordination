@@ -1079,3 +1079,29 @@ ggplot(ccf_df, aes(x = lag,
   ggtitle("Cross-correlation of partners' normalized error")
 
 ```
+
+### Do ratings of cooperativity and trustworthiness influence adaptation?
+
+```{r}
+
+# standardized estimates
+similar_partners_moderators_st = lmer(r ~ lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 + training_improvement +
+                                        trust_self + trust_self.lag_ot1 + trust_self.lag_ot2 +
+                                        trust_partner + trust_partner.lag_ot1 + trust_partner.lag_ot2 +
+                                        trust.both + 
+                                        (1 + lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 | dyad) +
+                                        (1 | participant),
+                                      data = ccf_st)
+pander_lme(similar_partners_moderators_st, stats.caption=TRUE)
+
+# unstandardized estimates
+similar_partners_moderators_raw = lmer(r ~ lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 + training_improvement +
+                                        trust_self + trust_self.lag_ot1 + trust_self.lag_ot2 +
+                                        trust_partner + trust_partner.lag_ot1 + trust_partner.lag_ot2 +
+                                        trust.both + 
+                                        (1 + lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 | dyad) +
+                                        (1 | participant),
+                                       data = ccf_plot)
+pander_lme(similar_partners_moderators_raw, stats.caption=TRUE)
+
+```
