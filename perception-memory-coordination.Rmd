@@ -1100,6 +1100,8 @@ ggsave(plot = first_guess_error,
 
 ![**Figure**. Density plots of questionnaire responses, normalized error, and improvement over training trials.](./figures/pmc-all_variables-knitr.jpg)
 
+**Note**: We should consider what to do with some of these high-error guesses. At least some of them may be an artifact of the incentives of the experiment (i.e., not wanting to not guess during a turn).
+
 ### Do partners provide similar guesses?
 
 ```{r}
