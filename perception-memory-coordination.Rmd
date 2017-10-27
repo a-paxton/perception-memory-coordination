@@ -930,3 +930,34 @@ ccf_plot %>%
 
 ```
 
+## Data analysis
+
+Here are our preliminary questions:
+
+* **When accounting for improvement during training, do individuals become more accurate over time...**
+    * **... in their final guesses?** No, with non-significant trend toward "yes."
+    * **... across all guesses?** No, with non-significant trend toward "yes."
+    * **... in their first guesses?** While training improvement significantly predicts accuracy of first guess, there is also a non-significant trend toward "yes."
+
+* **Do partners provide similar guesses...**
+    * **... generally?** Yes.
+
+* **Do partners' ratings of their own and their partners' trustworthiness and cooperativity...**
+    * **... influence the dynamics of perceptual coordination?** No.
+    * Future questions when we have more time:
+
+We also have some ideas that will shape future analyses.
+
+* When we have more time:
+    * *Are post-experiment ratings of cooperativity related to the directionality of change?  (That is, are people perceived as being more cooperative if they change their opinion to be more like their partner?)*
+    * *Are post-experiment ratings of trustworthiness related to unwillingness to change? (That is, are people perceived as being more trustworthy if they stick to their initial guess?)*
+    * *Are partners of consistently more reliable guessers more likely to adopt a strategy to minimize their own first-guess effort and then to simply mimic their partner?*
+    * *Are partners of consistently poor guessers more likely to adopt a strategy to maximize their first guess and ignore their partner?*
+    
+* If we can get longer time series:
+    * *Do partners become more similar across trials in the accuracy of their first guesses?*
+    * *Do partners become more similar across trials in the accuracy of their last guesses?*
+    * *Do partners become more similar within trials in their changes to their guesses?*
+
+Notes for future work:
+* Partners might think of this as a competition. If so, we should as a question to capture that.
