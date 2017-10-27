@@ -568,6 +568,27 @@ cat('Average participation: ',mean(included_participant_time$duration),' minutes
 
 We'd intended for each experimental session to last 20 minutes, but the mean duration for included participants in these pilot data is about half of that.  Future pilot studies should increase the number of trials.
 
+## Survey response distributions
+
+```{r plot-histograms-of-survey, echo=FALSE}
+
+ggplot(winnowed_info_df,
+       aes(x = cooperative_self)) + 
+  geom_histogram(bins=30) +
+  xlab('Cooperative rating for self\n(1-10)') +
+  ylab('Count') +
+  xlim(0, 10) +
+  ylim(0, 800) +
+  ggtitle("Players' ratings of own cooperativeness")
+
+ggplot(winnowed_info_df,
+       aes(x = cooperative_partner)) + 
+  geom_histogram(bins=30) +
+  xlab("Cooperative rating for partner\n(1-10)") +
+  ylab('Count') +
+  xlim(0, 10) +
+  ylim(0, 800) +
+  ggtitle("Players' ratings of partners' cooperativeness")
 
 ```
 
