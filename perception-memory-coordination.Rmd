@@ -506,6 +506,9 @@ rm(list=ls())
 # read in libraries and create functions
 source('./supplementary-code/required_packages-pmc.r')
 
+# read in dataset
+winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
+
 ```
 
 ## Descriptive statistics
@@ -529,17 +532,42 @@ for (experiment in experiment_files){
   participant_files = rbind.data.frame(participant_files, next_participant)
 }
 
+# keep only the info we'll need
+participant_time_df = participant_files %>%
+  select(id, creation_time, end_time, experiment, worker_id, bonus) %>%
+  mutate(creation_time = ymd_hms(creation_time)) %>%
+  mutate(end_time = ymd_hms(end_time)) %>%
+  mutate(duration = (end_time - creation_time)/60)
+
 ```
 
 ```{r mean-time-for-all-participants, eval=FALSE}
 
-participant_df = participant_files %>%
-  select(id, creation_time, end_time, experiment, worker_id) %>%
-  mutate(creation_time = ymd_hms(creation_time)) %>%
-  mutate(end_time = ymd_hms(end_time)) %>%
-  mutate(duration = end_time - creation_time) %>%
-  dplyr::filter(duration > 5 & duration < 30)
-cat('Average participation: ',mean(participant_df$duration),' minutes',sep='')
+# identify how long all participants took to complete the experiment
+all_participant_time = participant_time_df %>%
+  select(-bonus) %>%
+  na.omit()
+  
+```
+
+```{r print-mean-time-for-all-participants, echo=FALSE, eval=FALSE}
+cat('Average participation: ',mean(all_participant_time$duration),' minutes',sep='')
+```
+
+```{r mean-time-for-included-participants, eval=FALSE}
+
+# identify how long included participants took to complete the experiment
+included_participant_time = participant_time_df %>%
+  na.omit()
+
+```
+
+```{r print-mean-time-for-included-participants, echo=FALSE, eval=FALSE}
+cat('Average participation: ',mean(included_participant_time$duration),' minutes',sep='')
+```
+
+We'd intended for each experimental session to last 20 minutes, but the mean duration for included participants in these pilot data is about half of that.  Future pilot studies should increase the number of trials.
+
 
 ```
 
