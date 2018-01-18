@@ -1,5 +1,7 @@
 data/*
-data-pilot/*
+pilot/data-pilot/*
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 *.Rdata
+*.Rhistory
+*/*.pdf
