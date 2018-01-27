@@ -4,7 +4,7 @@
 # Run this prior to any other scripts.
 #
 # Written by: A. Paxton (University of California, Berkeley)
-# Date last modified: 19 October 2017
+# Date last modified: 26 January 2017
 #####################################################################################
 
 # list of required packages as strings
@@ -23,12 +23,15 @@ required_packages = c(
   'jsonlite',
   'lubridate',
   'tidyr',
-  'tibble'
+  'tibble',
+  'devtools'
 )
-
 
 # install missing packages (adapted from <http://stackoverflow.com/a/4090208>)
 missing_packages = required_packages[!(required_packages %in% installed.packages()[,"Package"])]
 if (length(missing_packages) > 0) {
   install.packages(missing_packages)
 }
+
+# install the correct template for the CogSci proceedings
+devtools::install_github("kemacdonald/cogsci2016")
