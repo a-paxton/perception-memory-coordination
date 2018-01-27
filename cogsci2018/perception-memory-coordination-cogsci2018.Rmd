@@ -6,9 +6,9 @@ document-params: "10pt, letterpaper"
 
 author-information: > 
     \author{{\large \bf Alexandra Paxton} \\ \texttt{paxton.alexandra@gmail.com} \\ Institute of Cognitive and Brain Sciences \\ Berkeley Institute for Data Science \\ University of California, Berkeley
-    \And {\large \bf Thomas J. H. Morgan} \\ \texttt{author1@university.edu} \\ School of Human Evolution and Social Change \\ Arizona State University
-    \AND {\large \bf Jordan W. Suchow} \\ \texttt{author1@university.edu} \\ Social Science Matrix \\ University of California, Berkeley
-    \And {\large \bf Thomas L. Griffiths} \\ \texttt{author1@university.edu} \\ Department of Psychology \\ University of California, Berkeley}
+    \And {\large \bf Thomas J. H. Morgan} \\ \texttt{thomas.j.h.morgan@asu.edu} \\ School of Human Evolution and Social Change \\ Arizona State University
+    \AND {\large \bf Jordan W. Suchow} \\ \texttt{suchow@berkeley.edu} \\ Social Science Matrix \\ University of California, Berkeley
+    \And {\large \bf Thomas L. Griffiths} \\ \texttt{tom_griffiths@berkeley.edu} \\ Department of Psychology \\ University of California, Berkeley}
     
 abstract: 
     "The abstract should be one paragraph, indented 1/8 inch on both sides,
