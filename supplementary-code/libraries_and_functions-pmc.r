@@ -4,7 +4,7 @@
 # additional functions to facilitate data prep and analysis.
 #
 # Written by: A. Paxton (University of California, Berkeley)
-# Date last modified: 19 October 2017
+# Date last modified: 26 January 2017
 #####################################################################################
 
 #### Load necessary packages ####
@@ -46,6 +46,54 @@ questionnaire_variables = c("cooperative_partner",
                             "trust_self",
                             "engagement",
                             "difficulty")
+
+#### Crib other folks' functions #### 
+
+#' Adapted from rmd2rscript: script for converting .Rmd files to .R scripts
+#' 
+#' Thanks to Kevin Keenan:
+#' http://rstudio-pubs-static.s3.amazonaws.com/12734_0a38887f19a34d92b7311a2c9cb15022.html
+#' 
+#' This function will read a standard R markdown source file and convert it to 
+#' an R script to allow the code to be run using the "source" function.
+#' 
+#' The function is quite simplisting in that it reads a .Rmd file and adds 
+#' comments to non-r code sections, while leaving R code without comments
+#' so that the interpreter can run the commands.
+
+rmd2rscript <- function(infile, outname){
+  # read the file
+  flIn <- readLines(infile)
+  # identify the start of code blocks
+  cdStrt <- which(grepl(flIn, pattern = "```{r*", perl = TRUE))
+  # identify the end of code blocks
+  cdEnd <- sapply(cdStrt, function(x){
+    preidx <- which(grepl(flIn[-(1:x)], pattern = "```", perl = TRUE))[1]
+    return(preidx + x)
+  })
+  # define an expansion function
+  # strip code block indacators
+  flIn[c(cdStrt, cdEnd)] <- ""
+  expFun <- function(strt, End){
+    strt <- strt+1
+    End <- End-1
+    return(strt:End)
+  }
+  idx <- unlist(mapply(FUN = expFun, strt = cdStrt, End = cdEnd, 
+                       SIMPLIFY = FALSE))
+  # add comments to all lines except code blocks
+  comIdx <- 1:length(flIn)
+  comIdx <- comIdx[-idx]
+  for(i in comIdx){
+    flIn[i] <- paste("#' ", flIn[i], sep = "")
+  }
+  # create an output file
+  flOut <- file(paste(outname, "[rmd2r].R", sep = ""), "w")
+  for(i in 1:length(flIn)){
+    cat(flIn[i], "\n", file = flOut, sep = "\t")
+  }
+  close(flOut)
+}
 
 #### Create functions we'll need ####
 
