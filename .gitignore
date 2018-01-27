@@ -5,3 +5,6 @@ pilot/data-pilot/*
 *.Rdata
 *.Rhistory
 */*.pdf
+*.pdf
+*.html
+*/*.html

@@ -2,14 +2,12 @@
 title: "Interpersonal coordination in perception and memory"
 author: "A. Paxton, T. J. H. Morgan, J. Suchow, & T. L. Griffiths"
 output:
-  pdf_document: 
-    number_sections: yes
   html_document:
     keep_md: yes
     number_sections: yes
 ---
 
-This R markdown provides the basis for our manuscript, "Interpersonal coordination in perception and memory" (Paxton, Morgan, Suchow & Griffiths, *in preparation*).
+This R markdown provides the basis for our manuscript, "Interpersonal coordination in perception and memory" (Paxton, Morgan, Suchow, & Griffiths, *in preparation*).
 
 To run these analyses from scratch, you will need the following files:
 
@@ -21,7 +19,7 @@ Additional files will be created during the initial run that will help reduce pr
 
 **Code written by**: A. Paxton (University of California, Berkeley)
 
-**Date last modified**: 26 October 2017
+**Date last modified**: 26 January 2018
 
 ***
 
@@ -150,7 +148,9 @@ info_df = info_files %>% ungroup() %>%
                 guess_counter = guessCounter,
                 response_counter = responseCounter,
                 accept_type = acceptType,
-                response_type = responseType) %>%
+                response_type = responseType,
+                length = chosenStimulusLength,
+                stimulus_number = chosenStimulusNumber) %>%
   
   # get rid of unnecessary variables and arrange rows
   select(-property3, -finalAccuracy, -contents) %>%
@@ -208,10 +208,10 @@ cat('Problematic rows identified (i.e., duplicates with differing accept types):
 
 Next, we identify all dyads in which both participants responded the same number of times. This ensures that we include only dyads who experienced the full and correct experimental protocol.
 
-```{r identify-complete-dyads}
+```{r identify-paired-individuals}
 
 # identify usable dyads
-usable_dyads = info_df %>%
+paired_individuals = info_df %>%
   
   # count the number of infos and trials per participant
   group_by(experiment,participant) %>%
@@ -230,38 +230,91 @@ usable_dyads = info_df %>%
   ungroup() %>%
   mutate(difference_in_responses = abs(p1-p0)) %>%
   
-  # filter out anyone who didn't have the same number of infos and who didn't complete 24 trials
-  dplyr::filter(trials==24 & difference_in_responses==0) %>%
+  # remove any participants who weren't paired with soemeone
   na.omit()
 
 ```
 
-Now that we've figured out which dyads we should use, let's winnow down the dataframe to include only those dyads.
+```{r print-paired-individuals, invisible=TRUE, echo=FALSE}
+
+total_paired_individuals = paired_individuals %>% ungroup() %>%
+  select(experiment, dyad) %>%
+  distinct()
+
+cat('Total participants with partners who finished: ',dim(total_paired_individuals)[1], sep='')
+
+```
+
+
+```{r identify-problem-trials}
+
+# only include pairs in which both individuals completed 24 trials
+usable_dyads = dplyr::filter(paired_individuals, trials==24)
+
+# exclude trials with mismatched data
+discarded_trials_df = info_df %>%
+  dplyr::filter(dyad %in% usable_dyads$dyad & trial_type=="test") %>%  
+  
+  # count the number of infos per trial per participant
+  group_by(experiment,participant,trial_number) %>%
+  summarise(dyad = ifelse(length(unique(dyad)==1),
+                          unique(dyad),
+                          NA),
+            infos = n()) %>%
+  ungroup() %>%
+  na.omit() %>%
+  
+  # count the infos sent by each participant in each dyad
+  group_by(experiment, dyad) %>%
+  mutate(participant = paste('p',(participant - min(participant)),sep='')) %>%
+  spread(key = participant, value = infos) %>%
+  ungroup() %>%
+  mutate(difference_in_responses = abs(p1-p0)) %>%
+  
+  # single out the trials with mismatching responses
+  dplyr::filter(!difference_in_responses==0)
+
+```
+
+```{r print-problem-trials, invisible=TRUE, echo=FALSE}
+
+# share information on how many trials will be removed
+total_removed_trials = discarded_trials_df %>% ungroup() %>%
+  group_by(experiment, dyad) %>%
+  summarise(total_discarded = n())
+
+cat('Total trials discarded: ',sum(total_removed_trials$total_discarded),' (across ', length(unique(total_removed_trials$dyad)),' dyads) ', sep='')
+
+```
 
 ```{r winnow-data}
 
 # winnow and recorder columns
-winnowed_info_df = info_df %>%
+winnowed_info_df = info_df %>% ungroup() %>%
   dplyr::filter(dyad %in% usable_dyads$dyad) %>%
+  dplyr::left_join(., discarded_trials_df,
+                   by = c("experiment","dyad","trial_number")) %>%
+  dplyr::filter(is.na(difference_in_responses)) %>%
   mutate(t = round(t,-1)) %>%
   select(experiment, t, dyad, participant, 
          trial_type, trial_number, response_counter, guess_counter, accept_type, 
          length, guess, guess_error, response_type, network_id) %>%
   na.omit()
 
-winnowed_info_df = unique(setDT(winnowed_info_df), by = c('experiment', 'dyad', 'participant', 
-         'trial_type', 'trial_number', 'response_counter', 'guess_counter', 'accept_type', 
-         'length', 'guess', 'guess_error', 'response_type', 'network_id'))
+winnowed_info_df = unique(setDT(winnowed_info_df), by = c('experiment', 'dyad',
+        'participant', 'trial_type', 'trial_number', 'response_counter', 'guess_counter',
+        'accept_type', 'length', 'guess', 'guess_error', 'response_type', 'network_id'))
 
 ```
 
-```{r print-usable-dyads, invisible=TRUE, echo=FALSE}
+```{r print-included-dyad-stats, invisible=TRUE, echo=FALSE}
 
-unique_included_dyads = winnowed_info_df %>% ungroup() %>%
-  select(experiment, dyad) %>%
-  distinct()
+included_trial_info = winnowed_info_df %>% ungroup() %>%
+  dplyr::filter(trial_type == 'test') %>%
+  group_by(experiment, dyad) %>% 
+  summarize(included_trials = length(unique(trial_number)))
 
-cat('Total dyads with strictly paired data for all trials: ',dim(unique_included_dyads)[1], sep='')
+cat('Mean included trials per dyad: ',mean(included_trial_info$included_trials), sep='')
 
 ```
 
@@ -571,7 +624,7 @@ participant_time_df = participant_files %>%
   select(id, creation_time, end_time, experiment, worker_id, bonus) %>%
   mutate(creation_time = ymd_hms(creation_time)) %>%
   mutate(end_time = ymd_hms(end_time)) %>%
-  mutate(duration = (end_time - creation_time)/60)
+  mutate(duration = (end_time - creation_time))
 
 ```
 
@@ -635,545 +688,3 @@ ggsave(plot = all_variable_plot,
 ```
 
 ![**Figure**. Density plots of questionnaire responses, normalized error, and improvement over training trials.](./figures/pmc-all_variables-knitr.jpg)
-
-***
-
-# Psychonomics 2017 poster
-
-This section presents the data analysis for the Psychonomics 2017 poster, "Exploring social behavior with Dallinger, an open-source experiment automation tool" (A. Paxton, J. Suchow, T. J. H. Morgan, & T. L. Griffiths, forthcoming). The poster largely presents Dallinger and its specific capabilities of interest to individuals running social psychology experiments, but an analysis of the pilot data from the present study is included as a demonstration.
-
-Because of each dyad in the pilot data only completes 15 trials together, we are unable to do cross-recurrence quantification analysis (CRQA) on the `normalized_error` data. As a result, we instead do cross-correlation. Future pilot studies should increase the number of trials to create a sufficiently long time `normalized_error` time series for each dyad to permit CRQA.
-
-## Preliminaries
-
-Clear the workspace, load in required libraries and functions, and read in the prepared dataset.
-
-```{r analysis-prelim, warning = FALSE, error = FALSE, message = FALSE}
-
-# clear our workspace
-rm(list=ls())
-
-# read in libraries and create functions
-source('./supplementary-code/libraries_and_functions-pmc.r')
-
-# read in dataset
-winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
-
-```
-
-## Data preparation
-
-### Calculate cross-correlation between partners' normalized error
-
-First, we prepare the dataframe for cross-correlation by transitioning from long-form data for both participants within the dyad to using wide-form data for each dyad, with one column for each constituent participant's `normalized_error` at each `trial_number` and `response_counter`.
-
-```{r reformat-df-for-cross-corr}
-
-# strip out unnecessary information
-infos = winnowed_info_df %>% ungroup() %>%
-  select(experiment,dyad,participant,t,normalized_error,trial_number,response_counter) %>%
-  
-  # create participant binary values
-  group_by(experiment, dyad) %>%
-  mutate(partner_id = (min(participant)+max(participant)) - participant) %>%
-  mutate(self_id = participant) %>%
-  ungroup() %>%
-  
-  # create binary ID
-  group_by(experiment, dyad) %>%
-  mutate(partner_binary = participant - min(participant)) %>%
-  ungroup() %>%
-  
-  # remove training trials
-  dplyr::filter(trial_number > 10)
-
-# create a dataframe with one dyad per row and separate columns for each participant's error data
-binary_dfs = split(infos, infos$partner_binary)
-p0_df = data.frame(binary_dfs[[1]]) %>%
-  dplyr::rename(error0 = normalized_error) %>%
-  select(experiment, dyad, trial_number, response_counter, error0)
-p1_df = data.frame(binary_dfs[[2]]) %>%
-  dplyr::rename(error1 = normalized_error) %>%
-  select(experiment, dyad, trial_number, response_counter, error1)
-
-```
-
-Once the data are prepared, we calculate the cross-correlation coefficients between participants' `normalized_error` during all test rounds. The maximum lag is specified within the `libraries_and_functions-pmc.r` file.
-
-```{r calculate-cross-correlation}
-
-# calculate cross-correlation
-ccf_df = full_join(p0_df,p1_df,
-                   by= c("experiment", "dyad", "trial_number", "response_counter")) %>%
-  
-  # calculate cross-correlation for each dyad's error scores
-  group_by(experiment,dyad) %>%
-  do(ccf = ccf(.$error0, .$error1, lag.max = ccf_max_lag, type = 'correlation',
-               na.action = na.pass, plot=FALSE)) %>%
-  ungroup() %>%
-  
-  # extract cross-correlations from the embedded list
-  select(ccf) %>%
-  dplyr::pull(ccf) %>%
-  unlist() %>%
-  matrix(.,ncol=length(unique(winnowed_info_df$dyad))) %>%
-  
-  # convert it into a proper dataframe and select only the coefficients
-  as.data.frame() %>%
-  slice(1:(ccf_max_lag*2+1)) %>%
-  t() %>%
-  as.data.frame %>%
-  rowid_to_column(var='dyad') %>%
-
-  # rename variables and strip rownames
-  rename_(.dots=setNames(names(.), 
-                         gsub("V", "", names(.)))) %>%
-  remove_rownames() %>%
-  
-  # reshape the data to combine lag and r
-  gather(key = 'lag' , value='r', -dyad) %>%
-  mutate_all(as.numeric) %>%
-  mutate(lag = lag - ccf_max_lag - 1)
-
-```
-
-Because we don't have any theoretical expectations about or experimental manipulations to change *who* might be leading and following, we ignore directionality for this first-pass analysis.
-
-```{r ignore-lag-directionality}
-
-# ignore lag directionality
-ccf_df = ccf_df %>% ungroup() %>%
-  mutate(lag = abs(lag)) %>%
-  group_by(dyad,lag) %>%
-  summarise(r = mean(r))
-
-```
-
-Once we've calculated the cross-correlation coefficients for each dyad, we merge it into the questionnaire data.
-
-```{r merge-into-main-df}
-
-# grab what we need for the cross-correlation analyses
-questions_only = winnowed_info_df %>%
-  select(one_of(c('experiment','dyad','participant',
-                  questionnaire_variables, 'training_improvement'))) %>%
-  
-  # create a mean training improvement score for the dyad
-  group_by(experiment, dyad) %>%
-  mutate(training_improvement = mean(training_improvement)) %>%
-  ungroup() %>%
-  
-  # select only the unique rows
-  distinct() 
-
-# merge into the ccf dataframe
-ccf_df = full_join(questions_only, ccf_df,
-                   by='dyad','experiment')
-
-```
-
-Let's clean up a bit before we move on.
-
-```{r clean-up-variables}
-
-# clean up unneeded variables
-rm(p0_df,p1_df,binary_dfs, infos, questions_only)
-
-```
-
-### Create interaction terms
-
-#### For `winnowed_info_df`
-
-```{r create-interactions-winnowed}
-
-# create interactions
-winnowed_info_df = winnowed_info_df %>% ungroup() %>%
-  
-  # create a turn variable across trials and responses
-  as.data.frame() %>%
-  group_by(experiment,dyad,participant) %>%
-  mutate(turn = row_number()) %>%
-  ungroup() %>%
-  
-  # exclude training data
-  dplyr::filter(trial_type=='test') %>%
-
-  # survey interactions
-  mutate(cooperative.both = cooperative_self * cooperative_partner) %>%
-  mutate(trust.both = trust_self * trust_partner) %>%
-  mutate(cooperative.trust.self = cooperative_self * trust_self) %>%
-  mutate(cooperative.trust.partner = cooperative_partner * trust_partner) %>%
-  
-  # error interactions
-  mutate(error.length = (normalized_error+.00001) * length) %>%
-  mutate(error.turn = (normalized_error+.00001) * turn) %>%
-  mutate(error.length.turn = (normalized_error+.00001) * turn * length) %>%
-  
-  # other interactions
-  mutate(turn.training = turn * training_improvement)
-
-```
-
-```{r create-first-guess-df}
-
-# spin off a dataset for only first answers
-first_guess_df = winnowed_info_df %>% ungroup() %>%
-  
-  # grab just the final guess on each trial guess
-  dplyr::filter(response_counter==1) %>%
-  
-  # filter out "turn" variables
-  select(-contains("turn")) %>%
-  
-  # recreate the interactions at the trial level
-  mutate(error.length = (normalized_error+.00001) * length) %>%
-  mutate(error.trial = (normalized_error+.00001) * trial_number) %>%
-  mutate(error.length.trial = (normalized_error+.00001) * trial_number * length) %>%
-  mutate(trial.training = trial_number * training_improvement)
-
-```
-
-```{r create-final-guess-df}
-
-# spin off a dataset for only final answers
-final_guess_df = winnowed_info_df %>% ungroup() %>%
-  
-  # grab just the final guess on each trial guess
-  group_by(experiment,dyad,participant,trial_number) %>%
-  slice(n()) %>%
-  ungroup() %>%
-  
-  # filter out "turn" variables
-  select(-contains("turn")) %>%
-  
-  # recreate the error interactions at the trial level
-  mutate(error.length = (normalized_error+.00001) * length) %>%
-  mutate(error.trial = (normalized_error+.00001) * trial_number) %>%
-  mutate(error.length.trial = (normalized_error+.00001) * trial_number * length) %>%
-  mutate(trial.training = trial_number * training_improvement)
-
-```
-
-#### For `ccf_df`
-
-```{r create-orthogonal-polynomials-ccf}
-
-# create first- and second-order orthogonal polynomials for lag 
-raw_lag = min(ccf_df$lag):max(ccf_df$lag)
-lag_vals = data.frame(raw_lag)
-lag_offset = (0-min(raw_lag)) + 1
-t = stats::poly((raw_lag + lag_offset), 2)
-lag_vals[, paste("lag_ot", 1:2, sep="")] = t[lag_vals$raw_lag + lag_offset, 1:2]
-
-# join it to the original data table
-ccf_df = left_join(ccf_df,lag_vals, by = c("lag" = "raw_lag"))
-
-```
-
-```{r create-interactions-ccf}
-
-ccf_df = ccf_df %>% ungroup() %>%
-  
-  # create interactions among static variables of interest
-  mutate(cooperative.both = cooperative_self * cooperative_partner) %>%
-  mutate(trust.both = trust_self * trust_partner) %>%
-  mutate(cooperative.trust.self = cooperative_self * trust_self) %>%
-  mutate(cooperative.trust.partner = cooperative_partner * trust_partner) %>%
-
-  # first-order polynomials with lag
-  mutate(cooperative_self.lag_ot1 = cooperative_self * lag_ot1) %>%
-  mutate(cooperative_partner.lag_ot1 = cooperative_partner * lag_ot1) %>%
-  mutate(trust_self.lag_ot1 = trust_self * lag_ot1) %>%
-  mutate(trust_partner.lag_ot1 = trust_partner * lag_ot1) %>%
-
-  # first-order polynomials with lag
-  mutate(cooperative_self.lag_ot2 = cooperative_self * lag_ot2) %>%
-  mutate(cooperative_partner.lag_ot2 = cooperative_partner * lag_ot2) %>%
-  mutate(trust_self.lag_ot2 = trust_self * lag_ot2) %>%
-  mutate(trust_partner.lag_ot2 = trust_partner * lag_ot2) %>%
-  
-  # polynomial interactions
-  mutate(lag_ot1.lag_ot2 = lag_ot1 * lag_ot2) %>%
-  mutate(cooperative.both.lag_ot1.lag_ot2 = cooperative.both * lag_ot1 * lag_ot2) %>%
-  mutate(trust.both.lag_ot1.lag_ot2 = trust_self * trust_partner * lag_ot1 * lag_ot2) %>%
-  mutate(cooperative.trust.self.lag_ot1.lag_ot2 = cooperative_self * trust_self * lag_ot1 * lag_ot2) %>%
-  mutate(cooperative.trust.partner.lag_ot1.lag_ot2 = cooperative_partner * trust_partner * lag_ot1 * lag_ot2)
-
-```
-
-### Create standardized datasets
-
-#### For `winnowed_info_df`
-
-```{r standardize-winnowed}
-
-info_plot = winnowed_info_df %>% ungroup() %>%
-  mutate_at(vars(participant,dyad),
-            funs(factor))
-
-info_st = winnowed_info_df %>% ungroup() %>%
-  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
-  mutate_at(vars(participant,dyad),
-            funs(factor))
-
-first_guess_plot = first_guess_df %>% ungroup() %>%
-  mutate_at(vars(participant,dyad),
-            funs(factor))
-
-first_guess_st = first_guess_df %>% ungroup() %>%
-  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
-  mutate_at(vars(participant,dyad),
-            funs(factor))
-  
-final_guess_plot = final_guess_df %>% ungroup() %>%
-  mutate_at(vars(participant,dyad),
-            funs(factor))
-  
-final_guess_st = final_guess_df %>% ungroup() %>%
-  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
-  mutate_at(vars(participant,dyad),
-            funs(factor))
-
-```
-
-#### For `ccf_df`
-
-```{r standardize-ccf}
-
-# create unstandardized dataframe and convert relevant variables to factors
-ccf_plot = ccf_df %>% ungroup() %>%
-  mutate_at(vars(participant,dyad),
-            funs(factor))
-  
-# create standardized dataframe and convert relevant variables to factors
-ccf_st = ccf_df %>%
-  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
-  mutate_at(vars(participant,dyad),
-            funs(factor))
-
-```
-
-## Data analysis
-
-Here are our preliminary questions:
-
-* **When accounting for improvement during training, do individuals become more accurate over time...**
-    * **... in their final guesses?** No, with non-significant trend toward "yes."
-    * **... across all guesses?** No, with non-significant trend toward "yes."
-    * **... in their first guesses?** While training improvement significantly predicts accuracy of first guess, there is also a non-significant trend toward "yes."
-
-* **Are partners temporally coordinated in their guess accuracy across time?** Yes.
-
-* **Do partners' ratings of their own and their partners' trustworthiness influence the dynamics of perceptual coordination?** No.
-
-We also have some ideas that will shape future analyses.
-
-* When we have more time:
-    * *Do partners' ratings of their own and their partners' cooperativity influence the dynamics of perceptual coordination?*
-    * *Are post-experiment ratings of cooperativity related to the directionality of change?  (That is, are people perceived as being more cooperative if they change their opinion to be more like their partner?)*
-    * *Are post-experiment ratings of trustworthiness related to unwillingness to change? (That is, are people perceived as being more trustworthy if they stick to their initial guess?)*
-    * *Are partners of consistently more reliable guessers more likely to adopt a strategy to minimize their own first-guess effort and then to simply mimic their partner?*
-    * *Are partners of consistently poor guessers more likely to adopt a strategy to maximize their first guess and ignore their partner?*
-    
-* If we can get longer time series:
-    * *Do partners become more similar across trials in the accuracy of their first guesses?*
-    * *Do partners become more similar across trials in the accuracy of their last guesses?*
-    * *Do partners become more similar within trials in their changes to their guesses?*
-
-Notes for future work:
-
-* Partners might think of this as a competition. If so, we should as a question to capture that.
-
-### Do individuals become more accurate over time?
-
-#### Do individuals become more accurate in their final guesses over time? 
-
-```{r accurate-final-guess}
-
-# standardized estimates
-more_accurate_final_over_time_st = lmer(normalized_error ~ trial_number + training_improvement + trial.training +
-                                 (1 + trial_number | participant)  +
-                                 (1 + trial_number | dyad),
-                               data = final_guess_st)
-pander_lme(more_accurate_final_over_time_st, stats.caption = TRUE)
-
-# raw estimates
-more_accurate_final_over_time_raw = lmer(normalized_error ~ trial_number + training_improvement + trial.training +
-                                 (1 + trial_number | participant)  +
-                                 (1 + trial_number | dyad),
-                               data = final_guess_plot)
-pander_lme(more_accurate_final_over_time_raw, stats.caption = TRUE)
-
-```
-
-#### Do individuals become more accurate across all turns?
-
-```{r}
-
-# standardized estimates
-more_accurate_over_all_time_st = lmer(normalized_error ~ turn + training_improvement + turn.training +
-                                 (1 + turn | participant)  +
-                                 (1 | dyad),
-                               data = info_st)
-pander_lme(more_accurate_over_all_time_st, stats.caption = TRUE)
-
-# unstandardized estimates
-more_accurate_over_all_time_raw = lmer(normalized_error ~ turn + training_improvement + turn.training +
-                                 (1 + turn | participant)  +
-                                 (1 | dyad),
-                               data = info_plot)
-pander_lme(more_accurate_over_all_time_raw, stats.caption = TRUE)
-
-```
-
-<!-- # # does it matter whether we consider error directionality? -->
-<!-- # more_accurate_over_time_nondirectional = glmer(round(abs(normalized_error)*100,0) ~ turn + training_improvement + turn.training + -->
-<!-- #                                  (1 | participant) + -->
-<!-- #                                  (1 | dyad), -->
-<!-- #                                data = info_plot, -->
-<!-- #                                family=poisson) -->
-<!-- # summary(more_accurate_over_time_nondirectional) -->
-
-
-#### Do individuals become more accurate across first guesses?
-
-```{r}
-
-# standardized estimates
-more_accurate_first_guesses_st = lmer(normalized_error ~ trial_number + training_improvement + trial.training +
-                                    (1 + trial_number | participant)  +
-                                    (1 | dyad),
-                                  data = first_guess_st)
-pander_lme(more_accurate_first_guesses_st, stats.caption = TRUE)
-
-# unstandardized estimates
-more_accurate_first_guesses_raw = lmer(normalized_error ~ trial_number + training_improvement + trial.training +
-                                    (1 + trial_number | participant)  +
-                                    (1 | dyad),
-                                  data = first_guess_plot)
-pander_lme(more_accurate_first_guesses_raw, stats.caption = TRUE)
-
-```
-
-```{r plot-error-of-first-guess, echo=FALSE}
-
-# plot normalized error of the first guess submitted on each trial
-first_guess_error = first_guess_plot %>%
-  
-  # dummy-code training as above or below/at mean
-  mutate(training_improvement = factor((training_improvement > mean(training_improvement))*1)) %>%
-
-  # create the plot, adding each guess as jitter
-  ggplot(., aes(x = trial_number,
-                y = normalized_error,
-                color = training_improvement)) +
-  geom_jitter(width=.1,
-              height=.05,
-              alpha=.5) +
-  coord_cartesian(ylim=c(-.2,.2)) +
-  geom_smooth(method = "lm", se = TRUE) +
-  
-  # add labeling
-  theme(legend.position='bottom') +
-  scale_color_manual(breaks=c(0,1),
-                      values=c('red','blue'),
-                      name="Improvement",
-                      labels=c('Low','High')) +
-  ylab('Normalized error') +
-  xlab('Trial') +
-  ggtitle('Normalized error\nof first guess by trial\nand training improvement')
-
-# save a high-resolution version of the plot
-ggsave(plot = first_guess_error,
-       height = 4,
-       width = 3,
-       filename = './figures/pmc-first_guess.jpg')
-
-# save a smaller version of the plot for knitr
-ggsave(plot = first_guess_error,
-       height = 4,
-       width = 3,
-       dpi=100,
-       filename = './figures/pmc-first_guess-knitr.jpg')
-
-```
-
-![**Figure**. Density plots of questionnaire responses, normalized error, and improvement over training trials. Truncated to not display high-error guesses, using a cutoff of absolute normalized error of 0.20.](./figures/pmc-all_variables-knitr.jpg)
-
-**Note**: We should consider what to do with some of these high-error guesses. At least some of them may be an artifact of the incentives of the experiment (i.e., not wanting to not guess during a turn).
-
-### Do partners provide similar guesses?
-
-```{r}
-
-# standardized estimates
-similar_partners_st = lmer(r ~ lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 + training_improvement +
-                               (1 + lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 | dyad),
-                             data = ccf_st)
-pander_lme(similar_partners_st, stats.caption=TRUE)
-
-# unstandardized estimates
-similar_partners_raw = lmer(r ~ lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 + training_improvement +
-                               (1 + lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 | dyad),
-                             data = ccf_plot)
-pander_lme(similar_partners_raw, stats.caption=TRUE)
-
-```
-
-```{r plot-ccf, echo=FALSE}
-
-# plot cross-correlation coefficients
-cross_corr_plot = ggplot(ccf_df, aes(x = lag,
-                              y = r)) +
-  geom_jitter(aes(color = factor(dyad)), 
-              height = 0,
-              width = .15) +
-  stat_smooth(method = "lm", formula = y ~ x + I(x^2), size = 1) +
-  scale_color_viridis(discrete=TRUE) +
-  theme(legend.position='none') + 
-  xlab('Lag (in turns)') +
-  ggtitle("Cross-correlation of partners' normalized error")
-
-# save a high-resolution version of the plot
-ggsave(plot = cross_corr_plot,
-       height = 4,
-       width = 5,
-       filename = './figures/pmc-cross_corr_plot.jpg')
-
-# save a smaller version of the plot for knitr
-ggsave(plot = cross_corr_plot,
-       height = 5,
-       width = 5,
-       dpi=100,
-       filename = './figures/pmc-cross_corr_plot.jpg-knitr.jpg')
-
-```
-
-![**Figure**. Cross-correlation of partners' normalized error across turns, overlaid with best-fit line.](./figures/pmc-cross_corr_plot.jpg-knitr.jpg)
-
-### Do ratings of cooperativity and trustworthiness influence adaptation?
-
-```{r}
-
-# standardized estimates
-similar_partners_moderators_st = lmer(r ~ lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 + training_improvement +
-                                        trust_self + trust_self.lag_ot1 + trust_self.lag_ot2 +
-                                        trust_partner + trust_partner.lag_ot1 + trust_partner.lag_ot2 +
-                                        trust.both + 
-                                        (1 + lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 | dyad) +
-                                        (1 | participant),
-                                      data = ccf_st)
-pander_lme(similar_partners_moderators_st, stats.caption=TRUE)
-
-# unstandardized estimates
-similar_partners_moderators_raw = lmer(r ~ lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 + training_improvement +
-                                        trust_self + trust_self.lag_ot1 + trust_self.lag_ot2 +
-                                        trust_partner + trust_partner.lag_ot1 + trust_partner.lag_ot2 +
-                                        trust.both + 
-                                        (1 + lag_ot1 + lag_ot2 + lag_ot1.lag_ot2 | dyad) +
-                                        (1 | participant),
-                                       data = ccf_plot)
-pander_lme(similar_partners_moderators_raw, stats.caption=TRUE)
-
-```
