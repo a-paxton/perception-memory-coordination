@@ -84,13 +84,22 @@ for (experiment in experiment_files){
   participant_files = rbind.data.frame(participant_files, next_participant)
 
 }
+```
+
+## Identify dyads from vector data
+
+
+```r
+# calculate bonuses for participants who completed the game
+participant_files = participant_files %>%
+  select(worker_id, base_pay, bonus) %>%
+  na.omit()
 
 # export bonuses
 write.table(participant_files, './data/participant_bonuses.csv', sep=',',
             append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)
 ```
 
-## Identify dyads from vector data
 
 In order to figure out which participants' nodes were connected to one another in dyads, we use the vectors created between nodes (excluding the stimulus-creating node). We then use that information to identify which stimuli were sent to which dyads.
 
