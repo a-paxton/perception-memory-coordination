@@ -662,7 +662,7 @@ participant_time_df = participant_files %>%
 all_participant_time = participant_time_df %>%
   select(-bonus) %>%
   na.omit()
-  
+
 ```
 
 ```{r print-mean-time-for-all-participants, echo=FALSE}
@@ -674,6 +674,10 @@ cat('Average participation: ',mean(all_participant_time$duration),' minutes',sep
 # identify how long included participants took to complete the experiment
 included_participant_time = participant_time_df %>%
   na.omit()
+
+# export data
+write.table(included_participant_time, './data/participant_duration.csv', sep=',',
+            append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)
 
 ```
 

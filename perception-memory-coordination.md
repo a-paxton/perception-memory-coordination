@@ -551,6 +551,10 @@ all_participant_time = participant_time_df %>%
 # identify how long included participants took to complete the experiment
 included_participant_time = participant_time_df %>%
   na.omit()
+
+# export data
+write.table(included_participant_time, './data/participant_duration.csv', sep=',',
+            append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)
 ```
 
 
