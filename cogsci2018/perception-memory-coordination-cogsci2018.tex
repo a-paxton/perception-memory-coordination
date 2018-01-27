@@ -79,56 +79,21 @@ science.
 interpersonal interaction; human communication; crowdsourcing; Dallinger
 \end{abstract}
 
-\section{General Formatting
-Instructions}\label{general-formatting-instructions}
+\section{Introduction}\label{introduction}
 
-For general information about authoring in markdown, see
-\textbf{\href{http://rmarkdown.rstudio.com/authoring_basics.html}{here}.}
+\section{Method}\label{method}
 
-For standard spoken papers and standard posters, the entire contribution
-(including figures, references, everything) can be no longer than six
-pages. For abstract posters, the entire contribution can be no longer
-than one page. For symposia, the entire contribution can be no longer
-than two pages.
+\section{Results}\label{results}
 
-The text of the paper should be formatted in two columns with an overall
-width of 7 inches (17.8 cm) and length of 9.25 inches (23.5 cm), with
-0.25 inches between the columns. Leave two line spaces between the last
-author listed and the text of the paper. The left margin should be 0.75
-inches and the top margin should be 1 inch.
-\textbf{The right and bottom margins will depend on whether you use
-U.S. letter or A4 paper, so you must be sure to measure the width of
-the printed text.} Use 10 point Times Roman with 12 point vertical
-spacing, unless otherwise specified.
+\section{Discussion}\label{discussion}
 
-The title should be in 14 point, bold, and centered. The title should be
-formatted with initial caps (the first letter of content words
-capitalized and the rest lower case). Each author's name should appear
-on a separate line, 11 point bold, and centered, with the author's email
-address in parentheses. Under each author's name list the author's
-affiliation and postal address in ordinary 10 point type.
+\section{Conclusion}\label{conclusion}
 
-Indent the first line of each paragraph by 1/8\textasciitilde{}inch
-(except for the first paragraph of a new section). Do not add extra
-vertical space between paragraphs.
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\section{First-Level Headings}\label{first-level-headings}
+Preserving what follows in case we need it.
 
-First level headings should be in 12 point , initial caps, bold and
-centered. Leave one line space above the heading and
-1/4\textasciitilde{}line space below the heading.
-
-\subsection{Second-Level Headings}\label{second-level-headings}
-
-Second level headings should be 11 point , initial caps, bold, and flush
-left. Leave one line space above the heading and 1/4\textasciitilde{}
-line space below the heading.
-
-\subsubsection{Third-Level Headings}\label{third-level-headings}
-
-Third-level headings should be 10 point , initial caps, bold, and flush
-left. Leave one line space above the heading, but no space after the
-heading.
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
 \section{Formalities, Footnotes, and
 Floats}\label{formalities-footnotes-and-floats}
@@ -176,33 +141,11 @@ align the image in the center of the page, set \texttt{fig.align} option
 to \texttt{center}. To format the width of your caption text, you set
 the \texttt{num.cols.cap} option to \texttt{2}.
 
-\begin{CodeChunk}
-\begin{figure*}[h]
-
-{\centering \includegraphics{figs/2-col-image-1} 
-
-}
-
-\caption[This image spans both columns]{This image spans both columns. And the caption text is limited to 0.8 of the width of the document.}\label{fig:2-col-image}
-\end{figure*}
-\end{CodeChunk}
-
 \subsection{One-column images}\label{one-column-images}
 
 Single column is the default option, but if you want set it explicitly,
 set \texttt{fig.env} to \texttt{figure}. Notice that the
 \texttt{num.cols} option for the caption width is set to \texttt{1}.
-
-\begin{CodeChunk}
-\begin{figure}[H]
-
-{\centering \includegraphics{figs/image-1} 
-
-}
-
-\caption[One column image]{One column image.}\label{fig:image}
-\end{figure}
-\end{CodeChunk}
 
 \subsection{R Plots}\label{r-plots}
 
@@ -238,8 +181,8 @@ You can use the xtable function in the xtable package.
   \hline
  & Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
   \hline
-(Intercept) & -0.20 & 0.10 & -1.9 & 0.05 \\ 
-  x & 2.00 & 0.10 & 20.5 & 0.00 \\ 
+(Intercept) & 0.17 & 0.10 & 1.6 & 0.11 \\ 
+  x & 1.88 & 0.11 & 17.8 & 0.00 \\ 
    \hline
 \end{tabular}
 \caption{This table prints across one column.} 

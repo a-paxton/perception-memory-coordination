@@ -26,66 +26,45 @@ output: cogsci2016::cogsci_paper
 rm(list=ls())
 
 # set global options
-knitr::opts_chunk$set(fig.width=3, fig.height=3, fig.crop = F, fig.pos = "tb", fig.path='figs/',
-                      echo=F, warning=F, cache=F, message=F, sanitize = T)
+require("knitr")
+opts_knit$set(root.dir = "../")
+knitr::opts_chunk$set(fig.width=3, fig.height=3, fig.crop = F, fig.pos = "tb",
+                      fig.path='figs/', echo=F, warning=F, cache=F, 
+                      message=F, sanitize = T)
 ```
 
-```{r, libraries}
+```{r import-and-prep-data, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE, results='hide'}
 
-# read in libraries and create functions
-source('../supplementary-code/required_packages-pmc.r')
-source('../supplementary-code/libraries_and_functions-pmc.r')
+# read in the libraries and functions we'll need
+source('./supplementary-code/required_packages-pmc.r')
+source('./supplementary-code/libraries_and_functions-pmc.r')
+
+# convert the most recent 'perception-memory-coordination.Rmd' to file 
+most_recent_pmd = paste0("./supplementary-code/pmc-rmd_to_code-",
+                    as.character(as.Date(file.info('perception-memory-coordination.Rmd')$mtime)))
+rmd2rscript(infile = './perception-memory-coordination.Rmd',
+            outname = most_recent_pmd)
+
+# then source it
+source(paste0(most_recent_pmd,'[rmd2r].R'))
 
 ```
 
-# General Formatting Instructions 
+# Introduction
 
-For general information about authoring in markdown, see **[here](http://rmarkdown.rstudio.com/authoring_basics.html).**
+# Method
 
-For standard spoken papers and standard posters, the entire 
-contribution (including figures, references, everything) can be 
-no longer than six pages. For abstract posters, the entire contribution 
-can be no longer than one page. For symposia, the entire contribution 
-can be no longer than two pages.
+# Results
 
-The text of the paper should be formatted in two columns with an
-overall width of 7 inches (17.8 cm) and length of 9.25 inches (23.5
-cm), with 0.25 inches between the columns. Leave two line spaces
-between the last author listed and the text of the paper. The left
-margin should be 0.75 inches and the top margin should be 1 inch.
-\textbf{The right and bottom margins will depend on whether you use
-U.S. letter or A4 paper, so you must be sure to measure the width of
-the printed text.} Use 10 point Times Roman with 12 point vertical
-spacing, unless otherwise specified.
+# Discussion
 
-The title should be in 14 point, bold, and centered. The title should
-be formatted with initial caps (the first letter of content words
-capitalized and the rest lower case). Each author's name should appear
-on a separate line, 11 point bold, and centered, with the author's
-email address in parentheses. Under each author's name list the
-author's affiliation and postal address in ordinary 10 point  type.
+# Conclusion
 
-Indent the first line of each paragraph by 1/8~inch (except for the
-first paragraph of a new section). Do not add extra vertical space
-between paragraphs.
+***
 
-# First-Level Headings
+Preserving what follows in case we need it.
 
-First level headings should be in 12 point , initial caps, bold and
-centered. Leave one line space above the heading and 1/4~line space
-below the heading.
-
-## Second-Level Headings
-
-Second level headings should be 11 point , initial caps, bold, and
-flush left. Leave one line space above the heading and 1/4~ line
-space below the heading.
-
-### Third-Level Headings
-
-Third-level headings should be 10 point , initial caps, bold, and flush
-left. Leave one line space above the heading, but no space after the
-heading.
+***
 
 # Formalities, Footnotes, and Floats
 
@@ -128,8 +107,7 @@ With this method you have full control of the size of your image. **Note: Image 
 You might want to display a wide figure across both columns. To do this, you change the `fig.env` chunk option to `figure*`. To align the image in the center of the page, set `fig.align` option to `center`. To format the width of your caption text, you set the `num.cols.cap` option to `2`.
 
 ```{r 2-col-image, fig.env = "figure*", fig.pos = "h", fig.width=4, fig.height=2, fig.align = "center", set.cap.width=T, num.cols.cap=2, fig.cap = "This image spans both columns. And the caption text is limited to 0.8 of the width of the document."}
-img <- png::readPNG("figs/walrus.png")
-grid::grid.raster(img)
+
 ```
 
 ## One-column images
@@ -137,8 +115,7 @@ grid::grid.raster(img)
 Single column is the default option, but if you want set it explicitly, set `fig.env` to `figure`. Notice that the `num.cols` option for the caption width is set to `1`.
 
 ```{r image, fig.env = "figure", fig.pos = "H", fig.align='center', fig.width=2, fig.height=2, set.cap.width=T, num.cols.cap=1, fig.cap = "One column image."}
-img <- png::readPNG("figs/lab_logo_stanford.png")
-grid::grid.raster(img)
+
 ```
 
 
@@ -187,7 +164,7 @@ the end of the paper.
 
 # References 
 
-```{r}
+```{r references}
 # References will be generated automatically by Pandoc and included here.
 # The following code is some latex to format the bibliography. Do not remove it.
 ```
