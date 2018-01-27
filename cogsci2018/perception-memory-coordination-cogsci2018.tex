@@ -89,105 +89,6 @@ interpersonal interaction; human communication; crowdsourcing; Dallinger
 
 \section{Conclusion}\label{conclusion}
 
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-Preserving what follows in case we need it.
-
-\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
-
-\section{Formalities, Footnotes, and
-Floats}\label{formalities-footnotes-and-floats}
-
-Use standard APA citation format. Citations within the text should
-include the author's last name and year. If the authors' names are
-included in the sentence, place only the year in parentheses, as in
-(1972), but otherwise place the entire reference in parentheses with the
-authors and year separated by a comma (Newell \& Simon, 1972). List
-multiple references alphabetically and separate them by semicolons
-(Chalnick \& Billman, 1988; Newell \& Simon, 1972). Use the et. al.
-construction only after listing all the authors to a publication in an
-earlier reference and for citations with four or more authors.
-
-For more information on citations in R Markdown, see
-\textbf{\href{http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html\#citations}{here}.}
-
-\subsection{Footnotes}\label{footnotes}
-
-Indicate footnotes with a number\footnote{Sample of the first
-footnote.} in the text. Place the footnotes in 9 point type at the
-bottom of the page on which they appear. Precede the footnote with a
-horizontal rule.\footnote{Sample of the second footnote.}
-
-\subsection{Figures}\label{figures}
-
-All artwork must be very dark for purposes of reproduction and should
-not be hand drawn. Number figures sequentially, placing the figure
-number and caption, in 10 point, after the figure with one line space
-above the caption and one line space below it. If necessary, leave extra
-white space at the bottom of the page to avoid splitting the figure and
-figure caption. You may float figures to the top or bottom of a column,
-or set wide figures across both columns.
-
-\subsection{Two-column images}\label{two-column-images}
-
-You can read local images using png package for example and plot it like
-a regular plot using grid.raster from the grid package. With this method
-you have full control of the size of your image. \textbf{Note: Image
-must be in .png file format for the readPNG function to work.}
-
-You might want to display a wide figure across both columns. To do this,
-you change the \texttt{fig.env} chunk option to \texttt{figure*}. To
-align the image in the center of the page, set \texttt{fig.align} option
-to \texttt{center}. To format the width of your caption text, you set
-the \texttt{num.cols.cap} option to \texttt{2}.
-
-\subsection{One-column images}\label{one-column-images}
-
-Single column is the default option, but if you want set it explicitly,
-set \texttt{fig.env} to \texttt{figure}. Notice that the
-\texttt{num.cols} option for the caption width is set to \texttt{1}.
-
-\subsection{R Plots}\label{r-plots}
-
-You can use R chunks directly to plot graphs. And you can use latex
-floats in the fig.pos chunk option to have more control over the
-location of your plot on the page. For more information on latex
-placement specifiers see
-\textbf{\href{https://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions}{here}}
-
-\begin{CodeChunk}
-\begin{figure}[H]
-
-{\centering \includegraphics{figs/plot-1} 
-
-}
-
-\caption[R plot]{R plot}\label{fig:plot}
-\end{figure}
-\end{CodeChunk}
-
-\subsection{Tables}\label{tables}
-
-Number tables consecutively; place the table number and title (in 10
-point) above the table with one line space above the caption and one
-line space below it, as in Table 1. You may float tables to the top or
-bottom of a column, set wide tables across both columns.
-
-You can use the xtable function in the xtable package.
-
-\begin{table}[H]
-\centering
-\begin{tabular}{rrrrr}
-  \hline
- & Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
-  \hline
-(Intercept) & 0.17 & 0.10 & 1.6 & 0.11 \\ 
-  x & 1.88 & 0.11 & 17.8 & 0.00 \\ 
-   \hline
-\end{tabular}
-\caption{This table prints across one column.} 
-\end{table}
-
 \section{Acknowledgements}\label{acknowledgements}
 
 Place acknowledgments (including funding information) in a section at
@@ -196,16 +97,5 @@ the end of the paper.
 \section{References}\label{references}
 
 \setlength{\parindent}{-0.1in} \setlength{\leftskip}{0.125in} \noindent
-
-\hypertarget{refs}{}
-\hypertarget{ref-ChalnickBillman1988a}{}
-Chalnick, A., \& Billman, D. (1988). Unsupervised learning of
-correlational structure. In \emph{Proceedings of the tenth annual
-conference of the cognitive science society} (pp. 510--516). Hillsdale,
-NJ: Lawrence Erlbaum Associates.
-
-\hypertarget{ref-NewellSimon1972a}{}
-Newell, A., \& Simon, H. A. (1972). \emph{Human problem solving}.
-Englewood Cliffs, NJ: Prentice-Hall.
 
 \end{document}

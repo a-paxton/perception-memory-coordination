@@ -1,5 +1,5 @@
 #' ---	
-#' title: "Interpersonal coordination in perception and memory"	
+#' title: "Data preparation: Interpersonal coordination in perception and memory"	
 #' author: "A. Paxton, T. J. H. Morgan, J. Suchow, & T. L. Griffiths"	
 #' output:	
 #'   html_document:	
@@ -7,9 +7,9 @@
 #'     number_sections: yes	
 #' ---	
 #' 	
-#' This R markdown provides the basis for our manuscript, "Interpersonal coordination in perception and memory" (Paxton, Morgan, Suchow, & Griffiths, *in preparation*).	
+#' This R markdown provides the data preparation for our manuscript, "Interpersonal coordination in perception and memory" (Paxton, Morgan, Suchow, & Griffiths, *in preparation*).	
 #' 	
-#' To run these analyses from scratch, you will need the following files:	
+#' To run this from scratch, you will need the following files:	
 #' 	
 #' * `./data/`: Contains experimental data. All data for included dyads are freely available in the OSF repository for the project: `https://osf.io/8fu7x/`.	
 #' * `./supplementary-code/required_packages-pmc.r`: Installs required libraries, if they are not already installed. **NOTE**: This should be run *before* running this script.	
@@ -17,13 +17,15 @@
 #' 	
 #' Additional files will be created during the initial run that will help reduce processing time. Several of these files are available as CSVs from the OSF repository listed above.	
 #' 	
+#' As part of our manuscript for the proceedings of the 2018 annual meeting of the Cognitive Science Society (see `cogsci2018/` directory within this repository), this R markdown file will be converted into an .R script and embedded into the manuscript. Each time the CogSci proceeding is compiled, it will generate a new .R version of this file, dated to the last time this file was changed.	
+#' 	
 #' **Code written by**: A. Paxton (University of California, Berkeley)	
 #' 	
 #' **Date last modified**: 26 January 2018	
 #' 	
 #' ***	
 #' 	
-#' # Data preparation	
+#' # Data import	
 #' 	
 #' ***	
 #' 	
@@ -204,7 +206,13 @@ cat('Problematic rows identified (i.e., duplicates with differing accept types):
 	
 #' 	
 #' 	
-#' ## Identify and winnow down data to usable dyads	
+#' ***	
+#' 	
+#' # Data cleaning	
+#' 	
+#' ***	
+#' 	
+#' ## Identify pairs	
 #' 	
 #' Next, we identify all dyads in which both participants responded the same number of times. This ensures that we include only dyads who experienced the full and correct experimental protocol.	
 #' 	
@@ -245,6 +253,11 @@ cat('Total participants with partners who finished: ',dim(total_paired_individua
 	
 #' 	
 #' 	
+#' ## Remove problematic trials	
+#' 	
+#' Some dyads became mismatched in their progress throughout the game. Essentially, in some trials, one player would move on to the next trial, while their partner would "hang" in the previous one. The program would automatically move someone forward after this mismatched state persisted for a few seconds.	
+#' 	
+#' To deal with this issue, we strike the entire trial for that dyad.	
 #' 	
 #' 	
 	
@@ -287,6 +300,8 @@ cat('Total trials discarded: ',sum(total_removed_trials$total_discarded),' (acro
 	
 #' 	
 #' 	
+#' ## Winnow the data	
+#' 	
 #' 	
 	
 # winnow and recorder columns	
@@ -318,6 +333,8 @@ cat('Mean included trials per dyad: ',mean(included_trial_info$included_trials),
 	
 #' 	
 #' 	
+#' ## Quick sanity check	
+#' 	
 #' For sanity, let's also check that everyone included in our winnowed dataset completed both training and test trials.	
 #' 	
 #' 	
@@ -337,6 +354,12 @@ only_one_trial_type = winnowed_info_df %>% ungroup() %>%
 cat('Included participants who did not undergo training and testing rounds: ',dim(only_one_trial_type)[1], sep='')	
 	
 #' 	
+#' 	
+#' ***	
+#' 	
+#' # Data processing	
+#' 	
+#' ***	
 #' 	
 #' ## Add questionnaire data	
 #' 	
@@ -569,8 +592,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 	
 #' 	
 #' 	
-#' 	
-#' ## Export data	
+#' ## Export raw data	
 #' 	
 #' 	
 	
@@ -582,6 +604,8 @@ write.table(winnowed_info_df, './data/winnowed_data.csv', sep=',',
 #' ***	
 #' 	
 #' # Data exploration and descriptive statistics	
+#' 	
+#' ***	
 #' 	
 #' ## Preliminaries	
 #' 	
@@ -688,3 +712,28 @@ ggsave(plot = all_variable_plot,
 #' 	
 #' 	
 #' ![**Figure**. Density plots of questionnaire responses, normalized error, and improvement over training trials.](./figures/pmc-all_variables-knitr.jpg)	
+#' ***	
+#' 	
+#' # Data manipulation	
+#' 	
+#' ***	
+#' 	
+#' ## Preliminaries	
+#' 	
+#' 	
+	
+# clear our workspace	
+rm(list=ls())	
+	
+# read in libraries and create functions	
+source('./supplementary-code/libraries_and_functions-pmc.r')	
+	
+# read in dataset	
+winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)	
+	
+#' 	
+#' 	
+#' ***	
+#' 	
+#' ## Calculate cross-correlation	
+#' 	
