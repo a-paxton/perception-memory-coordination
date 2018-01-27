@@ -4,7 +4,6 @@ data*/*
 */.ipynb_checkpoints/*
 *.Rdata
 *.Rhistory
-*/*.pdf
 *.pdf
 *.html
 */*.html
