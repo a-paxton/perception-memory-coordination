@@ -53,6 +53,8 @@ participant_counts = read.table('./data/participant_pairs.csv', sep = ',',
                               header=TRUE)
 participant_time = read.table('./data/participant_duration.csv', sep = ',',
                               header=TRUE)
+participant_bonuses = read.table('./data/participant_bonuses.csv', sep = ',',
+                              header=TRUE)
 
 ```
 
@@ -66,9 +68,7 @@ All research activities were completed in compliance with oversight from Committ
 
 Participants (*n* = `r length(participant_counts$dyad)*2`) were individually recruited from Amazon Mechanical Turk to participate as dyads (*n* = `r length(participant_counts$dyad)`). Participants were paired with one another according to the order in which they began the experiment. All participants were over 18 years of age and fluent English speakers (self-reported), located within the U.S.
 
-The experiment lasted an average of `r round(mean(participant_time$duration),2)` minutes (range: `r round(min(participant_time$duration),2)`---`r round(max(participant_time$duration),2)` minutes). In return for their participation, all participants were paid $1.33 simply for finishing the experiment. Each participant also earned a bonus based on mean performance of up to \$2 (for the entire experiment).
-
-**NB**: Should probably report mean and range for bonus here...
+The experiment lasted an average of `r round(mean(participant_time$duration),2)` minutes (range: `r round(min(participant_time$duration),2)`---`r round(max(participant_time$duration),2)` minutes). In return for their participation, all participants were paid \$1.33 as base pay for finishing the experiment. Each participant also earned a bonus based of up to \$2 for the entire experiment based on mean accuracy over all trials (mean = \$`r round(mean(participant_bonuses$bonus-.33),2)`; range: \$`r round(min(participant_bonuses$bonus-.33),2)`---\$`r round(max(participant_bonuses$bonus-.33),2)`).
 
 ## Procedure
 
