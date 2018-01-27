@@ -237,9 +237,13 @@ paired_individuals = info_df %>%
   spread(key = participant, value = infos) %>%	
   ungroup() %>%	
   mutate(difference_in_responses = abs(p1-p0)) %>%	
-  	
-  # remove any participants who weren't paired with soemeone	
+	
+  # remove any participants who weren't paired with someone	
   na.omit()	
+	
+# export the data	
+write.table(paired_individuals, './data/participant_pairs.csv', sep=',',	
+            append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)	
 	
 #' 	
 #' 	
@@ -658,7 +662,7 @@ participant_time_df = participant_files %>%
 all_participant_time = participant_time_df %>%	
   select(-bonus) %>%	
   na.omit()	
-  	
+	
 #' 	
 #' 	
 #' 	
@@ -670,6 +674,10 @@ cat('Average participation: ',mean(all_participant_time$duration),' minutes',sep
 # identify how long included participants took to complete the experiment	
 included_participant_time = participant_time_df %>%	
   na.omit()	
+	
+# export data	
+write.table(included_participant_time, './data/participant_duration.csv', sep=',',	
+            append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)	
 	
 #' 	
 #' 	
@@ -733,7 +741,332 @@ winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
 	
 #' 	
 #' 	
-#' ***	
+#' ## Calculate cross-correlation between partners' normalized error	
 #' 	
-#' ## Calculate cross-correlation	
+#' First, we prepare the dataframe for cross-correlation by transitioning from long-form data for both participants within the dyad to using wide-form data for each dyad, with one column for each constituent participant's `normalized_error` at each `trial_number` and `response_counter`.	
+#' 	
+#' 	
+	
+# strip out unnecessary information	
+infos = winnowed_info_df %>% ungroup() %>%	
+  select(experiment,dyad,participant,t,normalized_error,trial_number,response_counter) %>%	
+  	
+  # create participant binary values	
+  group_by(experiment, dyad) %>%	
+  mutate(partner_id = (min(participant)+max(participant)) - participant) %>%	
+  mutate(self_id = participant) %>%	
+  ungroup() %>%	
+  	
+  # create binary ID	
+  group_by(experiment, dyad) %>%	
+  mutate(partner_binary = participant - min(participant)) %>%	
+  ungroup() %>%	
+  	
+  # remove training trials	
+  dplyr::filter(trial_number > 10)	
+	
+# create a dataframe with one dyad per row and separate columns for each participant's error data	
+binary_dfs = split(infos, infos$partner_binary)	
+p0_df = data.frame(binary_dfs[[1]]) %>%	
+  dplyr::rename(error0 = normalized_error) %>%	
+  select(experiment, dyad, trial_number, response_counter, error0)	
+p1_df = data.frame(binary_dfs[[2]]) %>%	
+  dplyr::rename(error1 = normalized_error) %>%	
+  select(experiment, dyad, trial_number, response_counter, error1)	
+	
+#' 	
+#' 	
+#' Once the data are prepared, we calculate the cross-correlation coefficients between participants' `normalized_error` during all test rounds. The maximum lag is specified within the `libraries_and_functions-pmc.r` file.	
+#' 	
+#' 	
+	
+# calculate cross-correlation	
+ccf_df = full_join(p0_df,p1_df,	
+                   by= c("experiment", "dyad", "trial_number", "response_counter")) %>%	
+  	
+  # calculate cross-correlation for each dyad's error scores	
+  group_by(experiment,dyad) %>%	
+  do(ccf = ccf(.$error0, .$error1, lag.max = ccf_max_lag, type = 'correlation',	
+               na.action = na.pass, plot=FALSE)) %>%	
+  ungroup() %>%	
+  	
+  # extract cross-correlations from the embedded list	
+  select(ccf) %>%	
+  dplyr::pull(ccf) %>%	
+  unlist() %>%	
+  matrix(.,ncol=length(unique(winnowed_info_df$dyad))) %>%	
+  	
+  # convert it into a proper dataframe and select only the coefficients	
+  as.data.frame() %>%	
+  slice(1:(ccf_max_lag*2+1)) %>%	
+  t() %>%	
+  as.data.frame %>%	
+  rowid_to_column(var='dyad') %>%	
+	
+  # rename variables and strip rownames	
+  rename_(.dots=setNames(names(.), 	
+                         gsub("V", "", names(.)))) %>%	
+  remove_rownames() %>%	
+  	
+  # reshape the data to combine lag and r	
+  gather(key = 'lag' , value='r', -dyad) %>%	
+  mutate_all(as.numeric) %>%	
+  mutate(lag = lag - ccf_max_lag - 1)	
+	
+#' 	
+#' 	
+#' Because we don't have any theoretical expectations about or experimental manipulations to change *who* might be leading and following, we ignore directionality for this first-pass analysis.	
+#' 	
+#' 	
+	
+# ignore lag directionality	
+ccf_df = ccf_df %>% ungroup() %>%	
+  mutate(lag = abs(lag)) %>%	
+  group_by(dyad,lag) %>%	
+  summarise(r = mean(r))	
+	
+#' 	
+#' 	
+#' Once we've calculated the cross-correlation coefficients for each dyad, we merge it into the questionnaire data.	
+#' 	
+#' 	
+	
+# grab what we need for the cross-correlation analyses	
+questions_only = winnowed_info_df %>%	
+  select(one_of(c('experiment','dyad','participant',	
+                  questionnaire_variables, 'training_improvement'))) %>%	
+  	
+  # create a mean training improvement score for the dyad	
+  group_by(experiment, dyad) %>%	
+  mutate(training_improvement = mean(training_improvement)) %>%	
+  ungroup() %>%	
+  	
+  # select only the unique rows	
+  distinct() 	
+	
+# merge into the ccf dataframe	
+ccf_df = full_join(questions_only, ccf_df,	
+                   by='dyad','experiment')	
+	
+#' 	
+#' 	
+#' Let's clean up a bit before we move on.	
+#' 	
+#' 	
+	
+# clean up unneeded variables	
+rm(p0_df,p1_df,binary_dfs, infos, questions_only)	
+	
+#' 	
+#' 	
+#' ## Create interaction terms	
+#' 	
+#' ### For `winnowed_info_df`	
+#' 	
+#' 	
+	
+# create interactions	
+winnowed_info_df = winnowed_info_df %>% ungroup() %>%	
+  	
+  # create a turn variable across trials and responses	
+  as.data.frame() %>%	
+  group_by(experiment,dyad,participant) %>%	
+  mutate(turn = row_number()) %>%	
+  ungroup() %>%	
+  	
+  # exclude training data	
+  dplyr::filter(trial_type=='test') %>%	
+	
+  # survey interactions	
+  mutate(cooperative.both = cooperative_self * cooperative_partner) %>%	
+  mutate(trust.both = trust_self * trust_partner) %>%	
+  mutate(cooperative.trust.self = cooperative_self * trust_self) %>%	
+  mutate(cooperative.trust.partner = cooperative_partner * trust_partner) %>%	
+  	
+  # error interactions	
+  mutate(error.length = (normalized_error+.00001) * length) %>%	
+  mutate(error.turn = (normalized_error+.00001) * turn) %>%	
+  mutate(error.length.turn = (normalized_error+.00001) * turn * length) %>%	
+  	
+  # other interactions	
+  mutate(turn.training = turn * training_improvement)	
+	
+#' 	
+#' 	
+#' 	
+	
+# spin off a dataset for only first answers	
+first_guess_df = winnowed_info_df %>% ungroup() %>%	
+  	
+  # grab just the final guess on each trial guess	
+  dplyr::filter(response_counter==1) %>%	
+  	
+  # filter out "turn" variables	
+  select(-contains("turn")) %>%	
+  	
+  # recreate the interactions at the trial level	
+  mutate(error.length = (normalized_error+.00001) * length) %>%	
+  mutate(error.trial = (normalized_error+.00001) * trial_number) %>%	
+  mutate(error.length.trial = (normalized_error+.00001) * trial_number * length) %>%	
+  mutate(trial.training = trial_number * training_improvement)	
+	
+#' 	
+#' 	
+#' 	
+	
+# spin off a dataset for only final answers	
+final_guess_df = winnowed_info_df %>% ungroup() %>%	
+  	
+  # grab just the final guess on each trial guess	
+  group_by(experiment,dyad,participant,trial_number) %>%	
+  slice(n()) %>%	
+  ungroup() %>%	
+  	
+  # filter out "turn" variables	
+  select(-contains("turn")) %>%	
+  	
+  # recreate the error interactions at the trial level	
+  mutate(error.length = (normalized_error+.00001) * length) %>%	
+  mutate(error.trial = (normalized_error+.00001) * trial_number) %>%	
+  mutate(error.length.trial = (normalized_error+.00001) * trial_number * length) %>%	
+  mutate(trial.training = trial_number * training_improvement)	
+	
+#' 	
+#' 	
+#' ### For `ccf_df`	
+#' 	
+#' 	
+	
+# create first- and second-order orthogonal polynomials for lag 	
+raw_lag = min(ccf_df$lag):max(ccf_df$lag)	
+lag_vals = data.frame(raw_lag)	
+lag_offset = (0-min(raw_lag)) + 1	
+t = stats::poly((raw_lag + lag_offset), 2)	
+lag_vals[, paste("lag_ot", 1:2, sep="")] = t[lag_vals$raw_lag + lag_offset, 1:2]	
+	
+# join it to the original data table	
+ccf_df = left_join(ccf_df,lag_vals, by = c("lag" = "raw_lag"))	
+	
+#' 	
+#' 	
+#' 	
+	
+ccf_df = ccf_df %>% ungroup() %>%	
+  	
+  # create interactions among static variables of interest	
+  mutate(cooperative.both = cooperative_self * cooperative_partner) %>%	
+  mutate(trust.both = trust_self * trust_partner) %>%	
+  mutate(cooperative.trust.self = cooperative_self * trust_self) %>%	
+  mutate(cooperative.trust.partner = cooperative_partner * trust_partner) %>%	
+	
+  # first-order polynomials with lag	
+  mutate(cooperative_self.lag_ot1 = cooperative_self * lag_ot1) %>%	
+  mutate(cooperative_partner.lag_ot1 = cooperative_partner * lag_ot1) %>%	
+  mutate(trust_self.lag_ot1 = trust_self * lag_ot1) %>%	
+  mutate(trust_partner.lag_ot1 = trust_partner * lag_ot1) %>%	
+	
+  # first-order polynomials with lag	
+  mutate(cooperative_self.lag_ot2 = cooperative_self * lag_ot2) %>%	
+  mutate(cooperative_partner.lag_ot2 = cooperative_partner * lag_ot2) %>%	
+  mutate(trust_self.lag_ot2 = trust_self * lag_ot2) %>%	
+  mutate(trust_partner.lag_ot2 = trust_partner * lag_ot2) %>%	
+  	
+  # polynomial interactions	
+  mutate(lag_ot1.lag_ot2 = lag_ot1 * lag_ot2) %>%	
+  mutate(cooperative.both.lag_ot1.lag_ot2 = cooperative.both * lag_ot1 * lag_ot2) %>%	
+  mutate(trust.both.lag_ot1.lag_ot2 = trust_self * trust_partner * lag_ot1 * lag_ot2) %>%	
+  mutate(cooperative.trust.self.lag_ot1.lag_ot2 = cooperative_self * trust_self * lag_ot1 * lag_ot2) %>%	
+  mutate(cooperative.trust.partner.lag_ot1.lag_ot2 = cooperative_partner * trust_partner * lag_ot1 * lag_ot2)	
+	
+#' 	
+#' 	
+#' ## Create standardized datasets	
+#' 	
+#' ### For `winnowed_info_df`	
+#' 	
+#' 	
+	
+info_plot = winnowed_info_df %>% ungroup() %>%	
+  mutate_at(vars(participant,dyad),	
+            funs(factor))	
+	
+info_st = winnowed_info_df %>% ungroup() %>%	
+  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%	
+  mutate_at(vars(participant,dyad),	
+            funs(factor))	
+	
+first_guess_plot = first_guess_df %>% ungroup() %>%	
+  mutate_at(vars(participant,dyad),	
+            funs(factor))	
+	
+first_guess_st = first_guess_df %>% ungroup() %>%	
+  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%	
+  mutate_at(vars(participant,dyad),	
+            funs(factor))	
+  	
+final_guess_plot = final_guess_df %>% ungroup() %>%	
+  mutate_at(vars(participant,dyad),	
+            funs(factor))	
+  	
+final_guess_st = final_guess_df %>% ungroup() %>%	
+  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%	
+  mutate_at(vars(participant,dyad),	
+            funs(factor))	
+	
+#' 	
+#' 	
+#' ### For `ccf_df`	
+#' 	
+#' 	
+	
+# create unstandardized dataframe and convert relevant variables to factors	
+ccf_plot = ccf_df %>% ungroup() %>%	
+  mutate_at(vars(participant,dyad),	
+            funs(factor))	
+  	
+# create standardized dataframe and convert relevant variables to factors	
+ccf_st = ccf_df %>%	
+  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%	
+  mutate_at(vars(participant,dyad),	
+            funs(factor))	
+	
+#' 	
+#' 	
+#' ## Export analysis-ready datasets	
+#' 	
+#' 	
+	
+# export standardized and plotting info datasets	
+write.table(info_plot, './data/info_plot.csv', sep=',',	
+            append = FALSE, quote = FALSE, na = "NA", 	
+            row.names = FALSE, col.names = TRUE)	
+write.table(info_st, './data/info_st.csv', sep=',',	
+            append = FALSE, quote = FALSE, na = "NA", 	
+            row.names = FALSE, col.names = TRUE)	
+	
+# export standardized and plotting first-guess datasets	
+write.table(first_guess_plot, './data/first_guess_plot.csv', sep=',',	
+            append = FALSE, quote = FALSE, na = "NA", 	
+            row.names = FALSE, col.names = TRUE)	
+write.table(first_guess_st, './data/first_guess_st.csv', sep=',',	
+            append = FALSE, quote = FALSE, na = "NA", 	
+            row.names = FALSE, col.names = TRUE)	
+	
+# export standardized and plotting final-guess datasets	
+write.table(final_guess_plot, './data/final_guess_plot.csv', sep=',',	
+            append = FALSE, quote = FALSE, na = "NA", 	
+            row.names = FALSE, col.names = TRUE)	
+write.table(final_guess_st, './data/final_guess_st.csv', sep=',',	
+            append = FALSE, quote = FALSE, na = "NA", 	
+            row.names = FALSE, col.names = TRUE)	
+	
+# export standardized and plotting ccf datasets	
+write.table(ccf_plot, './data/ccf_plot.csv', sep=',',	
+            append = FALSE, quote = FALSE, na = "NA", 	
+            row.names = FALSE, col.names = TRUE)	
+write.table(ccf_st, './data/ccf_st.csv', sep=',',	
+            append = FALSE, quote = FALSE, na = "NA", 	
+            row.names = FALSE, col.names = TRUE)	
+	
+#' 	
 #' 	
