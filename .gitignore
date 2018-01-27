@@ -1,5 +1,5 @@
-data/*
-pilot/data-pilot/*
+data*/*
+*/data*/*
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 *.Rdata
