@@ -68,6 +68,8 @@ Participants (*n* = `r length(participant_counts$dyad)*2`) were individually rec
 
 The experiment lasted an average of `r round(mean(participant_time$duration),2)` minutes (range: `r round(min(participant_time$duration),2)`---`r round(max(participant_time$duration),2)` minutes). In return for their participation, all participants were paid $1.33 simply for finishing the experiment. Each participant also earned a bonus based on mean performance of up to \$2 (for the entire experiment).
 
+**NB**: Should probably report mean and range for bonus here...
+
 ## Procedure
 
 All data collection procedures occurred on Dallinger (http://github.com/dallinger/Dallinger), deployed on Amazon Mechanical Turk (http://mturk.com). Code for the experiment is available on GitHub: http://github.com/thomasmorgan/joint-estimation-game, and the resulting experiment data are available on the OSF repository for the project: https://osf.io/8fu7x/.
