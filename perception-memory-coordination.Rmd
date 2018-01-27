@@ -237,9 +237,13 @@ paired_individuals = info_df %>%
   spread(key = participant, value = infos) %>%
   ungroup() %>%
   mutate(difference_in_responses = abs(p1-p0)) %>%
-  
-  # remove any participants who weren't paired with soemeone
+
+  # remove any participants who weren't paired with someone
   na.omit()
+
+# export the data
+write.table(paired_individuals, './data/participant_pairs.csv', sep=',',
+            append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)
 
 ```
 
