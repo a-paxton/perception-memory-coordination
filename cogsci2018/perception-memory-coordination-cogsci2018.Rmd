@@ -50,11 +50,9 @@ source(paste0(most_recent_pmd,'[rmd2r].R'))
 
 # load in participant information
 participant_counts = read.table('./data/participant_pairs.csv', sep = ',',
-                              header=TRUE)
-participant_time = read.table('./data/participant_duration.csv', sep = ',',
-                              header=TRUE)
-participant_bonuses = read.table('./data/participant_bonuses.csv', sep = ',',
-                              header=TRUE)
+                                header=TRUE)
+participation_descriptives = read.table('./data/partipation_descriptives.csv', sep = ',',
+                                        header=TRUE)
 
 ```
 
