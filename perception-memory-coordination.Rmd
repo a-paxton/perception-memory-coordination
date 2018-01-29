@@ -279,7 +279,10 @@ paired_individuals = info_df %>%
   mutate(difference_in_responses = abs(p1-p0)) %>%
 
   # remove any participants who weren't paired with someone
-  na.omit()
+  na.omit() %>%
+  
+  # only include pairs in which both individuals completed 24 trials
+  dplyr::filter(trials==24)
 
 # export the data
 write.table(paired_individuals, './data/participant_pairs.csv', sep=',',
@@ -305,12 +308,9 @@ To deal with this issue, we strike the entire trial for that dyad.
 
 ```{r identify-problem-trials}
 
-# only include pairs in which both individuals completed 24 trials
-usable_dyads = dplyr::filter(paired_individuals, trials==24)
-
 # exclude trials with mismatched data
 discarded_trials_df = info_df %>%
-  dplyr::filter(dyad %in% usable_dyads$dyad & trial_type=="test") %>%  
+  dplyr::filter(dyad %in% paired_individuals$dyad & trial_type=="test") %>%  
   
   # count the number of infos per trial per participant
   group_by(experiment,participant,trial_number) %>%
@@ -350,7 +350,7 @@ cat('Total trials discarded: ',sum(total_removed_trials$total_discarded),' (acro
 
 # winnow and recorder columns
 winnowed_info_df = info_df %>% ungroup() %>%
-  dplyr::filter(dyad %in% usable_dyads$dyad) %>%
+  dplyr::filter(dyad %in% paired_individuals$dyad) %>%
   dplyr::left_join(., discarded_trials_df,
                    by = c("experiment","dyad","trial_number")) %>%
   dplyr::filter(is.na(difference_in_responses)) %>%
