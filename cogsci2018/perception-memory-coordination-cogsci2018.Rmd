@@ -76,13 +76,15 @@ All data collection procedures were completed through the experiment platform Da
 
 Each participant was individually recruited on Amazon Mechanical Turk to play a "Line Estimation Game" (advertisement: "Test your skills!"). Upon completing informed consent, participants were told that they would be playing a game in which they would be required to remember and re-create line lengths. Participants were informed that they would be complete their training trials individually and would then begin playing with a partner. Participants were given no information about their partner other than the guess that their partner made; no information about the partner's identity was shared.
 
-In each trial, participants were shown 3 red lines (see figure; **NB**: add figure) and were asked to remember all three of them. The 3 stimulus lines were displayed for 2 seconds then removed, providing participants with a blank screen for 0.5 seconds. Participants were then told which line to re-create (\#1, \#2, or \#3) and were then given 1 second to submit their guess at how long the target line had been. To do so, participants were given a blank box and used their cursor to fill in the box with a blue line.
+In each trial, participants were shown 3 red lines (see figure; **NB**: add figure) and were asked to remember all three of them.\footnote{A pilot version of this study showed that participants adapted learned too quickly when given only 1 line to remember and recreate. The additional 2 lines were added to strictly increase the memory load, as opposed to adding difficulty in other ways (e.g., creating a moving stimulus).} The 3 stimulus lines were displayed for 2 seconds then removed, providing participants with a blank screen for 0.5 seconds. Participants were then told which line to re-create (\#1, \#2, or \#3) and were then given 1 second to submit their guess at how long the target line had been. To do so, participants were given a blank box and used their cursor to fill in the box with a blue line.
 
 During training, participants were then shown the correct length of the target line (as a grey bar above their own guess) for 2 seconds. This was accompanied by a message telling the participant that they had guessed correctly ("Your guess was correct!") or incorrectly ("Your guess was incorrect") or that they had not submitted a guess within the 1-second time limit ("You didn't respond in time").
 
-A pilot version of this study showed that participants adapted learned too quickly when given only 1 line to remember and recreate. The additional 2 lines were added to strictly increase the memory load, as opposed to adding difficulty in other ways (e.g., creating a moving stimulus).
+During testing, participants' stimulus viewing, waiting, and recreation times remained the same as during testing, but they no longer received information about whether their guess was correct or incorrect. Instead, after both participants had submitted their first guess, participants were shown their guess (in blue) above their partner's guess (in green). Both participants were then asked whether they wanted to change their own guess or to keep the guess they had submitted. If either participant in the dyad indicated that they wanted to change their guess, that participant was then allowed to change their guess (again with a 1-second time limit) *while* still being able to view their partner's guess. Participants who chose to keep their previously submitted guess was informed that their partner chose to submit a new guess and waited for the other participant to finish. At that point, participants were again allowed to change or keep their guess. This process continued until both participants chose to keep their guess.
 
-During testing, participants no longer received information about whether their guess was correct or incorrect.
+Participants were informed that their final accuracy would only be calculated for their final guess. However, because they had no means to communicate with their partner about whether each would be accepting or changing their guesses, each participant could not have known whether their decision to keep the guess would have been their final guess for the trial.
+
+For clarity, we will refer to each new stimulus set as a *trial* and to each submitted line length estimate within each trial as a *guess*. This means that some participants may have submitted multiple guesses per trial. The last submitted estimate---the one by which trial-level accuracy is calculated---will be referred to as the *final guess*.
 
 ## Analyses
 
@@ -94,8 +96,9 @@ During testing, participants no longer received information about whether their 
 
 # Acknowledgements
 
-Place acknowledgments (including funding information) in a section at
-the end of the paper.
+Thanks go to the Dallinger development team for their assistance in executing the experiment.
+
+This work was funded in part by the **DALLINGER GRANT INFO GOES HERE**. 
 
 # References 
 
