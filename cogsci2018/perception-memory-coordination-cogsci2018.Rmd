@@ -104,7 +104,13 @@ All dyads completed 10 training trials (alone) and 15 test trials (with their pa
 
 ## Analyses
 
-To measure whether participants became more similar over time, we calculated the cross-correlation coefficient of participants' guess errors across trials [@paxton2013argument], within a window of +/-5 guesses. Although cross-correlation produces information about leading and following behavior, we have no *a priori* expectations about which of the two participants would emerge as a leader (given they have no information about their partner nor any assigned roles), so our first-pass analyses ignore any directionality by averaging across the each incremental lags (i.e., leading/following in both participants' directions).
+### Similarity
+
+To measure how participants' perceptual and memory systems became more similar over time, we calculated the cross-correlation coefficient of participants' guess errors across trials [@paxton2013argument], within a window of +/-5 guesses. Although cross-correlation produces information about leading and following behavior, we have no *a priori* expectations about which of the two participants would emerge as a leader (given they have no information about their partner nor any assigned roles), so our first-pass analyses ignore any directionality by averaging across the each incremental lags (i.e., leading/following in both participants' directions).
+
+### Accuracy 
+
+Accuracy was measured as the percentage of
 
 # Results
 
