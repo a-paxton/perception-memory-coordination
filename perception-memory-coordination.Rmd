@@ -395,9 +395,11 @@ only_one_trial_type = winnowed_info_df %>% ungroup() %>%
 
 ```{r print-problem-participants, invisible=TRUE, echo=FALSE}
 
-cat('Included participants who did not undergo training and testing rounds: ',dim(only_one_trial_type)[1], sep='')
+cat('Included participants who did not submit guesses during any training trials: ',dim(only_one_trial_type)[1], sep='')
 
 ```
+
+It looked like some participants chose not to complete the training trials or struggled with getting their guesses submitted in time.  We'll need to handle this when we create training slopes.
 
 ***
 
@@ -516,6 +518,12 @@ We next create a training metric that quantifies the *non-directional* improveme
 
 # create a slope to see how quickly they improved
 winnowed_info_df = winnowed_info_df %>% ungroup() %>%
+  
+  # if they didn't do training, give them a flat training performance
+  mutate(normalized_error = replace(normalized_error, 
+                                    which(normalized_error<0L), 
+                                    0)) %>%
+  
   select(participant, trial_type, trial_number, normalized_error) %>%
   na.omit() %>%
   dplyr::filter(trial_type == 'train') %>%
@@ -525,7 +533,12 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
   select(participant, estimate) %>%
   dplyr::rename(training_improvement = estimate) %>%
   left_join(winnowed_info_df, .,
-            by='participant')
+            by='participant') %>%
+  
+  # if they didn't complete training, give them a 0
+  mutate(training_improvement = replace(training_improvement, 
+                                    which(training_improvement<0L), 
+                                    0))
 
 ```
 
