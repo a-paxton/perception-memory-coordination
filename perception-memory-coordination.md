@@ -86,7 +86,7 @@ for (experiment in experiment_files){
 }
 ```
 
-## Identify dyads from vector data
+## Export data on bonuses
 
 
 ```r
@@ -97,9 +97,11 @@ participant_files = participant_files %>%
 
 # export bonuses
 write.table(participant_files, './data/participant_bonuses.csv', sep=',',
-            append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)
+            append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, 
+            col.names = TRUE)
 ```
 
+## Identify dyads from vector data
 
 In order to figure out which participants' nodes were connected to one another in dyads, we use the vectors created between nodes (excluding the stimulus-creating node). We then use that information to identify which stimuli were sent to which dyads.
 
@@ -193,7 +195,7 @@ info_df = info_files %>% ungroup() %>%
 ```
 
 ```
-##  Found 500 records... Found 1000 records... Found 1004 records... Imported 1004 records. Simplifying...
+##  Found 500 records... Found 1000 records... Found 1500 records... Found 2000 records... Found 2500 records... Found 3000 records... Found 3500 records... Found 4000 records... Found 4023 records... Imported 4023 records. Simplifying...
 ```
 
 
@@ -207,9 +209,9 @@ info_df = info_files %>% ungroup() %>%
 
 ***
 
-## Identify pairs
+## Identify pairs 
 
-Next, we identify all dyads in which both participants responded the same number of times. This ensures that we include only dyads who experienced the full and correct experimental protocol.
+Next, we identify all dyads in which both participants completed all trials.
 
 
 ```r
@@ -234,7 +236,10 @@ paired_individuals = info_df %>%
   mutate(difference_in_responses = abs(p1-p0)) %>%
 
   # remove any participants who weren't paired with someone
-  na.omit()
+  na.omit() %>%
+  
+  # only include pairs in which both individuals completed 24 trials
+  dplyr::filter(trials==24)
 
 # export the data
 write.table(paired_individuals, './data/participant_pairs.csv', sep=',',
@@ -243,7 +248,7 @@ write.table(paired_individuals, './data/participant_pairs.csv', sep=',',
 
 
 ```
-## Total participants with partners who finished: 6
+## Total participants with partners who finished: 20
 ```
 
 ## Remove problematic trials
@@ -254,12 +259,9 @@ To deal with this issue, we strike the entire trial for that dyad.
 
 
 ```r
-# only include pairs in which both individuals completed 24 trials
-usable_dyads = dplyr::filter(paired_individuals, trials==24)
-
 # exclude trials with mismatched data
 discarded_trials_df = info_df %>%
-  dplyr::filter(dyad %in% usable_dyads$dyad & trial_type=="test") %>%  
+  dplyr::filter(dyad %in% paired_individuals$dyad & trial_type=="test") %>%  
   
   # count the number of infos per trial per participant
   group_by(experiment,participant,trial_number) %>%
@@ -283,7 +285,7 @@ discarded_trials_df = info_df %>%
 
 
 ```
-## Total trials discarded: 5 (across 3 dyads)
+## Total trials discarded: 22 (across 13 dyads)
 ```
 
 ## Winnow the data
@@ -292,7 +294,7 @@ discarded_trials_df = info_df %>%
 ```r
 # winnow and recorder columns
 winnowed_info_df = info_df %>% ungroup() %>%
-  dplyr::filter(dyad %in% usable_dyads$dyad) %>%
+  dplyr::filter(dyad %in% paired_individuals$dyad) %>%
   dplyr::left_join(., discarded_trials_df,
                    by = c("experiment","dyad","trial_number")) %>%
   dplyr::filter(is.na(difference_in_responses)) %>%
@@ -309,7 +311,7 @@ winnowed_info_df = unique(setDT(winnowed_info_df), by = c('experiment', 'dyad',
 
 
 ```
-## Mean included trials per dyad: 14.16667
+## Mean included trials per dyad: 13.6
 ```
 
 ## Quick sanity check
@@ -329,8 +331,10 @@ only_one_trial_type = winnowed_info_df %>% ungroup() %>%
 
 
 ```
-## Included participants who did not undergo training and testing rounds: 0
+## Included participants who did not submit guesses during any training trials: 2
 ```
+
+It looked like some participants chose not to complete the training trials or struggled with getting their guesses submitted in time.  We'll need to handle this when we create training slopes.
 
 ***
 
@@ -352,7 +356,7 @@ question_df = questionnaire_files %>% ungroup() %>%
 ```
 
 ```
-##  Found 12 records... Imported 12 records. Simplifying...
+##  Found 40 records... Imported 40 records. Simplifying...
 ```
 
 ```r
@@ -387,7 +391,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 
 ```
-## Total dyads with all guess and questionnaire data: 6
+## Total dyads with all guess and questionnaire data: 20
 ```
 
 ## Create unique dyad and participant IDs across all experiments
@@ -449,6 +453,12 @@ We next create a training metric that quantifies the *non-directional* improveme
 ```r
 # create a slope to see how quickly they improved
 winnowed_info_df = winnowed_info_df %>% ungroup() %>%
+  
+  # if they didn't do training, give them a flat training performance
+  mutate(normalized_error = replace(normalized_error, 
+                                    which(normalized_error<0L), 
+                                    0)) %>%
+  
   select(participant, trial_type, trial_number, normalized_error) %>%
   na.omit() %>%
   dplyr::filter(trial_type == 'train') %>%
@@ -458,7 +468,12 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
   select(participant, estimate) %>%
   dplyr::rename(training_improvement = estimate) %>%
   left_join(winnowed_info_df, .,
-            by='participant')
+            by='participant') %>%
+  
+  # if they didn't complete training, give them a 0
+  mutate(training_improvement = replace(training_improvement, 
+                                    which(training_improvement<0L), 
+                                    0))
 ```
 
 
@@ -561,7 +576,7 @@ all_participant_time = participant_time_df %>%
 
 
 ```
-## Average participation: 12.89602 minutes
+## Average participation: 928.819 minutes
 ```
 
 
@@ -577,7 +592,7 @@ write.table(included_participant_time, './data/participant_duration.csv', sep=',
 
 
 ```
-## Average participation: 11.96328 minutes
+## Average participation: 719.454 minutes
 ```
 
 We'd intended for each experimental session to last 20 minutes, but the mean duration for included participants in these pilot data is about half of that.  Future pilot studies should increase the number of trials.
@@ -585,6 +600,11 @@ We'd intended for each experimental session to last 20 minutes, but the mean dur
 ## Variable distributions
 
 
+```
+## Warning: Removed 11 rows containing non-finite values (stat_density).
+
+## Warning: Removed 11 rows containing non-finite values (stat_density).
+```
 
 ![**Figure**. Density plots of questionnaire responses, normalized error, and improvement over training trials.](./figures/pmc-all_variables-knitr.jpg)
 ***
