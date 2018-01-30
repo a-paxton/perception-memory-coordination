@@ -72,6 +72,8 @@ We believe that Dallinger can provide researchers interested in social behavior 
 
 ## Social Behavior: Interpersonal Coordination
 
+As an example, we here focus on the phenomenon of *interpersonal coordination*, an interdisciplinary research area that focuses on the ways in which individuals affect one another over time as a result of their interaction [also known as interactive alignment, interpersonal synchrony, mimicry, and more; see @paxton2016social]. This area is increasingly marked by principles of dynamical systems theory, conceptualizing interaction as a complex adaptive system [@riley2011interpersonal]. A fundamental principle of this is that the emergent behavior---in this case, interpersonal coordination---is not static but changes over time.
+
 ## The Present Study
 
 # Method
