@@ -62,19 +62,21 @@ Recent developments in how data can be collected and analyzed are transforming c
 
 Crowdsourcing platforms like Amazon Mechanical Turk (http://www.mturk.com) have been extensively used as a means to collect data with relatively simple but robust experimental paradigms, like surveys [@buhrmester2011amazon] and mouse-tracking [@freeman2011hand]. At first, work in this domain required researchers to use established survey creation tools, which were quick to do but constrained experimental designs, or to program bespoke experiments, which is more open ended but far more time-consuming. More recently, cognitive scientists have worked to create solutions to support the efficient creation of a wider range of experiments [e.g., @gureckis2016psiturk]. As the community around online psychology experiments has grown, it has done so with the intent to broaden its reach (especially to researchers with less programming experience) and to continue to provide more powerful experimental tools.
 
-Dallinger is another step forward in this endeavor and we believe that it can provide researchers interested in social behavior the opportunity to expand their experimental capabilities beyond the lab while not compromising on the richness and complexity of true interactive contexts.
+Dallinger is another step forward in this endeavor: We believe that it can provide researchers interested in social behavior the opportunity to expand their experimental capabilities beyond the lab while not compromising on the richness and complexity of true interactive contexts.
+
+## Interpersonal Coordination
+
+To illustrate the utility of Dallinger for research into social behaviors, we here focus on the phenomenon of *interpersonal coordination*, an interdisciplinary research area that focuses on the ways in which individuals affect one another over time as a result of their interaction [also known as interactive alignment, interpersonal synchrony, mimicry, and more; see @paxton2016social]. This area is increasingly marked by principles of dynamical systems theory, conceptualizing interaction as a complex adaptive system [@riley2011interpersonal]. A fundamental principle of this is that the emergent behavior---in this case, interpersonal coordination---is not static but changes over time.
 
 ## Dallinger
 
-Like many other experimental platforms (e.g. Psiturk), Dallinger allows scientists to design experiments and deploy them online where participants can be recruited through crowdsourcing. While the experimenter must create the experimental interface, the bulk of the rest of the experiment (i.e., recruitment, data collection, participant payment, and so forth) is handled by prebuilt functions included in Dallinger. What marks Dallinger as different from the variety of otherwise similar platforms is its ability to automatically arrange participants into a variety of network structures and to provide many functions that manage communication between participants. As such, Dallinger is uniquely positioned to support experimental research into human social behavior at scale.
+Like many other experimental platforms [e.g., psiTurk; @gureckis2016psiturk], Dallinger allows scientists to design experiments and deploy them online where participants can be recruited through crowdsourcing. While the experimenter must create the experimental interface, the bulk of the rest of the experiment (e.g., recruitment, data collection, participant recruitment, base and bonus payment) is handled by prebuilt functions included in Dallinger. 
+
+What marks Dallinger as different from the variety of otherwise similar platforms is its focus on *networks*. Instead of handling participants as individuals, Dallinger is specialized to automatically arrange participants into a variety of network structures, connecting them with numerous functions to manage communication among the participants. As such, Dallinger is uniquely positioned to support experimental research into human social behavior at scale.
 
 **Jordan and Tom — maybe y'all can add some text and relevant citations here?**
 
 (should probably include some citations about Turk populations, too)
-
-## Social Behavior: Interpersonal Coordination
-
-To illustrate the utility of Dallinger for research into social behaviors, we here focus on the phenomenon of *interpersonal coordination*, an interdisciplinary research area that focuses on the ways in which individuals affect one another over time as a result of their interaction [also known as interactive alignment, interpersonal synchrony, mimicry, and more; see @paxton2016social]. This area is increasingly marked by principles of dynamical systems theory, conceptualizing interaction as a complex adaptive system [@riley2011interpersonal]. A fundamental principle of this is that the emergent behavior---in this case, interpersonal coordination---is not static but changes over time.
 
 ## The Present Study
 
