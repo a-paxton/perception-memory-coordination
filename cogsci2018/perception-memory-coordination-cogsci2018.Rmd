@@ -1,5 +1,5 @@
 ---
-title: "Perception, Memory, and Coordination"
+title: "Interpersonal Coordination in Perception and Memory in an Online Experiment: Using Dallinger for Experiments on Interaction"
 bibliography: library.bib
 csl: apa6.csl
 document-params: "10pt, letterpaper"
