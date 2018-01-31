@@ -190,9 +190,9 @@ info_df = info_files %>% ungroup() %>%
                 guess_counter = guessCounter,
                 response_counter = responseCounter,
                 accept_type = acceptType,
-                response_type = responseType,
-                length = chosenStimulusLength,
-                stimulus_number = chosenStimulusNumber) %>%
+                #response_type = responseType,
+                stimulus_number = chosenStimulusNumber,
+                length = chosenStimulusLength) %>%
   
   # get rid of unnecessary variables and arrange rows
   select(-property3, -finalAccuracy, -contents) %>%
@@ -357,12 +357,12 @@ winnowed_info_df = info_df %>% ungroup() %>%
   mutate(t = round(t,-1)) %>%
   select(experiment, t, dyad, participant, 
          trial_type, trial_number, response_counter, guess_counter, accept_type, 
-         length, guess, guess_error, response_type, network_id) %>%
+         length, guess, guess_error, network_id) %>%
   na.omit()
 
 winnowed_info_df = unique(setDT(winnowed_info_df), by = c('experiment', 'dyad',
         'participant', 'trial_type', 'trial_number', 'response_counter', 'guess_counter',
-        'accept_type', 'length', 'guess', 'guess_error', 'response_type', 'network_id'))
+        'accept_type', 'length', 'guess', 'guess_error', 'network_id'))
 
 ```
 
