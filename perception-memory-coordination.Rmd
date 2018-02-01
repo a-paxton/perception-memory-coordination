@@ -1030,8 +1030,10 @@ ccf_df = ccf_df %>% ungroup() %>%
   # first-order polynomials with lag
   mutate(cooperative_self.lag_ot1 = cooperative_self * lag_ot1) %>%
   mutate(cooperative_partner.lag_ot1 = cooperative_partner * lag_ot1) %>%
+  mutate(cooperative.both.lag_ot1 = cooperative_self * cooperative_partner * lag_ot1) %>%
   mutate(trust_self.lag_ot1 = trust_self * lag_ot1) %>%
   mutate(trust_partner.lag_ot1 = trust_partner * lag_ot1) %>%
+  mutate(trust.both.lag_ot1 = trust_self * trust_partner * lag_ot1) %>%
 
   # first-order polynomials with lag
   mutate(cooperative_self.lag_ot2 = cooperative_self * lag_ot2) %>%
