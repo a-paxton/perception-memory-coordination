@@ -266,6 +266,7 @@ paired_individuals = info_df %>%
             infos = n()) %>%	
   ungroup() %>%	
   na.omit() %>%	
+  dplyr::filter(infos > 23) %>%	
   	
   # count the infos sent by each participant in each dyad	
   group_by(experiment, dyad) %>%	
@@ -280,10 +281,6 @@ paired_individuals = info_df %>%
   # only include pairs in which both individuals completed 24 trials	
   dplyr::filter(trials==24)	
 	
-# export the data	
-write.table(paired_individuals, './data/participant_pairs.csv', sep=',',	
-            append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)	
-	
 #' 	
 #' 	
 #' 	
@@ -292,7 +289,7 @@ total_paired_individuals = paired_individuals %>% ungroup() %>%
   select(experiment, dyad) %>%	
   distinct()	
 	
-cat('Total participants with partners who finished: ',dim(total_paired_individuals)[1], sep='')	
+cat('Total pairs who finished: ',dim(total_paired_individuals)[1], sep='')	
 	
 #' 	
 #' 	
@@ -466,7 +463,7 @@ participation_descriptives = node_files %>%
              by = c('id' = 'participant',	
                     'experiment',	
                     'network_id')) %>%	
-  dplyr::filter(dyad %in% unique(usable_question_dyads$dyad)) %>%	
+  dplyr::filter(dyad %in% usable_question_dyads$dyad & experiment %in% usable_question_dyads$experiment) %>%	
   select(-contents, -network_id)	
 	
 #' 	
@@ -507,6 +504,43 @@ winnowed_info_df = right_join(unique_participant_ids, winnowed_info_df,
                 dyad = unique_dyad) %>%	
   dplyr::arrange(experiment, participant, trial_number, response_counter)	
 	
+#' 	
+#' 	
+#' ## Calculate correct bonuses for participants	
+#' 	
+#' 	
+# 	
+# # for reporting, correct the errors in calculating bonuses	
+# z = winnowed_info_df %>% 	
+#   	
+#   # calculate the participant's correct bonus	
+#   group_by(experiment, dyad, participant, trial_number) %>%	
+#   dplyr::filter(response_counter==max(response_counter) & trial_number > 9) %>%	
+#   select(experiment, original_dyad, original_participant, participant, dyad, trial_number, response_counter, guess, guess_error) %>%	
+#   mutate(guess_accuracy = (100-abs(guess_error))/100) %>%	
+#   ungroup() %>%	
+#   group_by(experiment, original_dyad, original_participant) %>%	
+#   summarize(corrected_bonus = round(mean(guess_accuracy)*2,2)) %>%	
+#   	
+#   # join to the original table	
+#   left_join(participation_descriptives, 	
+#             ., 	
+#             by=c('experiment',	
+#                  'dyad'= 'original_dyad',	
+#                  'id'='original_participant')) %>%	
+# 	
+#   # clean it up	
+#   	
+#   ####STILL NEED TO FIGURE THIS OUT	
+# 	
+#   	
+# winnowed_info_df %>%	
+#   dplyr::filter(experiment=='5534b851' &	
+#                participant==117)	
+# # export bonuses	
+# write.table(participation_descriptives, './data/participation_descriptives.csv', 	
+#             sep=',', append = FALSE, quote = FALSE, row.names = FALSE, col.names = TRUE)	
+  	
 #' 	
 #' 	
 #' ## Increment all counters by 1	

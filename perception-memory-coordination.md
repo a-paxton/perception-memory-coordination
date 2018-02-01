@@ -86,19 +86,36 @@ for (experiment in experiment_files){
 }
 ```
 
-## Export data on bonuses
+## Grab duration and bonus data
 
 
 ```r
-# calculate bonuses for participants who completed the game
-participant_files = participant_files %>%
-  select(worker_id, base_pay, bonus) %>%
-  na.omit()
+# clean up the questionnaire files
+question_trimmed = questionnaire_files %>%
+  select(experiment, participant_id, number, question, response)
 
-# export bonuses
-write.table(participant_files, './data/participant_bonuses.csv', sep=',',
-            append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, 
-            col.names = TRUE)
+# clean up the participant files
+participant_trimmed = participant_files %>%
+  dplyr::filter(status=='approved') %>%
+  mutate(creation_time = ymd_hms(creation_time)) %>%
+  mutate(end_time = ymd_hms(end_time)) %>%
+  mutate(duration = (end_time - creation_time)) %>%
+  select(experiment, worker_id, status, base_pay, bonus, duration)
+```
+
+```
+## Warning: package 'bindrcpp' was built under R version 3.3.2
+```
+
+```r
+# join the files and omit any folks that aren't completely included in both dataframes
+participation_descriptives = full_join(question_trimmed, participant_trimmed,
+                                     by = c('experiment',
+                                            'participant_id' = 'worker_id')) %>%
+  na.omit() %>%
+  
+  # remove actual question data
+  select(-response, -question, -status, -number)
 ```
 
 ## Identify dyads from vector data
@@ -134,9 +151,14 @@ vector_df = vector_files %>%
 dyad_df = info_files %>%
   mutate(t = round(as.numeric(ymd_hms(creation_time)), 0)) %>%
   dplyr::filter(origin_id == 1) %>%
-  select(experiment, t, contents) %>%
-  full_join(., vector_df,
-            by = c('experiment', 't')) %>%
+  select(experiment, t, contents) 
+
+# combine the contents and the dyad info, allowing room for error with timestamp
+dyad_df = data.table(dyad_df)
+vector_df = data.table(vector_df)
+setkey(dyad_df, experiment, t)
+setkey(vector_df, experiment, t)
+dyad_df = dyad_df[vector_df,roll="nearest"] %>%
   select(-t)
 ```
 
@@ -167,9 +189,8 @@ info_df = info_files %>% ungroup() %>%
                 guess_counter = guessCounter,
                 response_counter = responseCounter,
                 accept_type = acceptType,
-                response_type = responseType,
-                length = chosenStimulusLength,
-                stimulus_number = chosenStimulusNumber) %>%
+                stimulus_number = chosenStimulusNumber,
+                length = chosenStimulusLength) %>%
   
   # get rid of unnecessary variables and arrange rows
   select(-property3, -finalAccuracy, -contents) %>%
@@ -178,7 +199,7 @@ info_df = info_files %>% ungroup() %>%
   # remove the automatically generated infos that produced NAs in `guess`
   dplyr::filter(!is.na(guess)) %>%
   
-  # determine uniqueness without considering time or response_type
+  # determine uniqueness without considering time
   group_by(experiment, participant, network_id, trial_type,
            trial_number, guess_counter, response_counter) %>%
   summarise_all(first) %>%
@@ -195,7 +216,7 @@ info_df = info_files %>% ungroup() %>%
 ```
 
 ```
-##  Found 500 records... Found 1000 records... Found 1500 records... Found 2000 records... Found 2500 records... Found 3000 records... Found 3500 records... Found 4000 records... Found 4023 records... Imported 4023 records. Simplifying...
+##  Found 500 records... Found 1000 records... Found 1500 records... Found 2000 records... Found 2500 records... Found 3000 records... Found 3500 records... Found 4000 records... Found 4500 records... Found 5000 records... Found 5500 records... Found 6000 records... Found 6500 records... Found 7000 records... Found 7500 records... Found 8000 records... Found 8480 records... Imported 8480 records. Simplifying...
 ```
 
 
@@ -227,6 +248,7 @@ paired_individuals = info_df %>%
             infos = n()) %>%
   ungroup() %>%
   na.omit() %>%
+  dplyr::filter(infos > 23) %>%
   
   # count the infos sent by each participant in each dyad
   group_by(experiment, dyad) %>%
@@ -240,15 +262,11 @@ paired_individuals = info_df %>%
   
   # only include pairs in which both individuals completed 24 trials
   dplyr::filter(trials==24)
-
-# export the data
-write.table(paired_individuals, './data/participant_pairs.csv', sep=',',
-            append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)
 ```
 
 
 ```
-## Total participants with partners who finished: 20
+## Total pairs who finished: 55
 ```
 
 ## Remove problematic trials
@@ -285,7 +303,7 @@ discarded_trials_df = info_df %>%
 
 
 ```
-## Total trials discarded: 22 (across 13 dyads)
+## Total trials discarded: 0 (across 0 dyads)
 ```
 
 ## Winnow the data
@@ -301,17 +319,17 @@ winnowed_info_df = info_df %>% ungroup() %>%
   mutate(t = round(t,-1)) %>%
   select(experiment, t, dyad, participant, 
          trial_type, trial_number, response_counter, guess_counter, accept_type, 
-         length, guess, guess_error, response_type, network_id) %>%
+         length, guess, guess_error, network_id) %>%
   na.omit()
 
 winnowed_info_df = unique(setDT(winnowed_info_df), by = c('experiment', 'dyad',
         'participant', 'trial_type', 'trial_number', 'response_counter', 'guess_counter',
-        'accept_type', 'length', 'guess', 'guess_error', 'response_type', 'network_id'))
+        'accept_type', 'length', 'guess', 'guess_error', 'network_id'))
 ```
 
 
 ```
-## Mean included trials per dyad: 13.6
+## Mean included trials per dyad: 15
 ```
 
 ## Quick sanity check
@@ -331,7 +349,7 @@ only_one_trial_type = winnowed_info_df %>% ungroup() %>%
 
 
 ```
-## Included participants who did not submit guesses during any training trials: 2
+## Included participants who did not submit guesses during any training trials: 5
 ```
 
 It looked like some participants chose not to complete the training trials or struggled with getting their guesses submitted in time.  We'll need to handle this when we create training slopes.
@@ -356,7 +374,7 @@ question_df = questionnaire_files %>% ungroup() %>%
 ```
 
 ```
-##  Found 40 records... Imported 40 records. Simplifying...
+##  Found 182 records... Imported 182 records. Simplifying...
 ```
 
 ```r
@@ -391,7 +409,32 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 
 ```
-## Total dyads with all guess and questionnaire data: 20
+## Total dyads with all guess and questionnaire data: 54
+```
+
+## Export duration and bonus data for participants
+
+
+```r
+# link participants to their bonus and duration data
+participation_descriptives = node_files %>%
+  select(experiment, id, participant_id, network_id) %>%
+  full_join(., participation_descriptives,
+            by = c('participant_id',
+                   'experiment')) %>%
+  full_join(., dyad_df,
+             by = c('id' = 'participant',
+                    'experiment',
+                    'network_id')) %>%
+  dplyr::filter(dyad %in% usable_question_dyads$dyad & experiment %in% usable_question_dyads$experiment) %>%
+  select(-contents, -network_id)
+```
+
+
+```r
+# export bonuses
+write.table(participation_descriptives, './data/participation_descriptives.csv', 
+            sep=',', append = FALSE, quote = FALSE, row.names = FALSE, col.names = TRUE)
 ```
 
 ## Create unique dyad and participant IDs across all experiments
@@ -421,6 +464,43 @@ winnowed_info_df = right_join(unique_participant_ids, winnowed_info_df,
                 participant = unique_participant,
                 dyad = unique_dyad) %>%
   dplyr::arrange(experiment, participant, trial_number, response_counter)
+```
+
+## Calculate correct bonuses for participants
+
+
+```r
+# 
+# # for reporting, correct the errors in calculating bonuses
+# z = winnowed_info_df %>% 
+#   
+#   # calculate the participant's correct bonus
+#   group_by(experiment, dyad, participant, trial_number) %>%
+#   dplyr::filter(response_counter==max(response_counter) & trial_number > 9) %>%
+#   select(experiment, original_dyad, original_participant, participant, dyad, trial_number, response_counter, guess, guess_error) %>%
+#   mutate(guess_accuracy = (100-abs(guess_error))/100) %>%
+#   ungroup() %>%
+#   group_by(experiment, original_dyad, original_participant) %>%
+#   summarize(corrected_bonus = round(mean(guess_accuracy)*2,2)) %>%
+#   
+#   # join to the original table
+#   left_join(participation_descriptives, 
+#             ., 
+#             by=c('experiment',
+#                  'dyad'= 'original_dyad',
+#                  'id'='original_participant')) %>%
+# 
+#   # clean it up
+#   
+#   ####STILL NEED TO FIGURE THIS OUT
+# 
+#   
+# winnowed_info_df %>%
+#   dplyr::filter(experiment=='5534b851' &
+#                participant==117)
+# # export bonuses
+# write.table(participation_descriptives, './data/participation_descriptives.csv', 
+#             sep=',', append = FALSE, quote = FALSE, row.names = FALSE, col.names = TRUE)
 ```
 
 ## Increment all counters by 1
@@ -537,73 +617,32 @@ source('./supplementary-code/libraries_and_functions-pmc.r')
 winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
 ```
 
-## Descriptive statistics
+## Bonuses and duration
 
 
 ```r
-# get list of individual experiments included in the data
-experiment_files = list.dirs('./data', recursive=FALSE)
-
-# concatenate the files
-participant_files = data.frame()
-for (experiment in experiment_files){
-  
-  # read in the next experiment's files and add ID to each
-  exp_id = strsplit(as.character(experiment),"/|-")[[1]][3]
-  next_participant = read.table(paste(experiment,'/participant.csv',sep=''), sep=',',
-                           header=TRUE, stringsAsFactors = FALSE) %>%
-    mutate(experiment = exp_id)
-
-  # append to group files
-  participant_files = rbind.data.frame(participant_files, next_participant)
-}
-
-# keep only the info we'll need
-participant_time_df = participant_files %>%
-  select(id, creation_time, end_time, experiment, worker_id, bonus) %>%
-  mutate(creation_time = ymd_hms(creation_time)) %>%
-  mutate(end_time = ymd_hms(end_time)) %>%
-  mutate(duration = (end_time - creation_time))#/60)
-```
-
-
-```r
-# identify how long all participants took to complete the experiment
-all_participant_time = participant_time_df %>%
-  select(-bonus) %>%
-  na.omit()
+participation_descriptives = read.table('./data/participation_descriptives.csv', 
+                                        sep=',', header = TRUE)
 ```
 
 
 ```
-## Average participation: 928.819 minutes
-```
-
-
-```r
-# identify how long included participants took to complete the experiment
-included_participant_time = participant_time_df %>%
-  na.omit()
-
-# export data
-write.table(included_participant_time, './data/participant_duration.csv', sep=',',
-            append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)
+## Average participation duration: 11.74228 minutes
 ```
 
 
 ```
-## Average participation: 719.454 minutes
+## Average particpant performance bonus (minus flat completion bonus):  $1.777685
 ```
 
-We'd intended for each experimental session to last 20 minutes, but the mean duration for included participants in these pilot data is about half of that.  Future pilot studies should increase the number of trials.
 
 ## Variable distributions
 
 
 ```
-## Warning: Removed 11 rows containing non-finite values (stat_density).
+## Warning: Removed 174 rows containing non-finite values (stat_density).
 
-## Warning: Removed 11 rows containing non-finite values (stat_density).
+## Warning: Removed 174 rows containing non-finite values (stat_density).
 ```
 
 ![**Figure**. Density plots of questionnaire responses, normalized error, and improvement over training trials.](./figures/pmc-all_variables-knitr.jpg)
