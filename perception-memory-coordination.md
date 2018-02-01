@@ -569,7 +569,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ```r
 # create a column for the partner's guess at that time
-winnowed_info_df2 = winnowed_info_df %>% ungroup() %>%
+winnowed_info_df = winnowed_info_df %>% ungroup() %>%
   
   # create participant binary values
   group_by(experiment, dyad) %>%

@@ -685,7 +685,7 @@ ggsave(plot = normalized_error_hist,
 ```{r create-column-for-partner-guess}
 
 # create a column for the partner's guess at that time
-winnowed_info_df2 = winnowed_info_df %>% ungroup() %>%
+winnowed_info_df = winnowed_info_df %>% ungroup() %>%
   
   # create participant binary values
   group_by(experiment, dyad) %>%
