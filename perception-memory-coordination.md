@@ -569,12 +569,12 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ```r
 # create a column for the partner's guess at that time
-winnowed_info_df = winnowed_info_df %>% ungroup() %>%
+winnowed_info_df2 = winnowed_info_df %>% ungroup() %>%
   
   # create participant binary values
   group_by(experiment, dyad) %>%
-  mutate(partner_id = (min(participant)+max(participant)) - participant) %>%
-  mutate(self_id = participant) %>%
+  mutate(self_id = (min(participant)+max(participant)) - participant) %>%
+  mutate(partner_id = participant) %>%
   ungroup() %>%
 
   # gather into multiple values
