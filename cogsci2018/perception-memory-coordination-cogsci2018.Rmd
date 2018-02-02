@@ -125,6 +125,7 @@ Accuracy was measured as a ratio relative to the total possible error on a given
 All analyses were performed in R [@r2016r]. Linear mixed-effects models were performed using the `lme4` package [@bates2015fitting] using the maximal random slope structure for each random intercept to achieve model convergence [@barr2013random]. All main and interaction terms were centered and standardized prior to entry in the model, allowing the model estimates to be interpretable as effect sizes [@keith2005multiple].
 
 ## Model 1: Coordinated Error over Time
+
 ```{r build-model-1}
 
 # create model
@@ -142,31 +143,49 @@ lag_row = 2
 training_row = 3 
 
 ```
+
 Our first model tested whether individuals' ratings became more similar over time while accounting for training improvement. We constructed a linear mixed-effects model predicting cross-correlation coefficients of normalized error with absolute lag and training improvement, using maximal random effects structures for experiment and ratings of difficulty after the experiment. As predicted, we find that dyads were significantly and strongly coupled in their error ratings (*\(\beta\)* = `r round(ccf_main_model_readable$Estimate[lag_row],2)`, *p* < `r ccf_main_model_readable$"p-value"[lag_row]+.0001`), with no effect of training improvement (*\(\beta\)* = `r round(ccf_main_model_readable$Estimate[training_row],2)`, *p* < `r ccf_main_model_readable$"p-value"[training_row]`). In other words, we find that players were more likely to produce lines with similar errors at the same time, even across repeated guesses within a single trial, regardless of how well-adapted they were to the task during training.
 
 ```{r build-model-2}
 
 # difference the scores between own and partners' error
-differences_in_error_st = info_plot %>%
-  dplyr::filter(trial_type=='test') %>%
-  mutate(error_from_partner = abs(normalized_error - partner_error)) %>%
+differences_in_error = info_plot %>%
+  
+  # start trials at zero and only include tests
   mutate(trial_number = trial_number-10) %>%
-  mutate(error_diff = abs(normalized_error) - error_from_partner) %>%
+  dplyr::filter(trial_type=='test') %>%
+
+  # take the absolute value of normalized error
+  mutate(normalized_error = abs(normalized_error)) %>%
+  mutate(partner_error = abs(partner_error)) %>%
+    
+  # create the error from partner variable and the difference between them
+  mutate(error_from_partner = abs(normalized_error - partner_error)) %>%
+  mutate(both.errors = error_from_partner * normalized_error) %>%
+  
+  # create error difference variable
+  mutate(error_diff = abs(normalized_error - error_from_partner)) %>%
+  
+  # use response-by-response numbering, not just trial-by-trial
   group_by(experiment, dyad, participant) %>%
   mutate(guess_number = 1:n()) %>%
-  ungroup() %>%
+  ungroup()
+
+# standardize everything
+differences_in_error_st = differences_in_error %>%
   mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
   mutate_at(vars(participant,dyad),
             funs(factor))
 
 # run the model
-checking_rates_model = lmer(error_diff ~ trial_number + training_improvement + 
-                              (1 + trial_number + training_improvement | participant) +
-                              (1 + trial_number + training_improvement | difficulty),
+checking_rates_model = lmer(guess_number ~ normalized_error + error_from_partner + both.errors + training_improvement + 
+                              (1 + both.errors | participant) +
+                              (1 + both.errors | difficulty),
                             data = differences_in_error_st)
 
 # make it readable
 checking_rates_model_readable = xtable_lme(checking_rates_model)
+checking_rates_model_readable
 
 # identify which rows correspond to which value
 trial_row = 2
@@ -176,25 +195,20 @@ training_row = 3
 
 ## Model 2: Learning *and* Coordinative Processes
 
-However, during the experiment, both participants are also learning to play the game better over time, in addition to influencing one another. To ensure that the similarity observed in our first model was not simply an artifact of both participants improving individually, we next constructed a linear mixed-effects model to test whether the relation between participants' (1) adaptation to their partner's perceptual estimation and memory and (2) own performance changed over time. We calculated the former using normalized error ("true error") and the latter as the "error" between the participants' guesses ("partner error"). 
+However, during the experiment, both participants are also learning to play the game better over time, in addition to influencing one another. To ensure that the similarity observed in our first model was not simply an artifact of both participants improving individually, we next tested the relation between participants' (1) adaptation to their partner's perceptual estimation and memory and (2) own performance changed over time. If participants were adapting along both avenues, we might find evidence of these dual processes through differences in their rates of adaptation over time. We calculated the former using normalized error ("true error") and the latter as the "error" between the participants' guesses ("partner error").
 
-We built a linear mixed-effects model predicting the difference between "true error" and "partner error" with trial number and participants' training improvement, including maximal random effects structure for participant and difficulty. We found a trend toward a significant effect in the expected direction, with the difference decreasing slightly but not statistically significantly over time (*\(\beta\)* = `r round(checking_rates_model_readable$Estimate[trial_row],2)`, *p* < `r checking_rates_model_readable$"p-value"[trial_row]`; see Figure 1). Given the relative brevity of the game (again, lasting an average of only `r round(mean(participation_descriptives$duration),2)` minutes), this trend suggests that---over a longer period of time---we may see a significant efect of coordination.
+We built a linear mixed-effects model predicting the difference between "true error" and "partner error" with trial number and participants' training improvement, including maximal random effects structure for participant and difficulty. We found a trend toward a significant effect in the expected direction, with the difference decreasing slightly but not statistically significantly over time (*\(\beta\)* = `r round(checking_rates_model_readable$Estimate[trial_row],2)`, *p* < `r checking_rates_model_readable$"p-value"[trial_row]`; see Figure 1). Given the relative brevity of the game (again, lasting an average of only `r round(mean(participation_descriptives$duration),2)` minutes), this trend suggests that---over a longer period of time---we may see a significant difference in their slopes over time.
 
 Again, we found no effect of training improvement (*\(\beta\)* = `r round(checking_rates_model_readable$Estimate[training_row],2)`, *p* < `r checking_rates_model_readable$"p-value"[training_row]`).
 
 
 ```{r , fig.env = "figure", fig.pos = "H", fig.align='left', fig.width=3, fig.height=3, set.cap.width=T, num.cols.cap=1, fig.cap = "Difference over time between the guess deviation from truth (in blue) and from their partner's guess (in red). Analysis presented in Model 2."}
 
-# difference the scores between own and partners' error
-differences_in_error = info_plot %>%
-  dplyr::filter(trial_type=='test') %>%
-  mutate(error_from_partner = (normalized_error - partner_error)) %>%
-  mutate(trial_number = trial_number-10)
-  
+
 # create a plot to show difference in slopes
 partner_vs_truth_slope_plot = ggplot(differences_in_error,
                                      aes(x = trial_number,
-                                         y = abs(normalized_error))) +
+                                         y = normalized_error)) +
   
   # smooth the from-truth error
   geom_smooth(method='lm',
@@ -203,7 +217,7 @@ partner_vs_truth_slope_plot = ggplot(differences_in_error,
   
   # smooth the from-partner error
   geom_smooth(aes(x = trial_number,
-                  y = abs(error_from_partner),
+                  y = error_from_partner,
                   colour = 'From partner'),
               method = 'lm',
               formula=y~x) +
