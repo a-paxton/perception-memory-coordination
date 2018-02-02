@@ -25,7 +25,8 @@ required_packages = c(
   'jsonlite',
   'lubridate',
   'tidyr',
-  'tibble'
+  'tibble',
+  'xtable'
 )
 
 # load required packages
@@ -102,6 +103,7 @@ pander_lme = function(lme_model_name, stats.caption){
   
   # load in pander
   library(pander)
+  library(dplyr)
   
   # disable scientific notation
   options(scipen = 999)
@@ -122,6 +124,16 @@ pander_lme = function(lme_model_name, stats.caption){
   neat_output$sig[neat_output$p < .01] = '**'
   neat_output$sig[neat_output$p < .001] = '***'
   
+  neat_output = select(neat_output, -Std..Error)
+  
+  # fix names
+  setDT(neat_output, keep.rownames = TRUE)[]
+  names(neat_output)[1] = "Variable"
+  names(neat_output)[2] = "Estimate"
+  names(neat_output)[3] = "t-value"
+  names(neat_output)[4] = "p-value"
+  names(neat_output)[5] = "Sig."
+  
   # set a caption that includes R-squared values
   if (stats.caption == TRUE){
     
@@ -140,6 +152,45 @@ pander_lme = function(lme_model_name, stats.caption){
   } else { # or return a table without it
     return(pander(neat_output, split.table = Inf, style = 'rmarkdown'))
   }
+}
+
+# "xtable_lme": simplify lme4 printouts (available on GitHub: https://github.com/a-paxton/stats-tools)
+xtable_lme = function(lme_model_name){
+  
+  # load in pander
+  library(pander)
+  library(dplyr)
+  
+  # disable scientific notation
+  options(scipen = 999)
+  
+  # convert the model summary to a dataframe
+  neat_output = data.frame(summary(lme_model_name)$coefficient)
+  
+  # round p-values (using Psychological Science's recommendations)
+  neat_output$p = 2*(1-pnorm(abs(neat_output$t.value)))
+  neat_output$p[neat_output$p < .0005] = round(neat_output$p[neat_output$p < .0005],4)
+  neat_output$p[neat_output$p >= .0005] = round(neat_output$p[neat_output$p >= .0005],3)
+  neat_output$p[neat_output$p >= .25] = round(neat_output$p[neat_output$p >= .25],2)
+  
+  # create significance and trending markers
+  neat_output$sig = ' '
+  neat_output$sig[neat_output$p < .1] = '.'
+  neat_output$sig[neat_output$p < .05] = '*'
+  neat_output$sig[neat_output$p < .01] = '**'
+  neat_output$sig[neat_output$p < .001] = '***'
+  
+  neat_output = select(neat_output, -Std..Error, -t.value)
+  
+  # fix names
+  setDT(neat_output, keep.rownames = TRUE)[]
+  names(neat_output)[1] = ""
+  names(neat_output)[2] = "Estimate"
+  names(neat_output)[3] = "p-value"
+  names(neat_output)[4] = "Sig."
+  
+  # return the table
+  return(neat_output)
 }
 
 ##
@@ -195,6 +246,7 @@ pander_lm = function(lm_model_name, stats.caption){
   
   # load in pander
   library(pander)
+  library(data.table)
   
   # disable scientific notation
   options(scipen = 999)

@@ -343,7 +343,7 @@ cat('Total trials discarded: ',sum(total_removed_trials$total_discarded),' (acro
 	
 # winnow and recorder columns	
 winnowed_info_df = info_df %>% ungroup() %>%	
-  dplyr::filter(dyad %in% paired_individuals$dyad) %>%	
+  dplyr::filter(dyad %in% paired_individuals$dyad & experiment %in% paired_individuals$experiment) %>%	
   dplyr::left_join(., discarded_trials_df,	
                    by = c("experiment","dyad","trial_number")) %>%	
   dplyr::filter(is.na(difference_in_responses)) %>%	

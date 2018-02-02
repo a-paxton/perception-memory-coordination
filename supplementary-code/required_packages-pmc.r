@@ -24,7 +24,8 @@ required_packages = c(
   'lubridate',
   'tidyr',
   'tibble',
-  'devtools'
+  'devtools',
+  'xtable'
 )
 
 # install missing packages (adapted from <http://stackoverflow.com/a/4090208>)
