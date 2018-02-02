@@ -49,9 +49,8 @@
 % \textwidth 16cm
 % \textheight 21cm
 
-\title{Interpersonal Coordination in Perception and Memory in an Online
-Experiment: Using Networked Crowdsourcing for Experiments on Human
-Social Interaction}
+\title{Interpersonal Coordination of Perception and Memory in Minimally
+Interactive Contexts}
 
 
 \author{{\large \bf Alexandra Paxton} \\ \texttt{paxton.alexandra@gmail.com} \\ Institute of Cognitive and Brain Sciences \\ Berkeley Institute for Data Science \\ University of California, Berkeley \And {\large \bf Thomas J. H. Morgan} \\ \texttt{thomas.j.h.morgan@asu.edu} \\ School of Human Evolution and Social Change \\ Arizona State University \AND {\large \bf Jordan W. Suchow} \\ \texttt{suchow@berkeley.edu} \\ Social Science Matrix \\ University of California, Berkeley \And {\large \bf Thomas L. Griffiths} \\ \texttt{tom\_griffiths@berkeley.edu} \\ Department of Psychology \\ University of California, Berkeley}
@@ -82,10 +81,6 @@ memory.
 interpersonal coordination; networked crowdsourcing; human
 communication; online experiments; social interaction
 \end{abstract}
-
-\section{Feedback from Tom}\label{feedback-from-tom}
-
-decrease the ``network'' stuff -- focus on online expeimrnts
 
 \section{Introduction}\label{introduction}
 
@@ -153,11 +148,10 @@ about their partner(s) will be available to establishing what
 communication channel(s) can be utilized to crafting interactive studies
 for groups beyond the dyad. We propose that researchers interested in
 social cognition and behavior take advantage of the rapid advances in
-crowdsourcing platforms to develop \emph{networked crowdsourcing}
-experiment models.
+crowdsourcing platforms to develop real-time experiment models.
 
-\subsection{Networked Crowdsourcing for Social
-Experiments}\label{networked-crowdsourcing-for-social-experiments}
+\subsection{Crowdsourcing for Interactive, Interpersonal Social
+Experiments}\label{crowdsourcing-for-interactive-interpersonal-social-experiments}
 
 Recent developments in how data can be collected and analyzed are
 transforming cognitive science. This is reflected in an increased
@@ -168,7 +162,6 @@ testing ground for key scientific theories (Paxton \& Griffiths, 2017).
 While these data can provide a window into observational data about
 human behavior at a massive scale, technological advances are quickly
 expanding to accommodate new \emph{experimental} paradigms as well.
-{[}\textbf{From AP: Not sure this paragraph is useful anymore}{]}
 
 Crowdsourcing platforms like Amazon Mechanical Turk
 (\url{http://www.mturk.com}) have been extensively used as a means to
@@ -188,24 +181,14 @@ to continue to provide more powerful experimental tools.
 To date, many of these experiments have focused on individuals, making
 it difficult for researchers to study social processes through online
 experiments. We believe that the next step in online experimentation,
-then, is to move to \emph{networked crowdsourcing}, creating interactive
-or interdependent experimental paradigms that construct interacting
-networks of people to understand social processes and phenomena. In
-doing so, networked crowdsourcing can provide researchers interested in
-social behavior the opportunity to expand their experimental
+then, is to move to models of real-time social interaction, creating
+interactive or interdependent experimental paradigms that construct
+interacting dyads or larger networks of people to understand social
+processes and phenomena. In doing so, real-time interactive paradigms
+deployed on crowdsourcing platforms can provide researchers interested
+in social behavior the opportunity to expand their experimental
 capabilities beyond the lab while not compromising on the richness and
 complexity of true interactive contexts.
-
-Online experimental platforms have been capable of serving individual
-paradigms for the past several years, but what marks this idea as
-different from these paradigms is our focus on \emph{networks}. Instead
-of handling participants as individuals, networked crowsourcing allows
-researchers to connect participants with one another---whether through
-direct, real-time interaction or through sequential transmission
-chains---to directly manipulate social dynamics online in the same way
-that is possible within the lab. As such, networked crowdsourcing is
-uniquely positioned to support experimental research into human social
-behavior at scale.
 
 A recurring concern for using online experiments lies in its participant
 population. Like all convenience samples, there can be questions about
@@ -369,8 +352,8 @@ Levy, Scheepers, \& Tily, 2013). All main and interaction terms were
 centered and standardized prior to entry in the model, allowing the
 model estimates to be interpretable as effect sizes (Keith, 2005).
 
-\subsection{Similarity in ratings over
-time}\label{similarity-in-ratings-over-time}
+\subsection{Model 1: Coordinated Error over
+Time}\label{model-1-coordinated-error-over-time}
 
 Our first model tested whether individuals' ratings became more similar
 over time while accounting for training improvement. We constructed a
@@ -380,9 +363,14 @@ maximal random effects structures for experiment and ratings of
 difficulty after the experiment. As predicted, we find that dyads were
 significantly and strongly coupled in their error ratings
 (\emph{\(\beta\)} = -0.43, \emph{p} \textless{} 0.0001), with no effect
-of training improvement (\emph{\(\beta\)} =
-\texttt{r.\ round(ccf\_main\_model\_readable\$Estimate{[}training\_row{]},2)},
-\emph{p} \textless{} 0.36).
+of training improvement (\emph{\(\beta\)} = -0.06, \emph{p} \textless{}
+0.36). In other words, we find that players were more likely to produce
+lines with similar errors at the same time, even across repeated guesses
+within a single trial, regardless of how well-adapted they were to the
+task during training.
+
+\subsection{\texorpdfstring{Model 2: Learning \emph{and} Coordinative
+Processes}{Model 2: Learning and Coordinative Processes}}\label{model-2-learning-and-coordinative-processes}
 
 However, during the experiment, both participants are also learning to
 play the game better over time, in addition to influencing one another.
@@ -393,23 +381,28 @@ between participants' (1) adaptation to their partner's perceptual
 estimation and memory and (2) own performance changed over time. We
 calculated the former using normalized error (``true error'') and the
 latter as the ``error'' between the participants' guesses (``partner
-error''). We built a linear mixed-effects model predicting the
-difference between ``true error'' and ``partner error'' with trial
-number and participants' training improvement, including maximal random
-effects structure for participant and difficulty. We found a trend
-toward a significant effect in the expected direction, with the
-difference decreasing slightly but not statistically significantly over
-time (\emph{\(\beta\)} = 0.04, \emph{p} \textless{} 0.092). . Again, we
-found no effect of training improvement (\emph{\(\beta\)} =
-\texttt{r.\ round(checking\_rates\_model\_readable\$Estimate{[}training\_row{]},2)},
-\emph{p} \textless{} 0.42).
+error'').
+
+We built a linear mixed-effects model predicting the difference between
+``true error'' and ``partner error'' with trial number and participants'
+training improvement, including maximal random effects structure for
+participant and difficulty. We found a trend toward a significant effect
+in the expected direction, with the difference decreasing slightly but
+not statistically significantly over time (\emph{\(\beta\)} = 0.04,
+\emph{p} \textless{} 0.092; see Figure 1). Given the relative brevity of
+the game (again, lasting an average of only 11.69 minutes), this trend
+suggests that---over a longer period of time---the differences in the
+estimates could
+
+Again, we found no effect of training improvement (\emph{\(\beta\)} =
+0.02, \emph{p} \textless{} 0.42).
 
 \begin{CodeChunk}
 \begin{figure}[H]
 
 \includegraphics{figs/unnamed-chunk-1-1} \hfill{}
 
-\caption[One column image]{One column image.}\label{fig:unnamed-chunk-1}
+\caption[Difference over time between the guess deviation from truth (in blue) and from their partner's guess (in red)]{Difference over time between the guess deviation from truth (in blue) and from their partner's guess (in red). Analysis presented in Model 2.}\label{fig:unnamed-chunk-1}
 \end{figure}
 \end{CodeChunk}
 
@@ -423,11 +416,14 @@ Injecting social dynamics in experimentally and/or as much as is desired
 
 \section{Acknowledgements}\label{acknowledgements}
 
-Thanks go to the Dallinger development team for their assistance in
-debugging the experiment.
+Our thanks go to Nelle Varoquaux and to the Dallinger development team
+for their assistance in debugging the experiment.
 
-This work was funded in part by the \textbf{DALLINGER GRANT INFO GOES
-HERE}.
+This work was funded in part by DARPA Cooperative Agreement D17AC00004.
+This work is sponsored by the Defense Advanced Research Projects Agency
+through the NGS2 program. The contents of this paper do not necessarily
+reflect the position or the policy of the Government and no official
+endorsement should be inferred.
 
 \section{References}\label{references}
 
