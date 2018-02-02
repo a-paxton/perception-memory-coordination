@@ -60,38 +60,40 @@ Social Interaction}
 \maketitle
 
 \begin{abstract}
-Recent advances in crowdsourcing have helped many cognitive scientists
-reach out beyond traditional undergraduate subject pools to run a range
-of experimental paradigms with a wider audience. To date, however, many
-of these opportunities for online experiments on crowdsourcing platforms
-have been closed to researchers interested in capturing the dynamics of
-human social interaction. We argue that an important next step for
-increasing the adoption and utility of online experiments will lie in
-using \emph{networked crowdsourcing}---moving beyond providing
-individual participants separate tasks to support more complex
-interactive or interdependent configurations. Networked crowdsourcing
-allows researchers to capture real-time and transmission-chain
-interaction between participants to study social cognition and behavior.
-Here, we use networked crowdsourcing to move the study of real-time
-interpersonal coordination from the lab and onto Amazon Mechanical Turk,
-examining how people grow similar over time in their perception and
-memory.
+The subtle hum of interpersonal coordination that runs throughout social
+communication and interaction shows how individuals can subtly influence
+one another's behaviors, thoughts, and emotions over time. While the
+majority of research on coordination has been done on face-to-face
+interaction, recent advances in crowdsourcing have opened up the
+opportunity to conduct large-scale, real-time social interaction
+experiments. We take advantage of these tools to explore the
+interpersonal coordination in a ``minimally interactive context,''
+distilling the richness of natural communication into a tightly
+controlled setting to explore how people become coupled in their
+perceptual and memory systems while performing a task together.
+Consistent with previous work on postural sway and gaze, we find that
+individuals become coupled to one another's cognitive processes;
+interestingly---although participants had no information about nor
+direct communication with their partner---we also find hints of the
+context-shaping effects that social forces can play in face-to-face
+interaction.
 
 \textbf{Keywords:}
-interpersonal coordination; networked crowdsourcing; human
-communication; online experiments; social interaction
+interpersonal coordination; human communication; online experiments;
+social interaction
 \end{abstract}
 
 \section{Introduction}\label{introduction}
 
 Research on the phenomenon of \emph{interpersonal coordination} focuses
 on the subtle ways in which our interactions with others directly affect
-our own behaviors, feelings, and thoughts. Interest has surged over the
-last several decades in understanding how contact with others shapes our
-cognition and behavior. Much of the research on coordination (also known
-as interactive alignment, interpersonal synchrony, mimicry, and more;
-see Paxton, Dale, \& Richardson, 2016) focuses on how we become more
-similar over time, especially during task-oriented or friendly contexts.
+our own behaviors, feelings, and thoughts. Interest in coordination
+(also known as interactive alignment, interpersonal synchrony, mimicry,
+and more; see Paxton, Dale, \& Richardson, 2016) has surged over the
+last several decades as a framework for understanding how contact with
+others shapes our cognition and behavior, with much of it focusing on
+how we become more similar over time during task-oriented or friendly
+contexts.
 
 A growing perspective in this area has taken inspiration from dynamical
 systems theory, conceptualizing interaction as a complex adaptive system
@@ -101,30 +103,30 @@ A fundamental principle of this dynamical systems perspective holds that
 coordination should not be static across contexts nor over time.
 Exploring how new contexts and contextual demands---like interpersonal
 conflict (Paxton \& Dale, 2013), friendly competition (Tschacher, Rees,
-\& Ramseyer, 2014), or specialized task demands (Ramenzoni, Riley,
-Shockley, \& Baker, 2012)---has become a central part of this
-perspective, laying out under what conditions coordination disappears,
-increases, or demonstrates complementary rather than identical patterns
-(Fusaroli et al., 2012).
+\& Ramseyer, 2014), or specialized task demands (Fusaroli et al.,
+2012)---has become a central part of this perspective, laying out under
+what conditions coordination disappears, increases, or demonstrates
+complementary rather than identical patterns.
 
-Research is similarly interested in comparing how coordination changes
-across different behavioral or cognitive systems. Under the dynamical
-systems perspective, a context's unique pressures, the resulting
-coordination dynamics, and their impact on the interaction may
-differ---for example, demonstrating that individuals tend to become more
-similar over time across a variety of metrics (Louwerse, Dale, Bard, \&
-Jeuniaux, 2012) but that specific kinds of coordination can help or hurt
-outcomes (Fusaroli et al., 2012) during task-related interaction.
+There is similar interest in comparing how coordination changes across
+different behavioral or cognitive systems. Under the dynamical systems
+perspective, a context's unique pressures, the resulting coordination
+dynamics, and their impact on the interaction may differ over time and
+across settings. For example, some of the most iconic work in this area
+have found that---during task-related interaction---individuals tend to
+become more similar over time across a variety of metrics (Louwerse,
+Dale, Bard, \& Jeuniaux, 2012) but that specific kinds of coordination
+can differentially help or hurt outcomes (Fusaroli et al., 2012).
 
 Broadly, during tasks that are neutral (Shockley, Santana, \& Fowler,
-2003), cooperative (Louwerse et al., 2012), or non-confrontationally
-competitive (e.g., competitive games; Tschacher et al., 2014), previous
-work broadly suggests that individuals' behavior and cognition become
-more similar over time. A range of behavioral signals---both high-level
-(e.g., gesture; Louwerse et al., 2012) and low-level (e.g., postural
-sway; Shockley et al., 2003)---become synchronized, even when the
-interacting individuals are unable to see one another (Shockley et al.,
-2003) or are separated in time (D. C. Richardson \& Dale, 2005).
+2003), cooperative (Louwerse et al., 2012), or competitive (but not
+conflict-driven, e.g., competitive games; Tschacher et al., 2014),
+previous work broadly suggests that individuals' behavior and cognition
+become more similar over time. A range of behavioral signals---both
+high-level (e.g., gesture; Louwerse et al., 2012) and low-level (e.g.,
+postural sway; Shockley et al., 2003)---become synchronized, even when
+the interacting individuals are unable to see one another (Shockley et
+al., 2003) or are separated in time (D. C. Richardson \& Dale, 2005).
 
 The systematic testing of coordination across a variety of interaction
 contexts is vital to charting its dynamical landscape. This methodical
@@ -133,11 +135,12 @@ control parameters and key factors of initial conditions that shape how
 coordination emerges and how it impacts interaction outcomes. Doing so,
 however, requires researchers on interpersonal coordination to expand
 our view of experimental paradigms: Even as we continue to embrace more
-complex naturalistic interactions (e.g., Tschacher et al., 2014), we
-must continue developing experimental methods for analyzing ``minimally
-interactive contexts'' (Hale, Pan, \& Hamilton, 2015)---that is,
-situations in which our interactions with others are limited in
-behavioral channel, scope, or time---to fully map the interaction space.
+complex naturalistic interactions (Paxton \& Dale, 2013; e.g., Tschacher
+et al., 2014), we must continue developing experimental methods for
+analyzing ``minimally interactive contexts'' (Hale, Pan, \& Hamilton,
+2015)---that is, situations in which our interactions with others are
+limited in behavioral channel, scope, or time---to fully map the
+interaction space.
 
 In the search for both fully interactive and minimally interactive
 paradigms, we believe that online experiment platforms and crowdsourcing
@@ -200,9 +203,8 @@ another. In this case, we focus on task performance within a minimally
 interactive context through a real-time cooperative online experiment.
 Specifically, the current study focuses on understanding how interacting
 individuals become entrained in perception and memory over time,
-becoming a sort of ``line estimation system''---just as two people in
-the iconic tangram task become a ``tangram recognition system'' (Dale,
-Richardson, \& Kirkham, 2011).
+becoming a sort of ``line estimation system'' (cf. Dale, Richardson, \&
+Kirkham, 2011).
 
 \section{Method}\label{method}
 
@@ -219,7 +221,7 @@ California, Berkeley.
 
 }
 
-\caption[Experiment flow]{Experiment flow.}\label{fig:2-col-image}
+\caption[Experiment flow]{Experiment flow}\label{fig:2-col-image}
 \end{figure*}
 \end{CodeChunk}
 
@@ -251,17 +253,17 @@ project (\url{https://osf.io/8fu7x/}).
 
 Each participant was individually recruited on Amazon Mechanical Turk to
 play a ``Line Estimation Memory Game'' (advertisement: ``Test your
-memory skills!''). Upon completing informed consent, participants were
-told that they would be playing a game in which they would be required
-to remember and re-create line lengths. Participants were informed that
-they would be complete their training trials individually and would then
-begin playing with a partner. Participants were given no information
-about their partner other than the guess that their partner made; no
-information about the partner's identity was shared.
+memory skills!''; see Figure 1 for experiment flow). Upon completing
+informed consent, participants were told that they would be playing a
+game in which they would be required to remember and re-create line
+lengths. Participants were informed that they would be complete their
+training trials individually and would then begin playing with a
+partner. Participants were given no information about their partner
+other than the guess that their partner made; no information about the
+partner's identity was shared.
 
 In each trial, participants were shown 3 red lines, each of a different
-length (see figure; \textbf{NB}: add figure), and were asked to remember
-all three of
+length, and were asked to remember all three of
 them.\footnote{A pilot version of this study showed that participants performed at ceiling when given only 1 line to remember and recreate. The additional 2 lines were added to strictly increase the memory load, as opposed to adding difficulty in other ways (e.g., creating a moving stimulus).}
 The 3 stimulus lines were displayed for 2 seconds then removed,
 providing participants with a blank screen for 0.5 seconds. Participants
@@ -330,6 +332,12 @@ by 60, or over-estimate it by 40. As such, the maximum possible error
 for that trial would be 60, and the participant's error would be
 calculated relative to that maximum possible error.
 
+\subsubsection{Training Improvement}\label{training-improvement}
+
+To provide a baseline for participants' improvement during training, we
+calculated the slope of participants' normalized error over all training
+trials.
+
 \subsubsection{Coordination}\label{coordination}
 
 To measure how participants' perceptual and memory systems became more
@@ -363,12 +371,12 @@ normalized error with absolute lag and training improvement, using
 maximal random effects structures for experiment and ratings of
 difficulty after the experiment. As predicted, we find that dyads were
 significantly and strongly coupled in their error ratings
-(\emph{\(\beta\)} = -0.43, \emph{p} \textless{} 0.0001), with no effect
-of training improvement (\emph{\(\beta\)} = -0.06, \emph{p} \textless{}
-0.36). In other words, we find that players were more likely to produce
-lines with similar errors at the same time, even across repeated guesses
-within a single trial, regardless of how well-adapted they were to the
-task during training.
+(\emph{\(\beta\)}=-0.43, \emph{p}\textless{}0.0001), with no effect of
+training improvement (\emph{\(\beta\)}=-0.06, \emph{p}=0.36). In other
+words, we find that players were more likely to produce lines with
+similar errors at the same time, even across repeated guesses within a
+single trial, regardless of how well-adapted they were to the task
+during training.
 
 \subsection{\texorpdfstring{Model 2: Learning \emph{and} Coordinative
 Processes}{Model 2: Learning and Coordinative Processes}}\label{model-2-learning-and-coordinative-processes}
@@ -389,16 +397,17 @@ To answer this question, we built a linear mixed-effects model
 predicting cumulative guess number with difference between ``true
 error'' and ``partner error'' and participants' training improvement,
 with the maximal random effects structure for participant and
-difficulty. As expected, we found that participants' rates of adaptation
-to their partner significantly differed from their rates of adaptation
-to the game (\emph{\(\beta\)} = -0.06, \emph{p} \textless{} 0.008; see
-Figure 2). In other words, this model suggests that individuals are
-simultaneously engaging in both learning \emph{and} coordinative
-processes during the game, becoming attenuated to the learning task
-while also synchronizing to one another's cognitive processes.
+difficulty. As expected, we did found that participants' rates of
+adaptation to their partner significantly differed from their rates of
+adaptation to the game (\emph{\(\beta\)}=-0.06,
+\emph{p}\textless{}0.008; see Figure 2). In other words, this model
+suggests that individuals are simultaneously engaging in both learning
+\emph{and} coordinative processes during the game, becoming attenuated
+to the learning task while also synchronizing to one another's cognitive
+processes.
 
-Again, we found no effect of training improvement (\emph{\(\beta\)} =
--0.02, \emph{p} \textless{} 0.39).
+No other predictors reached statistical significance (all
+\emph{p}s\textgreater{}0.25).
 
 \begin{CodeChunk}
 \begin{figure}[H]
@@ -422,36 +431,78 @@ guess on that trial, while controlling for trial number and how much
 they improved during their own training. Again, the model included the
 maximal random effects structure for participant and difficulty.
 
-We found that greater trust in their partner predicted an
-\emph{increase} in the number of iterations of guesses within a trial
-(\emph{\(\beta\)} = 0.07, \emph{p} \textless{} 0.042). Interestingly, we
-found an effect of training improvement (\emph{\(\beta\)} = -0.02,
-\emph{p} \textless{} 0.39), showing that people take more guesses on
-each trial when they did better in their training trials. We also saw an
-effect of trial number (\emph{\(\beta\)} = -0.06, \emph{p} \textless{}
-0.008), indicating that people changed their guesses fewer times as the
-game wore on.
+We found that greater trust in their partner predicted a small but
+statisically significant \emph{increase} in the number of iterations of
+guesses within a trial (\emph{\(\beta\)}=0.07,
+\emph{p}\textless{}0.042), although we found no difference in the number
+of guesses based solely on the differences in the partners' first
+guesses (\emph{\(\beta\)}=0.01, \emph{p}=0.65).
+
+Interestingly, we found that participants who improved more over the
+training trials took more guesses on test trials when they did better in
+their training trials (\emph{\(\beta\)}=0.05, \emph{p}\textless{}0.028).
+We also saw an effect of trial (\emph{\(\beta\)}=-0.05,
+\emph{p}\textless{}0.02), indicating that people changed their guesses
+fewer times in each trial as the game wore on.
 
 \section{Discussion}\label{discussion}
 
-One plausible explanation for this behavior may be that participants
-were more willing to change their own guess to be closer to the guess
-provided by a partner whose perceptual and memory capabilites they
-trusted. Alternatively, given that the measure of trust was taken at the
-end of the experiment, there may have been a
-
-\subsection{Future Directions}\label{future-directions}
+Inspired by established lines of research on interpersonal coordination,
+we here used a
 
 Injecting social dynamics in experimentally and/or as much as is desired
 
+\subsection{Future Directions}\label{future-directions}
+
+Some of our explanatory limitations in this study present interesting
+avenues for future work. For instance, we found that participants were
+more likely to change their guesses during the game when playing with a
+partner who they rated trustworthy \emph{after} the game. One plausible
+explanation for this behavior may be that participants were more willing
+to change their own guess to be closer to the guess provided by a
+partner whose perceptual and memory capabilites they trusted. Another
+(not necessarily exclusive) possibility is that feelings of trust are
+built throughout the game: Since the ratings were made at the end of the
+experiment, it may be that the partner's behavior throughout the
+interaction---\emph{aside} from accuracy (e.g., duration of the
+interaction)---builds to create that feeling of trust. Future work
+should explore the degree to which these explanations may (individually
+or together) explain the emergent social phenomena observed even
+minimally interactive contexts.
+
+Given the simplicity of this experimental design and the broad
+participant pools available through crowdsourcing sites, this work could
+be expanded to examine other important questions in interpersonal
+coordination. For example, the majority of research on interpersonal
+coordination has tended to focus on dyadic interaction, as we did here.
+While dyadic interaction is both conceptually and statisically more
+tractable than group dynamics, many real-world social settings include
+more than two people; therefore, any coherent theory around interaction
+must be able to account for these settings. It is especially important
+for coordination researchers from the dynamical systems perspective, as
+there may be crucial control parameters or vastly different state spaces
+when considering dyadic dynamics versus larger interactions. Using
+crowdsourcing and real-time social experiments, researchers are able to
+control the interaction space much more tightly, enabling the targeted
+focus on specific processes across a massive potential participant
+population.
+
 \section{Conclusion}\label{conclusion}
+
+While much of the experimental focus of interpersonal coordination
+research to date has been in the lab, we here demonstrate how real-time
+interactive paradigms can open the door to larger-scale---but still
+experimentally controlled---
 
 \section{Acknowledgements}\label{acknowledgements}
 
 Our thanks go to Nelle Varoquaux and to the Dallinger development team
-for their assistance in debugging the experiment.
-
-This work was funded in part by DARPA Cooperative Agreement D17AC00004.
+for their assistance in debugging the experiment. This work was funded
+in part by DARPA Cooperative Agreement D17AC00004. This project was
+funded in part by a Moore-Sloan Data Science Environments Fellowship to
+AP, thanks to the Gordon and Betty Moore Foundation through Grant
+GBMF3834 and the Alfred P. Sloan Foundation through Grant 2013-10-27 to
+the University of California, Berkeley.
 
 \section{References}\label{references}
 
@@ -534,12 +585,6 @@ systems} (pp. 259--273). Abington, Oxon; New York, NY: Routledge.
 R Core Team. (2016). \emph{R: A language and environment for statistical
 computing}. Vienna, Austria: R Foundation for Statistical Computing.
 Retrieved from \url{https://www.R-project.org/}
-
-\hypertarget{ref-ramenzoni2012interpersonal}{}
-Ramenzoni, V. C., Riley, M. A., Shockley, K., \& Baker, A. A. (2012).
-Interpersonal and intrapersonal coordinative modes for joint and single
-task performance. \emph{Human Movement Science}, \emph{31}(5),
-1253--1267.
 
 \hypertarget{ref-richardson2005looking}{}
 Richardson, D. C., \& Dale, R. (2005). Looking to understand: The
