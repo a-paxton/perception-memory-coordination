@@ -83,6 +83,10 @@ interpersonal coordination; networked crowdsourcing; human
 communication; online experiments; social interaction
 \end{abstract}
 
+\section{Feedback from Tom}\label{feedback-from-tom}
+
+decrease the ``network'' stuff -- focus on online expeimrnts
+
 \section{Introduction}\label{introduction}
 
 Research on the phenomenon of \emph{interpersonal coordination} focuses
@@ -364,6 +368,50 @@ structure for each random intercept to achieve model convergence (Barr,
 Levy, Scheepers, \& Tily, 2013). All main and interaction terms were
 centered and standardized prior to entry in the model, allowing the
 model estimates to be interpretable as effect sizes (Keith, 2005).
+
+\subsection{Similarity in ratings over
+time}\label{similarity-in-ratings-over-time}
+
+Our first model tested whether individuals' ratings became more similar
+over time while accounting for training improvement. We constructed a
+linear mixed-effects model predicting cross-correlation coefficients of
+normalized error with absolute lag and training improvement, using
+maximal random effects structures for experiment and ratings of
+difficulty after the experiment. As predicted, we find that dyads were
+significantly and strongly coupled in their error ratings
+(\emph{\(\beta\)} = -0.43, \emph{p} \textless{} 0.0001), with no effect
+of training improvement (\emph{\(\beta\)} =
+\texttt{r.\ round(ccf\_main\_model\_readable\$Estimate{[}training\_row{]},2)},
+\emph{p} \textless{} 0.36).
+
+However, during the experiment, both participants are also learning to
+play the game better over time, in addition to influencing one another.
+To ensure that the similarity observed in our first model was not simply
+an artifact of both participants improving individually, we next
+constructed a linear mixed-effects model to test whether the relation
+between participants' (1) adaptation to their partner's perceptual
+estimation and memory and (2) own performance changed over time. We
+calculated the former using normalized error (``true error'') and the
+latter as the ``error'' between the participants' guesses (``partner
+error''). We built a linear mixed-effects model predicting the
+difference between ``true error'' and ``partner error'' with trial
+number and participants' training improvement, including maximal random
+effects structure for participant and difficulty. We found a trend
+toward a significant effect in the expected direction, with the
+difference decreasing slightly but not statistically significantly over
+time (\emph{\(\beta\)} = 0.04, \emph{p} \textless{} 0.092). . Again, we
+found no effect of training improvement (\emph{\(\beta\)} =
+\texttt{r.\ round(checking\_rates\_model\_readable\$Estimate{[}training\_row{]},2)},
+\emph{p} \textless{} 0.42).
+
+\begin{CodeChunk}
+\begin{figure}[H]
+
+\includegraphics{figs/unnamed-chunk-1-1} \hfill{}
+
+\caption[One column image]{One column image.}\label{fig:unnamed-chunk-1}
+\end{figure}
+\end{CodeChunk}
 
 \section{Discussion}\label{discussion}
 
