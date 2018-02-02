@@ -126,7 +126,7 @@ become more similar over time. A range of behavioral signals---both
 high-level (e.g., gesture; Louwerse et al., 2012) and low-level (e.g.,
 postural sway; Shockley et al., 2003)---become synchronized, even when
 the interacting individuals are unable to see one another (Shockley et
-al., 2003) or are separated in time (D. C. Richardson \& Dale, 2005).
+al., 2003) or are separated in time (Richardson \& Dale, 2005).
 
 The systematic testing of coordination across a variety of interaction
 contexts is vital to charting its dynamical landscape. This methodical
@@ -200,11 +200,32 @@ Here, we build on a robust tradition within interpersonal coordination
 that demonstrates that people become coordinated across a number of
 behavioral channels, even when they have very little access to one
 another. In this case, we focus on task performance within a minimally
-interactive context through a real-time cooperative online experiment.
-Specifically, the current study focuses on understanding how interacting
-individuals become entrained in perception and memory over time,
-becoming a sort of ``line estimation system'' (cf. Dale, Richardson, \&
-Kirkham, 2011).
+interactive context through a real-time cooperative online
+experiment---a nominal game that asks players to correctly perceive and
+(under cognitive load) remember a line. Specifically, the current study
+focuses on understanding how interacting individuals become entrained in
+perception and memory over time, becoming a sort of ``line estimation
+system'' (cf. Dale, Richardson, \& Kirkham, 2011).
+
+We approach the current study with three main research questions. First,
+we ask whether people become more coupled in their perceptual and memory
+systems over time, despite the limited perceptual and social information
+about their partner. In keeping with previous research, we expect to
+find that individuals will start to exhibit similar behavioral dynamics
+as they continue to play with one another.
+
+Next, we investigate whether any observed coordination effects could
+simply be an artifact of the joint learning context, and we hypothesize
+that coordination dynamics will still be a significant influence on
+players' cognitive and behavioral systems.
+
+Finally, we look to whether any social factors might influence these
+dynamics, even in this minimal context. Social factors like rapport and
+affect play vital roles in face-to-face interaction during naturalistic
+experiments (e.g., Tschacher et al., 2014). Although the game does not
+facilitate any explicit social behaviors, we are interested to explore
+whether some social influences surface as emergent effects, given their
+importance to coordination research.
 
 \section{Method}\label{method}
 
@@ -238,8 +259,8 @@ The experiment lasted an average of 11.69 minutes (range: 7.98---21.34
 minutes). All participants were paid \$1.33 as base pay for finishing
 the experiment and earned a bonus of up to \$2 for the entire experiment
 based on mean accuracy over all trials (mean = \$1.80; range:
-\$0.00---\$1.95). Participants were not informed about the amount of
-performance-based bonus that they earned during the experiment.
+\$0.00---\$1.95). Participants were not aware of the value of their
+earned bonus until after the entire experiment was completed.
 
 \subsection{Procedure}\label{procedure}
 
@@ -355,7 +376,7 @@ both participants' directions).
 
 All analyses were performed in R (R Core Team, 2016). Linear
 mixed-effects models were performed using the \texttt{lme4} package
-(Bates, Mächler, Bolker, \& Walker, 2015) using the maximal random slope
+(Bates, Machler, Bolker, \& Walker, 2015) using the maximal random slope
 structure for each random intercept to achieve model convergence (Barr,
 Levy, Scheepers, \& Tily, 2013). All main and interaction terms were
 centered and standardized prior to entry in the model, allowing the
@@ -369,28 +390,38 @@ over time while accounting for training improvement. We constructed a
 linear mixed-effects model predicting cross-correlation coefficients of
 normalized error with absolute lag and training improvement, using
 maximal random effects structures for experiment and ratings of
-difficulty after the experiment. As predicted, we find that dyads were
-significantly and strongly coupled in their error ratings
-(\emph{\(\beta\)}=-0.43, \emph{p}\textless{}0.0001), with no effect of
-training improvement (\emph{\(\beta\)}=-0.06, \emph{p}=0.36). In other
-words, we find that players were more likely to produce lines with
-similar errors at the same time, even across repeated guesses within a
-single trial, regardless of how well-adapted they were to the task
-during training.
+difficulty after the experiment.
+
+As predicted, we find that dyads were significantly and strongly coupled
+in their error ratings (\emph{\(\beta\)}=-0.43,
+\emph{p}\textless{}0.0001), with no effect of training improvement
+(\emph{\(\beta\)}=-0.06, \emph{p}=0.36). In other words, we find that
+players were more likely to produce lines with similar errors at the
+same time, even across repeated guesses within a single trial,
+regardless of how well-adapted they were to the task during training.
 
 \subsection{\texorpdfstring{Model 2: Learning \emph{and} Coordinative
 Processes}{Model 2: Learning and Coordinative Processes}}\label{model-2-learning-and-coordinative-processes}
 
-However, during the experiment, both participants are also learning to
-play the game better over time, in addition to influencing one another.
-To ensure that the similarity observed in our first model was not simply
-an artifact of both participants improving individually, we next tested
-the relation between participants' (1) adaptation to their partner's
+\begin{CodeChunk}
+\begin{figure}[H]
+
+\includegraphics{figs/unnamed-chunk-1-1} \hfill{}
+
+\caption[Difference over time in coordinative and learning processes, or the change in guess deviation from truth (in blue) and from their partner's guess (in red) over the game]{Difference over time in coordinative and learning processes, or the change in guess deviation from truth (in blue) and from their partner's guess (in red) over the game.}\label{fig:unnamed-chunk-1}
+\end{figure}
+\end{CodeChunk}
+
+However, during the experiment, both participants are learning to play
+the game at the same time that they are influencing one another. To
+ensure that the similarity observed in our first model was not simply an
+artifact of both participants improving individually, we next tested the
+relation between participants' (1) adaptation to their partner's
 perceptual estimation and memory and (2) own performance changed over
 time. If participants were adapting along both avenues, we might find
 evidence of these dual processes through differences in their rates of
 adaptation over time. We calculated the former using normalized error
-(``true error'') and the latter as the ``error'' between the
+(``true error'') and the latter as the absolute difference in the
 participants' guesses (``partner error'').
 
 To answer this question, we built a linear mixed-effects model
@@ -408,15 +439,6 @@ processes.
 
 No other predictors reached statistical significance (all
 \emph{p}s\textgreater{}0.25).
-
-\begin{CodeChunk}
-\begin{figure}[H]
-
-\includegraphics{figs/unnamed-chunk-1-1} \hfill{}
-
-\caption[Difference over time in coordinative and learning processes, or the change in guess deviation from truth (in blue) and from their partner's guess (in red) over the game]{Difference over time in coordinative and learning processes, or the change in guess deviation from truth (in blue) and from their partner's guess (in red) over the game.}\label{fig:unnamed-chunk-1}
-\end{figure}
-\end{CodeChunk}
 
 \subsection{Model 3: Social Factors in Minimally Interacting
 Contexts}\label{model-3-social-factors-in-minimally-interacting-contexts}
@@ -448,32 +470,62 @@ fewer times in each trial as the game wore on.
 \section{Discussion}\label{discussion}
 
 Inspired by established lines of research on interpersonal coordination,
-we here used a
+we here explored how minimally interactive contexts can shape the
+emergence of interpersonal dynamics. Using an online experiment
+developed to provide participants with only a single means of
+communication---namely, their partner's ability to correctly perceive
+and recall the length of a target line---we found evidence of
+coordination of cognitive systems despite minimal social information and
+context.
 
-Injecting social dynamics in experimentally and/or as much as is desired
+As expected, we found evidence for low-level perceptual and memory
+coordination between players throughout the game. Congruent with
+findings about postural sway (Shockley et al., 2003) and gaze
+(Richardson \& Dale, 2005), the present work suggests that some
+behavioral and cognitive processes can become coordinated even when
+separated by time and space, given some access to the relevant process
+in another person and a task-based interactive context to which that
+process is essential. Moreover, learning and game performance of the
+individual players were unable to completely account for the players'
+choices.
+
+Finally,
+
+Taken together, our findings serve as another outline on the
 
 \subsection{Future Directions}\label{future-directions}
 
 Some of our explanatory limitations in this study present interesting
-avenues for future work. For instance, we found that participants were
-more likely to change their guesses during the game when playing with a
-partner who they rated trustworthy \emph{after} the game. One plausible
-explanation for this behavior may be that participants were more willing
-to change their own guess to be closer to the guess provided by a
-partner whose perceptual and memory capabilites they trusted. Another
-(not necessarily exclusive) possibility is that feelings of trust are
-built throughout the game: Since the ratings were made at the end of the
-experiment, it may be that the partner's behavior throughout the
-interaction---\emph{aside} from accuracy (e.g., duration of the
-interaction)---builds to create that feeling of trust. Future work
-should explore the degree to which these explanations may (individually
-or together) explain the emergent social phenomena observed even
-minimally interactive contexts.
+avenues for future work.
 
-Given the simplicity of this experimental design and the broad
+First, we found that participants were more likely to change their
+guesses during the game when playing with a partner who they rated
+trustworthy \emph{after} the game. One plausible explanation for this
+behavior may be that participants were more willing to change their own
+guess to be closer to the guess provided by a partner whose perceptual
+and memory capabilites they trusted. Another (not necessarily exclusive)
+possibility is that feelings of trust are built throughout the game:
+Since the ratings were made at the end of the experiment, it may be that
+the partner's behavior throughout the interaction---\emph{aside} from
+accuracy (e.g., duration of the interaction)---builds to create that
+feeling of trust. Future work should explore the degree to which these
+explanations may (individually or together) explain the emergent social
+phenomena observed even minimally interactive contexts.
+
+Second, we found that participants became coordinated even on a
+relatively short timescale, with the average dyad taking 11.69 minutes
+to complete the game. Future work could examine hysteresis effects in
+the individual participant's perceptual and memory systems by pairing
+two participants from different dyads with one another to see how long
+it takes before they begin to form new coordination patterns. With most
+research focusing on the initial creation of coordination, understanding
+the flexiblility of these dissipative interpersonal coordinative
+structures would provide new insight into this phenomenon.
+
+Finally, given the simplicity of this experimental design and the broad
 participant pools available through crowdsourcing sites, this work could
-be expanded to examine other important questions in interpersonal
-coordination. For example, the majority of research on interpersonal
+be expanded to examine other important questions of scale in
+interpersonal coordination. The majority of research on interpersonal
 coordination has tended to focus on dyadic interaction, as we did here.
 While dyadic interaction is both conceptually and statisically more
 tractable than group dynamics, many real-world social settings include
@@ -515,14 +567,14 @@ effects structure in mixed-effects models: Keep it maximal.
 \emph{Journal of Memory and Language}, \emph{63}(3), 255--278.
 
 \hypertarget{ref-bates2015fitting}{}
-Bates, D., Mächler, M., Bolker, B., \& Walker, S. (2015). Fitting linear
+Bates, D., Machler, M., Bolker, B., \& Walker, S. (2015). Fitting linear
 mixed-effects models using lme4. \emph{Journal of Statistical Software},
-\emph{67}(1), 1--48. \url{http://doi.org/10.18637/jss.v067.i01}
+\emph{67}(1), 1--48.
 
 \hypertarget{ref-buhrmester2011amazon}{}
 Buhrmester, M., Kwang, T., \& Gosling, S. D. (2011). Amazon's Mechanical
 Turk: A new source of inexpensive, yet high-quality, data?, \emph{6},
-3--5. \url{http://doi.org/10.2307/41613414}
+3--5.
 
 \hypertarget{ref-dale2011how}{}
 Dale, R., Richardson, D. C., \& Kirkham, N. K. (2011). \emph{How two
@@ -532,7 +584,6 @@ Denmark.
 \hypertarget{ref-freeman2011hand}{}
 Freeman, J. B., Dale, R., \& Farmer, T. A. (2011). Hand in motion
 reveals mind in motion. \emph{Frontiers in Psychology}, \emph{2}, 59.
-\url{http://doi.org/10.3389/fpsyg.2011.00059}
 
 \hypertarget{ref-fusaroli2012coming}{}
 Fusaroli, R., Bahrami, B., Olsen, K., Roepstorff, A., Rees, G., Frith,
@@ -568,12 +619,11 @@ Science}, \emph{36}(8), 1404--1426.
 Paolacci, G., \& Chandler, J. (2014). Inside the Turk: Understanding
 Mechanical Turk as a participant pool. \emph{Current Directions in
 Psychological Science}, \emph{23}(3), 184--188.
-\url{http://doi.org/10.1177/0963721414531598}
 
 \hypertarget{ref-paxton2013argument}{}
 Paxton, A., \& Dale, R. (2013). Argument disrupts interpersonal
 synchrony. \emph{Quarterly Journal of Experimental Psychology},
-\emph{66}(11). \url{http://doi.org/10.1080/17470218.2013.853089}
+\emph{66}(11).
 
 \hypertarget{ref-paxton2016social}{}
 Paxton, A., Dale, R., \& Richardson, D. (2016). Social coordination of
@@ -587,10 +637,10 @@ computing}. Vienna, Austria: R Foundation for Statistical Computing.
 Retrieved from \url{https://www.R-project.org/}
 
 \hypertarget{ref-richardson2005looking}{}
-Richardson, D. C., \& Dale, R. (2005). Looking to understand: The
-coupling between speakers' and listeners' eye movements and its
-relationship to discourse comprehension. \emph{Cognitive Science},
-\emph{29}(6), 1045--1060.
+Richardson, D., \& Dale, R. (2005). Looking to understand: The coupling
+between speakers' and listeners' eye movements and its relationship to
+discourse comprehension. \emph{Cognitive Science}, \emph{29}(6),
+1045--1060.
 
 \hypertarget{ref-riley2011interpersonal}{}
 Riley, M. A., Richardson, M., Shockley, K., \& Ramenzoni, V. C. (2011).
