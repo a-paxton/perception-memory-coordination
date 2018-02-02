@@ -376,34 +376,36 @@ Processes}{Model 2: Learning and Coordinative Processes}}\label{model-2-learning
 However, during the experiment, both participants are also learning to
 play the game better over time, in addition to influencing one another.
 To ensure that the similarity observed in our first model was not simply
-an artifact of both participants improving individually, we next
-constructed a linear mixed-effects model to test whether the relation
-between participants' (1) adaptation to their partner's perceptual
-estimation and memory and (2) own performance changed over time. We
-calculated the former using normalized error (``true error'') and the
-latter as the ``error'' between the participants' guesses (``partner
-error'').
+an artifact of both participants improving individually, we next tested
+the relation between participants' (1) adaptation to their partner's
+perceptual estimation and memory and (2) own performance changed over
+time. If participants were adapting along both avenues, we might find
+evidence of these dual processes through differences in their rates of
+adaptation over time. We calculated the former using normalized error
+(``true error'') and the latter as the ``error'' between the
+participants' guesses (``partner error'').
 
-We built a linear mixed-effects model predicting the difference between
-``true error'' and ``partner error'' with trial number and participants'
-training improvement, including maximal random effects structure for
-participant and difficulty. We found a trend toward a significant effect
-in the expected direction, with the difference decreasing slightly but
-not statistically significantly over time (\emph{\(\beta\)} = 0.04,
-\emph{p} \textless{} 0.092; see Figure 1). Given the relative brevity of
-the game (again, lasting an average of only 11.69 minutes), this trend
-suggests that---over a longer period of time---we may see a significant
-efect of coordination.
+To answer this question, we built a linear mixed-effects model
+predicting cumulative guess number with difference between ``true
+error'' and ``partner error'' and participants' training improvement,
+with the maximal random effects structure for participant and
+difficulty. As expected, we found that participants' rates of adaptation
+to their partner significantly differed from their rates of adaptation
+to the game (\emph{\(\beta\)} = 0.03, \emph{p} \textless{} 0.27; see
+Figure 2). In other words, this model suggests that individuals are
+simultaneously engaging in both learning \emph{and} coordinative
+processes during the game, becoming attenuated to the learning task
+while also synchronizing to one another's cognitive processes.
 
 Again, we found no effect of training improvement (\emph{\(\beta\)} =
-0.02, \emph{p} \textless{} 0.42).
+-0.06, \emph{p} \textless{} 0.008).
 
 \begin{CodeChunk}
 \begin{figure}[H]
 
 \includegraphics{figs/unnamed-chunk-1-1} \hfill{}
 
-\caption[Difference over time between the guess deviation from truth (in blue) and from their partner's guess (in red)]{Difference over time between the guess deviation from truth (in blue) and from their partner's guess (in red). Analysis presented in Model 2.}\label{fig:unnamed-chunk-1}
+\caption[Difference over time in coordinative and learning processes, or the change in guess deviation from truth (in blue) and from their partner's guess (in red) over the game]{Difference over time in coordinative and learning processes, or the change in guess deviation from truth (in blue) and from their partner's guess (in red) over the game.}\label{fig:unnamed-chunk-1}
 \end{figure}
 \end{CodeChunk}
 
@@ -421,10 +423,6 @@ Our thanks go to Nelle Varoquaux and to the Dallinger development team
 for their assistance in debugging the experiment.
 
 This work was funded in part by DARPA Cooperative Agreement D17AC00004.
-This work is sponsored by the Defense Advanced Research Projects Agency
-through the NGS2 program. The contents of this paper do not necessarily
-reflect the position or the policy of the Government and no official
-endorsement should be inferred.
 
 \section{References}\label{references}
 

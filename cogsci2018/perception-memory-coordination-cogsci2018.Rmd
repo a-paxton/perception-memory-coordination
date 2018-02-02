@@ -175,17 +175,19 @@ differences_in_error = info_plot %>%
 differences_in_error_st = differences_in_error %>%
   mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
   mutate_at(vars(participant,dyad),
-            funs(factor))
+            funs(factor)) %>%
+  select(-trial_type,-network_id) %>%
+  na.omit()
 
 # run the model
-checking_rates_model = lmer(guess_number ~ normalized_error + error_from_partner + both.errors + training_improvement + 
+checking_rates_model = lmer(guess_number ~ normalized_error + error_from_partner + 
+                              both.errors + training_improvement + 
                               (1 + both.errors | participant) +
                               (1 + both.errors | difficulty),
                             data = differences_in_error_st)
 
 # make it readable
 checking_rates_model_readable = xtable_lme(checking_rates_model)
-checking_rates_model_readable
 
 # identify which rows correspond to which value
 trial_row = 2
@@ -197,13 +199,11 @@ training_row = 3
 
 However, during the experiment, both participants are also learning to play the game better over time, in addition to influencing one another. To ensure that the similarity observed in our first model was not simply an artifact of both participants improving individually, we next tested the relation between participants' (1) adaptation to their partner's perceptual estimation and memory and (2) own performance changed over time. If participants were adapting along both avenues, we might find evidence of these dual processes through differences in their rates of adaptation over time. We calculated the former using normalized error ("true error") and the latter as the "error" between the participants' guesses ("partner error").
 
-We built a linear mixed-effects model predicting the difference between "true error" and "partner error" with trial number and participants' training improvement, including maximal random effects structure for participant and difficulty. We found a trend toward a significant effect in the expected direction, with the difference decreasing slightly but not statistically significantly over time (*\(\beta\)* = `r round(checking_rates_model_readable$Estimate[trial_row],2)`, *p* < `r checking_rates_model_readable$"p-value"[trial_row]`; see Figure 1). Given the relative brevity of the game (again, lasting an average of only `r round(mean(participation_descriptives$duration),2)` minutes), this trend suggests that---over a longer period of time---we may see a significant difference in their slopes over time.
+To answer this question, we built a linear mixed-effects model predicting cumulative guess number with difference between "true error" and "partner error" and participants' training improvement, with the maximal random effects structure for participant and difficulty. As expected, we found that participants' rates of adaptation to their partner significantly differed from their rates of adaptation to the game (*\(\beta\)* = `r round(checking_rates_model_readable$Estimate[trial_row],2)`, *p* < `r checking_rates_model_readable$"p-value"[trial_row]`; see Figure 2). In other words, this model suggests that individuals are simultaneously engaging in both learning *and* coordinative processes during the game, becoming attenuated to the learning task while also synchronizing to one another's cognitive processes.
 
 Again, we found no effect of training improvement (*\(\beta\)* = `r round(checking_rates_model_readable$Estimate[training_row],2)`, *p* < `r checking_rates_model_readable$"p-value"[training_row]`).
 
-
-```{r , fig.env = "figure", fig.pos = "H", fig.align='left', fig.width=3, fig.height=3, set.cap.width=T, num.cols.cap=1, fig.cap = "Difference over time between the guess deviation from truth (in blue) and from their partner's guess (in red). Analysis presented in Model 2."}
-
+```{r , fig.env = "figure", fig.pos = "H", fig.align='left', fig.width=3, fig.height=3, set.cap.width=T, num.cols.cap=1, fig.cap = "Difference over time in coordinative and learning processes, or the change in guess deviation from truth (in blue) and from their partner's guess (in red) over the game."}
 
 # create a plot to show difference in slopes
 partner_vs_truth_slope_plot = ggplot(differences_in_error,
@@ -225,7 +225,7 @@ partner_vs_truth_slope_plot = ggplot(differences_in_error,
   # label
   ylab('Normalized absolute\nerror of guess') +
   scale_x_continuous(breaks=c(1,5,10,15)) +
-  xlab('Trial Number') +
+  xlab('Trial') +
   ggtitle('Participant guess error from truth\nand from partner over test trials') +
   theme(legend.position="bottom",
         legend.direction="horizontal",
@@ -264,9 +264,9 @@ Injecting social dynamics in experimentally and/or as much as is desired
 
 # Acknowledgements
 
-Our thanks go to Nelle Varoquaux and to the Dallinger development team for their assistance in debugging the experiment.
+Our thanks go to Nelle Varoquaux and to the Dallinger development team for their assistance in debugging the experiment.  
 
-This work was funded in part by DARPA Cooperative Agreement D17AC00004. This work is sponsored by the Defense Advanced Research Projects Agency through the NGS2 program. The contents of this paper do not necessarily reflect the position or the policy of the Government and no official endorsement should be inferred.
+This work was funded in part by DARPA Cooperative Agreement D17AC00004.
 
 # References 
 
