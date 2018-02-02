@@ -81,11 +81,7 @@ A recurring concern for using online experiments lies in its participant populat
 
 ## The Present Study
 
-The current study focuses on understanding how interacting individuals become entrained in perception and memory over time, becoming a sort of "line estimation system"---just as two people in the iconic tangram task become a "tangram recognition system" [@dale2011how]. 
-
-We build from a robust tradition within interpersonal coordination showing that individuals can influence one another's behavioral dynamics, even when people become 
-
-To do so, we isolate the dyad to a minimally interactive context, allowing participants to engage with one another solely by communicating line lengths
+Here, we build on a robust tradition within interpersonal coordination that demonstrates that people become coordinated across a number of behavioral channels, even when they have very little access to one another. In this case, we focus on task performance within a minimally interactive context through a real-time cooperative online experiment. Specifically, the current study focuses on understanding how interacting individuals become entrained in perception and memory over time, becoming a sort of "line estimation system"---just as two people in the iconic tangram task become a "tangram recognition system" [@dale2011how].
 
 # Method
 
@@ -115,15 +111,15 @@ For clarity, we will refer to each new stimulus set as a *trial* and to each sub
 
 All dyads completed 10 training trials (alone) and 15 test trials (with their partner). All training and test stimuli were randomly generated for each dyad, but both participants within the dyad were given the same stimuli. After participating, each individual participant was asked to complete a series of questionnaires about the game on a series of 1-10 Likert-style scales, including the perceived difficulty of the task, how engaged they were in the task, and questions about their own and their parner's cooperativeness and trustworthiness.
 
-## Analyses
+## Measures
 
-### Similarity
+### Error 
+
+Error was measured as a ratio relative to the total possible error on a given target stimulus trial. That is, rather than taking a given guess's error relative to the total line length, error was calculated as the maximum *possible* error. For example, if the target stimulus was 60 units long, participants could either under-estimate the line length by 60, or over-estimate it by 40. As such, the maximum possible error for that trial would be 60, and the participant's error would be calculated relative to that maximum possible error.
+
+### Coordination
 
 To measure how participants' perceptual and memory systems became more similar over time, we calculated the cross-correlation coefficient of participants' guess errors across trials [@paxton2013argument], within a window of +/-5 guesses. Although cross-correlation produces information about leading and following behavior, we have no *a priori* expectations about which of the two participants would emerge as a leader (given they have no information about their partner nor any assigned roles), so our first-pass analyses ignore any directionality by averaging across the each incremental lags (i.e., leading/following in both participants' directions).
-
-### Accuracy 
-
-Accuracy was measured as a ratio relative to the total possible error on a given target stimulus trial. That is, rather than taking a given guess's error relative to the total line length, error was calculated as the maximum *possible* error. For example, if the target stimulus was 60 units long, participants could either under-estimate the line length by 60, or over-estimate it by 40. As such, the maximum possible error for that trial would be 60, and the participant's error would be calculated relative to that maximum possible error.
 
 # Results
 
@@ -317,7 +313,7 @@ training_row = 5
 
 To explore the role that social judgements can play even in minimally interactive contexts, we finally turned to consider how trust might impact a participant's willingness to change their guess. We created a linear-mixed effects model predicting the total number of times a participant changed their guess during a given trial according to their trust rating of their partner and the difference in participants' first guess on that trial, while controlling for trial number and how much they improved during their own training. Again, the model included the maximal random effects structure for participant and difficulty. 
 
-We found that greater trust in their partner predicted an increase in the number of iterations of guesses within a trial (*\(\beta\)* = `r round(trust_model_model_readable$Estimate[trust_partner_row],2)`, *p* < `r trust_model_model_readable$"p-value"[trust_partner_row]`). Put simply, when a player trusted their partner, 
+We found that greater trust in their partner predicted an *increase* in the number of iterations of guesses within a trial (*\(\beta\)* = `r round(trust_model_model_readable$Estimate[trust_partner_row],2)`, *p* < `r trust_model_model_readable$"p-value"[trust_partner_row]`), suggesting that participants may have been more willing to change their guess to be more similar to their partner's because they trusted that person's judgement.
 
 Interestingly, we found an effect of training improvement (*\(\beta\)* = `r round(checking_rates_model_readable$Estimate[training_row],2)`, *p* < `r checking_rates_model_readable$"p-value"[training_row]`), showing that people take more guesses on each trial when they did better in their training trials. We also saw an effect of trial number (*\(\beta\)* = `r round(checking_rates_model_readable$Estimate[trial_number_row],2)`, *p* < `r checking_rates_model_readable$"p-value"[trial_number_row]`), indicating that people changed their guesses fewer times as the game wore on.
 
