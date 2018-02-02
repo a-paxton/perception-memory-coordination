@@ -49,8 +49,8 @@
 % \textwidth 16cm
 % \textheight 21cm
 
-\title{Interpersonal Coordination of Perception and Memory in Minimally
-Interactive Contexts}
+\title{Interpersonal Coordination of Perception and Memory in Real-Time Online
+Social Interaction}
 
 
 \author{{\large \bf Alexandra Paxton} \\ \texttt{paxton.alexandra@gmail.com} \\ Institute of Cognitive and Brain Sciences \\ Berkeley Institute for Data Science \\ University of California, Berkeley \And {\large \bf Thomas J. H. Morgan} \\ \texttt{thomas.j.h.morgan@asu.edu} \\ School of Human Evolution and Social Change \\ Arizona State University \AND {\large \bf Jordan W. Suchow} \\ \texttt{suchow@berkeley.edu} \\ Social Science Matrix \\ University of California, Berkeley \And {\large \bf Thomas L. Griffiths} \\ \texttt{tom\_griffiths@berkeley.edu} \\ Department of Psychology \\ University of California, Berkeley}
@@ -153,42 +153,28 @@ crowdsourcing platforms to develop real-time experiment models.
 \subsection{Crowdsourcing for Interactive, Interpersonal Social
 Experiments}\label{crowdsourcing-for-interactive-interpersonal-social-experiments}
 
-Recent developments in how data can be collected and analyzed are
-transforming cognitive science. This is reflected in an increased
-interest in big data and naturally occurring datasets (Goldstone \&
-Lupyan, 2016), such as social media activity and video game logs, which
-hold the promise of capturing behavior in the wild and providing a
-testing ground for key scientific theories (Paxton \& Griffiths, 2017).
-While these data can provide a window into observational data about
-human behavior at a massive scale, technological advances are quickly
-expanding to accommodate new \emph{experimental} paradigms as well.
-
 Crowdsourcing platforms like Amazon Mechanical Turk
 (\url{http://www.mturk.com}) have been extensively used as a means to
 collect data with relatively simple but robust experimental paradigms,
 like surveys (Buhrmester, Kwang, \& Gosling, 2011) and mouse-tracking
 (Freeman, Dale, \& Farmer, 2011). At first, work in this domain required
-researchers to use established survey creation tools, which were quick
-to do but constrained experimental designs, or to program bespoke
-experiments, which is more open ended but far more time-consuming. More
-recently, cognitive scientists have worked to create solutions to
-support the efficient creation of a wider range of experiments (e.g.,
-Gureckis et al., 2016). As the community around online psychology
-experiments has grown, it has done so with the intent to broaden its
-reach (especially to researchers with less programming experience) and
-to continue to provide more powerful experimental tools.
+researchers to use survey creation tools or to program bespoke
+experiments, but more recently, cognitive scientists have worked to
+create solutions to support the efficient creation of a wider range of
+experiments (e.g., Gureckis et al., 2016).
 
-To date, many of these experiments have focused on isolated individuals,
-making it difficult for researchers to study situated social processes.
-We believe that the next step in online experimentation, then, is to
-move to models of real-time social interaction, creating interactive or
-interdependent experimental paradigms that construct interacting dyads
-or larger networks of people to understand social processes and
-phenomena. In doing so, real-time interactive paradigms deployed on
-crowdsourcing platforms can provide researchers interested in social
-behavior the opportunity to expand their experimental capabilities
-beyond the lab while not compromising on the richness and complexity of
-true interactive contexts.
+To date, many of these experiment platforms have focused on isolated
+individuals, making it difficult for researchers to study situated
+social processes. We believe that the next step in online
+experimentation, then, is to move to models of real-time social
+interaction, creating interactive or interdependent experimental
+paradigms that construct interacting dyads (or even larger networks of
+people) to understand social processes and phenomena. In doing so,
+real-time interactive paradigms deployed on crowdsourcing platforms can
+provide researchers interested in social behavior the opportunity to
+expand their experimental capabilities beyond the lab while not
+compromising on the richness and complexity of true interactive
+contexts.
 
 A recurring concern for using online experiments lies in its participant
 population. Like all convenience samples, there can be questions about
@@ -209,11 +195,17 @@ reflective of the general U.S. population (e.g., Buhrmester et al.,
 
 The current study focuses on understanding how interacting individuals
 become entrained in perception and memory over time, becoming a sort of
-``line estimation system''---just as two people in an lab experiment
-become a ``tangram recognition system'' (Dale, Richardson, \& Kirkham,
-2011). To do that, we isolate the dyad to a minimally interactive
-context, allowing participants to engage with one another solely by
-communicating line lengths
+``line estimation system''---just as two people in the iconic tangram
+task become a ``tangram recognition system'' (Dale, Richardson, \&
+Kirkham, 2011).
+
+We build from a robust tradition within interpersonal coordination
+showing that individuals can influence one another's behavioral
+dynamics, even when people become
+
+To do so, we isolate the dyad to a minimally interactive context,
+allowing participants to engage with one another solely by communicating
+line lengths
 
 \section{Method}\label{method}
 
@@ -391,14 +383,14 @@ error'' and ``partner error'' and participants' training improvement,
 with the maximal random effects structure for participant and
 difficulty. As expected, we found that participants' rates of adaptation
 to their partner significantly differed from their rates of adaptation
-to the game (\emph{\(\beta\)} = 0.03, \emph{p} \textless{} 0.27; see
+to the game (\emph{\(\beta\)} = -0.06, \emph{p} \textless{} 0.008; see
 Figure 2). In other words, this model suggests that individuals are
 simultaneously engaging in both learning \emph{and} coordinative
 processes during the game, becoming attenuated to the learning task
 while also synchronizing to one another's cognitive processes.
 
 Again, we found no effect of training improvement (\emph{\(\beta\)} =
--0.06, \emph{p} \textless{} 0.008).
+-0.02, \emph{p} \textless{} 0.39).
 
 \begin{CodeChunk}
 \begin{figure}[H]
@@ -408,6 +400,31 @@ Again, we found no effect of training improvement (\emph{\(\beta\)} =
 \caption[Difference over time in coordinative and learning processes, or the change in guess deviation from truth (in blue) and from their partner's guess (in red) over the game]{Difference over time in coordinative and learning processes, or the change in guess deviation from truth (in blue) and from their partner's guess (in red) over the game.}\label{fig:unnamed-chunk-1}
 \end{figure}
 \end{CodeChunk}
+
+\subsection{Model 3: Social Factors in Minimally Interacting
+Contexts}\label{model-3-social-factors-in-minimally-interacting-contexts}
+
+To explore the role that social judgements can play even in minimally
+interactive contexts, we finally turned to consider how trust might
+impact a participant's willingness to change their guess. We created a
+linear-mixed effects model predicting the total number of times a
+participant changed their guess during a given trial according to their
+trust rating of their partner and the difference in participants' first
+guess on that trial, while controlling for trial number and how much
+they improved during their own training. Again, the model included the
+maximal random effects structure for participant and difficulty.
+
+We found that greater trust in their partner predicted an increase in
+the number of iterations of guesses within a trial (\emph{\(\beta\)} =
+0.07, \emph{p} \textless{} 0.042). Put simply, when a player trusted
+their partner,
+
+Interestingly, we found an effect of training improvement
+(\emph{\(\beta\)} = -0.02, \emph{p} \textless{} 0.39), showing that
+people take more guesses on each trial when they did better in their
+training trials. We also saw an effect of trial number (\emph{\(\beta\)}
+= -0.06, \emph{p} \textless{} 0.008), indicating that people changed
+their guesses fewer times as the game wore on.
 
 \section{Discussion}\label{discussion}
 
@@ -460,12 +477,6 @@ C., \& Tylén, K. (2012). Coming to terms: Quantifying the benefits of
 linguistic coordination. \emph{Psychological Science}, \emph{23}(8),
 931--939.
 
-\hypertarget{ref-goldstone2016discovering}{}
-Goldstone, R. L., \& Lupyan, G. (2016). Discovering psychological
-principles by mining naturally occurring data sets. \emph{Topics in
-Cognitive Science}, \emph{8}, 548--568.
-\url{http://doi.org/10.1111/tops.12212}
-
 \hypertarget{ref-gureckis2016psiturk}{}
 Gureckis, T. M., Martin, J., McDonnell, J., Rich, A. S., Markant, D.,
 Coenen, A., \ldots{} Chan, P. (2016). PsiTurk: An open-source framework
@@ -500,12 +511,6 @@ Psychological Science}, \emph{23}(3), 184--188.
 Paxton, A., \& Dale, R. (2013). Argument disrupts interpersonal
 synchrony. \emph{Quarterly Journal of Experimental Psychology},
 \emph{66}(11). \url{http://doi.org/10.1080/17470218.2013.853089}
-
-\hypertarget{ref-paxton2017finding}{}
-Paxton, A., \& Griffiths, T. (2017). Finding the traces of behavioral
-and cognitive processes in big data and naturally occurring datasets.
-\emph{Behavior Research Methods}, \emph{49}(5), 1630--1638.
-\url{http://doi.org/10.3758/s13428-017-0874-x}
 
 \hypertarget{ref-paxton2016social}{}
 Paxton, A., Dale, R., \& Richardson, D. (2016). Social coordination of

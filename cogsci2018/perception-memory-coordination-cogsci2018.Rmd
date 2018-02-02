@@ -1,5 +1,5 @@
 ---
-title: "Interpersonal Coordination of Perception and Memory in Minimally Interactive Contexts"
+title: "Interpersonal Coordination of Perception and Memory in Real-Time Online Social Interaction"
 bibliography: library.bib
 csl: apa6.csl
 document-params: "10pt, letterpaper"
@@ -70,17 +70,22 @@ In the search for both fully interactive and minimally interactive paradigms, we
 
 ## Crowdsourcing for Interactive, Interpersonal Social Experiments
 
-Recent developments in how data can be collected and analyzed are transforming cognitive science. This is reflected in an increased interest in big data and naturally occurring datasets [@goldstone2016discovering], such as social media activity and video game logs, which hold the promise of capturing behavior in the wild and providing a testing ground for key scientific theories [@paxton2017finding]. While these data can provide a window into observational data about human behavior at a massive scale, technological advances are quickly expanding to accommodate new *experimental* paradigms as well.
+<!-- Recent developments in how data can be collected and analyzed are transforming cognitive science. This is reflected in an increased interest in big data and naturally occurring datasets [@goldstone2016discovering], such as social media activity and video game logs, which hold the promise of capturing behavior in the wild and providing a testing ground for key scientific theories [@paxton2017finding]. While these data can provide a window into observational data about human behavior at a massive scale, technological advances are quickly expanding to accommodate new *experimental* paradigms as well. -->
 
-Crowdsourcing platforms like Amazon Mechanical Turk (http://www.mturk.com) have been extensively used as a means to collect data with relatively simple but robust experimental paradigms, like surveys [@buhrmester2011amazon] and mouse-tracking [@freeman2011hand]. At first, work in this domain required researchers to use established survey creation tools, which were quick to do but constrained experimental designs, or to program bespoke experiments, which is more open ended but far more time-consuming. More recently, cognitive scientists have worked to create solutions to support the efficient creation of a wider range of experiments [e.g., @gureckis2016psiturk]. As the community around online psychology experiments has grown, it has done so with the intent to broaden its reach (especially to researchers with less programming experience) and to continue to provide more powerful experimental tools.
+Crowdsourcing platforms like Amazon Mechanical Turk (http://www.mturk.com) have been extensively used as a means to collect data with relatively simple but robust experimental paradigms, like surveys [@buhrmester2011amazon] and mouse-tracking [@freeman2011hand]. At first, work in this domain required researchers to use survey creation tools or to program bespoke experiments, but more recently, cognitive scientists have worked to create solutions to support the efficient creation of a wider range of experiments [e.g., @gureckis2016psiturk]. 
+<!-- As the community around online psychology experiments has grown, it has done so with the intent to broaden its reach (especially to researchers with less programming experience) and to continue to provide more powerful experimental tools. -->
 
-To date, many of these experiments have focused on isolated individuals, making it difficult for researchers to study situated social processes. We believe that the next step in online experimentation, then, is to move to models of real-time social interaction, creating interactive or interdependent experimental paradigms that construct interacting dyads or larger networks of people to understand social processes and phenomena. In doing so, real-time interactive paradigms deployed on crowdsourcing platforms can provide researchers interested in social behavior the opportunity to expand their experimental capabilities beyond the lab while not compromising on the richness and complexity of true interactive contexts.
+To date, many of these experiment platforms have focused on isolated individuals, making it difficult for researchers to study situated social processes. We believe that the next step in online experimentation, then, is to move to models of real-time social interaction, creating interactive or interdependent experimental paradigms that construct interacting dyads (or even larger networks of people) to understand social processes and phenomena. In doing so, real-time interactive paradigms deployed on crowdsourcing platforms can provide researchers interested in social behavior the opportunity to expand their experimental capabilities beyond the lab while not compromising on the richness and complexity of true interactive contexts.
 
 A recurring concern for using online experiments lies in its participant population. Like all convenience samples, there can be questions about the degree to which the participants reflect the broader population dynamics---including the use of undergraduate students at Western universities as participants in return for course credit, who often do not reflect global demographics [@henrich2010most]. Considerations of sampling and population representativeness are vital for any study, and researchers should carefully consider their sampling choices at the outset of their work. For those interested in using online participants (especially from Amazon Mechanical Turk), recent surveys suggest that U.S.-based MTurk workers are more diverse in a variety of ways than typical college students but not entirely reflective of the general U.S. population [e.g., @buhrmester2011amazon; @paolacci2014inside].
 
 ## The Present Study
 
-The current study focuses on understanding how interacting individuals become entrained in perception and memory over time, becoming a sort of "line estimation system"---just as two people in an lab experiment become a "tangram recognition system" [@dale2011how]. To do that, we isolate the dyad to a minimally interactive context, allowing participants to engage with one another solely by communicating line lengths
+The current study focuses on understanding how interacting individuals become entrained in perception and memory over time, becoming a sort of "line estimation system"---just as two people in the iconic tangram task become a "tangram recognition system" [@dale2011how]. 
+
+We build from a robust tradition within interpersonal coordination showing that individuals can influence one another's behavioral dynamics, even when people become 
+
+To do so, we isolate the dyad to a minimally interactive context, allowing participants to engage with one another solely by communicating line lengths
 
 # Method
 
@@ -190,8 +195,10 @@ checking_rates_model = lmer(guess_number ~ normalized_error + error_from_partner
 checking_rates_model_readable = xtable_lme(checking_rates_model)
 
 # identify which rows correspond to which value
-trial_row = 2
-training_row = 3 
+normalized_error_row = 2
+error_from_partner_row = 3 
+both_errors_row = 4
+training_row = 5
 
 ```
 
@@ -199,7 +206,7 @@ training_row = 3
 
 However, during the experiment, both participants are also learning to play the game better over time, in addition to influencing one another. To ensure that the similarity observed in our first model was not simply an artifact of both participants improving individually, we next tested the relation between participants' (1) adaptation to their partner's perceptual estimation and memory and (2) own performance changed over time. If participants were adapting along both avenues, we might find evidence of these dual processes through differences in their rates of adaptation over time. We calculated the former using normalized error ("true error") and the latter as the "error" between the participants' guesses ("partner error").
 
-To answer this question, we built a linear mixed-effects model predicting cumulative guess number with difference between "true error" and "partner error" and participants' training improvement, with the maximal random effects structure for participant and difficulty. As expected, we found that participants' rates of adaptation to their partner significantly differed from their rates of adaptation to the game (*\(\beta\)* = `r round(checking_rates_model_readable$Estimate[trial_row],2)`, *p* < `r checking_rates_model_readable$"p-value"[trial_row]`; see Figure 2). In other words, this model suggests that individuals are simultaneously engaging in both learning *and* coordinative processes during the game, becoming attenuated to the learning task while also synchronizing to one another's cognitive processes.
+To answer this question, we built a linear mixed-effects model predicting cumulative guess number with difference between "true error" and "partner error" and participants' training improvement, with the maximal random effects structure for participant and difficulty. As expected, we found that participants' rates of adaptation to their partner significantly differed from their rates of adaptation to the game (*\(\beta\)* = `r round(checking_rates_model_readable$Estimate[error_from_partner_row],2)`, *p* < `r checking_rates_model_readable$"p-value"[error_from_partner_row]`; see Figure 2). In other words, this model suggests that individuals are simultaneously engaging in both learning *and* coordinative processes during the game, becoming attenuated to the learning task while also synchronizing to one another's cognitive processes.
 
 Again, we found no effect of training improvement (*\(\beta\)* = `r round(checking_rates_model_readable$Estimate[training_row],2)`, *p* < `r checking_rates_model_readable$"p-value"[training_row]`).
 
@@ -253,6 +260,66 @@ ggsave(plot = partner_vs_truth_slope_plot,
 partner_vs_truth_slope_plot
 
 ```
+
+## Model 3: Social Factors in Minimally Interacting Contexts
+
+```{r build-model-3}
+
+# get the maximum number of guess changes at each trial
+social_parameters = differences_in_error %>% ungroup() %>%
+  group_by(experiment, dyad, participant, trial_number) %>%
+  dplyr::filter(guess_counter == max(guess_counter) |
+                  guess_counter == min(guess_counter)) %>%
+  ungroup()
+
+# get the original guess and the last guess
+first_guess = social_parameters %>%
+  group_by(experiment, dyad, participant, trial_number) %>%
+  dplyr::filter(guess_counter==min(guess_counter)) %>%
+  ungroup() %>%
+  select(experiment, dyad, participant, trial_number, error_diff) %>%
+  rename('first_error_diff' = 'error_diff')
+
+# merge into the original
+social_parameters = social_parameters %>% ungroup() %>%
+  group_by(experiment, dyad, participant, trial_number) %>%
+  dplyr::filter(guess_counter==max(guess_counter)) %>%
+  ungroup() %>%
+  rename('final_error_diff' = 'error_diff') %>%
+  left_join(., first_guess,
+            by=c('experiment',
+                 'dyad',
+                 'participant',
+                 'trial_number')) %>%
+  
+  # grab only one row
+  distinct()
+
+# standardize everything
+social_parameters_st = social_parameters %>% ungroup() %>%
+  mutate_all(funs(as.numeric(scale(as.numeric(.))))) %>%
+  select(-trial_type,-network_id)
+
+# build the model
+trust_model = lmer(guess_counter ~ trust_partner + trial_number + first_error_diff + training_improvement +
+                     (1 + trust_partner + trial_number | participant) +
+                     (1 + trust_partner + trial_number | difficulty),
+                   data = social_parameters_st)
+trust_model_model_readable = xtable_lme(trust_model)
+
+# get row info
+trust_partner_row = 2
+trial_number_row = 3
+first_error_row = 4
+training_row = 5
+
+```
+
+To explore the role that social judgements can play even in minimally interactive contexts, we finally turned to consider how trust might impact a participant's willingness to change their guess. We created a linear-mixed effects model predicting the total number of times a participant changed their guess during a given trial according to their trust rating of their partner and the difference in participants' first guess on that trial, while controlling for trial number and how much they improved during their own training. Again, the model included the maximal random effects structure for participant and difficulty. 
+
+We found that greater trust in their partner predicted an increase in the number of iterations of guesses within a trial (*\(\beta\)* = `r round(trust_model_model_readable$Estimate[trust_partner_row],2)`, *p* < `r trust_model_model_readable$"p-value"[trust_partner_row]`). Put simply, when a player trusted their partner, 
+
+Interestingly, we found an effect of training improvement (*\(\beta\)* = `r round(checking_rates_model_readable$Estimate[training_row],2)`, *p* < `r checking_rates_model_readable$"p-value"[training_row]`), showing that people take more guesses on each trial when they did better in their training trials. We also saw an effect of trial number (*\(\beta\)* = `r round(checking_rates_model_readable$Estimate[trial_number_row],2)`, *p* < `r checking_rates_model_readable$"p-value"[trial_number_row]`), indicating that people changed their guesses fewer times as the game wore on.
 
 # Discussion
 
