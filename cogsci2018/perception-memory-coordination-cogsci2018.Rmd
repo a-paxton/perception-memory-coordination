@@ -105,7 +105,7 @@ The experiment lasted an average of `r round(mean(participation_descriptives$dur
 
 All data collection procedures were run on Amazon Mechanical Turk (http://mturk.com) using the experiment platform Dallinger (v3.4.1;  http://github.com/dallinger/Dallinger). Code for the experiment is available on GitHub (http://github.com/thomasmorgan/joint-estimation-game), and the resulting experiment data are available on the OSF repository for the project (https://osf.io/8fu7x/).
 
-Each participant was individually recruited on Amazon Mechanical Turk to play a "Line Estimation Memory Game" (advertisement: "Test your memory skills!"; see Figure 1 for experiment flow). Upon completing informed consent, participants were told that they would be playing a game in which they would be required to remember and re-create line lengths. Participants were informed that they would be complete their training trials individually and would then begin playing with a partner. Participants were given no information about their partner other than the guess that their partner made; no information about the partner's identity was shared.
+Each participant was individually recruited on Amazon Mechanical Turk to play a "Line Estimation Memory Game" (advertisement: "Test your memory skills!"; see Figure 1 for experiment flow). Upon completing informed consent, participants were told that they would be playing a game in which they would be required to remember and re-create line lengths. Participants were informed that they would complete their training trials individually and would then begin playing with a partner. Participants were given no information about their partner other than the guess that their partner made; no information about the partner's identity was shared.
 
 In each trial, participants were shown 3 red lines, each of a different length, and were asked to remember all three of them.\footnote{A pilot version of this study showed that participants performed at ceiling when given only 1 line to remember and recreate. The additional 2 lines were added to strictly increase the memory load, as opposed to adding difficulty in other ways (e.g., creating a moving stimulus).} The 3 stimulus lines were displayed for 2 seconds then removed, providing participants with a blank screen for 0.5 seconds. Participants were then told which line to re-create (\#1, \#2, or \#3) and were then given 1 second to submit their guess at how long the target line had been. To do so, participants were given a blank box and used their cursor to fill in the box with a blue line. All lines were presented within bounded boxes of 500 pixels (wide) by 25 pixels (high).
 
@@ -269,7 +269,7 @@ partner_vs_truth_slope_plot
 ```
 
 
-To answer this question, we built a linear mixed-effects model predicting cumulative guess number with difference between "true error" and "partner error" and participants' training improvement, with the maximal random effects structure for participant and difficulty. As expected, we did found that participants' rates of adaptation to their partner significantly differed from their rates of adaptation to the game (*\(\beta\)*=`r round(checking_rates_model_readable$Estimate[error_from_partner_row],2)`, *p*<`r checking_rates_model_readable$"p-value"[error_from_partner_row]`; see Figure 2). In other words, this model suggests that individuals are simultaneously engaging in both learning *and* coordinative processes during the game, becoming attenuated to the learning task while also synchronizing to one another's cognitive processes.
+To answer this question, we built a linear mixed-effects model predicting cumulative guess number with difference between "true error" and "partner error" and participants' training improvement, with the maximal random effects structure for participant and difficulty. As expected, we found that participants' rates of adaptation to their partner significantly differed from their rates of adaptation to the game (*\(\beta\)*=`r round(checking_rates_model_readable$Estimate[error_from_partner_row],2)`, *p*<`r checking_rates_model_readable$"p-value"[error_from_partner_row]`; see Figure 2). In other words, this model suggests that individuals are simultaneously engaging in both learning *and* coordinative processes during the game, becoming attuned to the learning task while also synchronizing to one another's cognitive processes.
 
 No other predictors reached statistical significance (all *p*s>`r round(min(c(checking_rates_model_readable$"p-value"[normalized_error_row],checking_rates_model_readable$"p-value"[both_errors_row],checking_rates_model_readable$"p-value"[training_row])),2)`).
 
@@ -369,95 +369,3 @@ Our thanks go to Nelle Varoquaux and to the Dallinger development team for their
 \setlength{\parindent}{-0.1in} 
 \setlength{\leftskip}{0.125in}
 \noindent
-
-
-<!-- # Formalities, Footnotes, and Floats -->
-
-<!-- Use standard APA citation format. Citations within the text should -->
-<!-- include the author's last name and year. If the authors' names are -->
-<!-- included in the sentence, place only the year in parentheses, as in -->
-<!-- [-@NewellSimon1972a], but otherwise place the entire reference in -->
-<!-- parentheses with the authors and year separated by a comma -->
-<!-- [@NewellSimon1972a]. List multiple references alphabetically and -->
-<!-- separate them by semicolons [@ChalnickBillman1988a; @NewellSimon1972a].  -->
-<!-- Use the et. al. construction only after listing all the authors to a -->
-<!-- publication in an earlier reference and for citations with four or -->
-<!-- more authors. -->
-
-<!-- For more information on citations in R Markdown, see **[here](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html#citations).** -->
-
-<!-- ## Footnotes -->
-
-<!-- Indicate footnotes with a number\footnote{Sample of the first -->
-<!-- footnote.} in the text. Place the footnotes in 9 point type at the -->
-<!-- bottom of the page on which they appear. Precede the footnote with a -->
-<!-- horizontal rule.\footnote{Sample of the second footnote.} -->
-
-<!-- ## Figures -->
-
-<!-- All artwork must be very dark for purposes of reproduction and should -->
-<!-- not be hand drawn. Number figures sequentially, placing the figure -->
-<!-- number and caption, in 10 point, after the figure with one line space -->
-<!-- above the caption and one line space below it. If necessary, leave extra white space at -->
-<!-- the bottom of the page to avoid splitting the figure and figure -->
-<!-- caption. You may float figures to the top or bottom of a column, or -->
-<!-- set wide figures across both columns. -->
-
-<!-- ## Two-column images -->
-
-<!-- You can read local images using png package for example and plot  -->
-<!-- it like a regular plot using grid.raster from the grid package.  -->
-<!-- With this method you have full control of the size of your image. **Note: Image must be in .png file format for the readPNG function to work.** -->
-
-<!-- You might want to display a wide figure across both columns. To do this, you change the `fig.env` chunk option to `figure*`. To align the image in the center of the page, set `fig.align` option to `center`. To format the width of your caption text, you set the `num.cols.cap` option to `2`. -->
-
-<!-- ```{r 2-col-image, fig.env = "figure*", fig.pos = "h", fig.width=4, fig.height=2, fig.align = "center", set.cap.width=T, num.cols.cap=2, fig.cap = "This image spans both columns. And the caption text is limited to 0.8 of the width of the document."} -->
-
-<!-- ``` -->
-
-<!-- ## One-column images -->
-
-<!-- Single column is the default option, but if you want set it explicitly, set `fig.env` to `figure`. Notice that the `num.cols` option for the caption width is set to `1`. -->
-
-<!-- ```{r image, fig.env = "figure", fig.pos = "H", fig.align='center', fig.width=2, fig.height=2, set.cap.width=T, num.cols.cap=1, fig.cap = "One column image."} -->
-
-<!-- ``` -->
-
-
-<!-- ## R Plots -->
-
-<!-- You can use R chunks directly to plot graphs. And you can use latex floats in the -->
-<!-- fig.pos chunk option to have more control over the location of your plot on the page. For more information on latex placement specifiers see **[here](https://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions)** -->
-
-<!-- ```{r plot, fig.env="figure", fig.pos = "H", fig.align = "center", fig.width=2, fig.height=2, fig.cap = "R plot" } -->
-<!-- x <- 0:100 -->
-<!-- y <- 2 * (x + rnorm(length(x), sd = 3) + 3) -->
-
-<!-- ggplot2::ggplot(data = data.frame(x, y),  -->
-<!--        aes(x = x, y = y)) +  -->
-<!--   geom_point() +  -->
-<!--   geom_smooth(method = "lm") -->
-<!-- ``` -->
-
-
-<!-- ## Tables -->
-
-<!-- Number tables consecutively; place the table number and title (in -->
-<!-- 10 point) above the table with one line space above the caption and -->
-<!-- one line space below it, as in Table 1. You may float -->
-<!-- tables to the top or bottom of a column, set wide tables across both -->
-<!-- columns. -->
-
-<!-- You can use the xtable function in the xtable package. -->
-
-<!-- ```{r xtable, results="asis"} -->
-<!-- n <- 100 -->
-<!-- x <- rnorm(n) -->
-<!-- y <- 2*x + rnorm(n) -->
-<!-- out <- lm(y ~ x) -->
-
-<!-- tab1 <- xtable::xtable(summary(out)$coef, digits=c(0, 2, 2, 1, 2),  -->
-<!--                       caption = "This table prints across one column.") -->
-
-<!-- print(tab1, type="latex", comment = F, table.placement = "H") -->
-<!-- ``` -->
