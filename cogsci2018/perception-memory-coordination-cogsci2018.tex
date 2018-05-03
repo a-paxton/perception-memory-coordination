@@ -49,7 +49,7 @@
 % \textwidth 16cm
 % \textheight 21cm
 
-\title{Interpersonal Coordination of Perception and Memory \\in Real-Time Online
+\title{Interpersonal Coordination of Perception and Memory in Real-Time Online
 Social Experiments}
 
 
@@ -253,14 +253,15 @@ Mechanical Turk to participate as dyads (\emph{n} = 74). Participants
 were paired with one another according to the order in which they began
 the experiment. All participants were over 18 years of age and fluent
 English speakers (self-reported); participation was restricted to only
-recruit from participants located within the U.S. with a 95\% HIT
-approval
-rate.\footnote{A measure of MTurk worker quality, capturing how often their work is rejected by a requester. A 95\% HIT approval rate means that only 5\% of all of their submitted HITs have been rejected.}
+recruit from participants located within the U.S. with a 95\% approval
+rate for their HITs (\emph{Human Intelligence Tasks}, or the jobs that
+the worker says that they will complete on
+MTurk).\footnote{A measure of MTurk worker quality, capturing how often their work is rejected by a requester. A 95\% HIT approval rate means that only 5\% of all of their submitted HITs have been rejected.}
 
 The experiment lasted an average of 11.69 minutes (range: 7.98---21.34
 minutes). All participants were paid \$1.33 as base pay for finishing
 the experiment and earned a bonus of up to \$2 for the entire experiment
-based on mean accuracy over all trials (mean = \$1.80; range:
+based on their own mean accuracy over all trials (mean = \$1.80; range:
 \$0.00---\$1.95). Participants were not aware of the value of their
 earned bonus until after the entire experiment was completed.
 
@@ -279,11 +280,13 @@ play a ``Line Estimation Memory Game'' (advertisement: ``Test your
 memory skills!''; see Figure 1 for experiment flow). Upon completing
 informed consent, participants were told that they would be playing a
 game in which they would be required to remember and re-create line
-lengths. Participants were informed that they would be complete their
+lengths. Participants were informed that they would complete their
 training trials individually and would then begin playing with a
 partner. Participants were given no information about their partner
 other than the guess that their partner made; no information about the
-partner's identity was shared.
+partner's identity was shared. Participants were told in advance that
+they would receive a bonus for their own final guess's accuracy in the
+test trials.
 
 In each trial, participants were shown 3 red lines, each of a different
 length, and were asked to remember all three of
@@ -296,27 +299,36 @@ been. To do so, participants were given a blank box and used their
 cursor to fill in the box with a blue line. All lines were presented
 within bounded boxes of 500 pixels (wide) by 25 pixels (high).
 
-During training, participants were then shown the correct length of the
+During training, participants were then shown the true length of the
 target line (as a grey bar above their own guess) for 2 seconds. This
 was accompanied by a message telling the participant that they had
 guessed correctly (``Your guess was correct!'') or incorrectly (``Your
 guess was incorrect'') or that they had not submitted a guess within the
-1-second time limit (``You didn't respond in time'').
+1-second time limit (``You didn't respond in time''). For the sake of
+training, a ``correct'' guess had to be within 4 pixels of the actual
+line length; however, because accuracy is here analyzed as a continuous
+variable, no binary cutoff of ``correct'' or ``incorrect'' was imposed
+on any guess data.
 
 During testing, participants' stimulus viewing, waiting, and recreation
 times remained the same as during testing, but they no longer received
-information about whether their guess was correct or incorrect. Instead,
-after both participants had submitted their first guess, participants
-were shown their guess (in blue) above their partner's guess (in green).
-Both participants were then asked whether they wanted to change their
-own guess or to keep the guess they had submitted. If either participant
-in the dyad indicated that they wanted to change their guess, that
-participant was then allowed to change their guess (again with a
-1-second time limit) \emph{while} still being able to view their
-partner's guess. Participants who chose to keep their previously
-submitted guess was informed that their partner chose to submit a new
-guess and waited for the other participant to finish. At that point,
-participants were again allowed to change or keep their guess. This
+feedback on whether their guess accuracy. Instead, after both
+participants had submitted their first guess, participants were shown
+their guess (in blue) above their partner's guess (in green). Both
+participants were then asked whether they wanted to change their own
+guess or to keep the guess they had submitted.
+
+If either participant in the dyad indicated that they wanted to change
+their guess, that participant was then allowed to change their guess
+(again with a 1-second time limit) \emph{while} still being able to view
+their partner's guess. Participants who chose to keep their previously
+submitted guess were informed that their partner chose to submit a new
+guess and waited for their partner to finish. If both participants chose
+to change their guess, they did so at approximately the same time---that
+is, immediately after they said that they wanted to change their guess
+and without being able to see their partner's decision or new guess.
+After the new guesses were submitted, both participants were again shown
+both guesses and were allowed to change or keep their guess. This
 process continued until both participants chose to keep their guess.
 
 Participants were informed that their final accuracy would only be
@@ -326,12 +338,11 @@ changing their guesses, each participant could not have known whether
 their decision to keep the guess would have been their final guess for
 the trial.
 
-For clarity, we will refer to each new stimulus set as a \emph{trial}
-and to each submitted line length estimate within each trial as a
-\emph{guess}. This means that some participants may have submitted
-multiple guesses per trial. The last submitted estimate---the one by
-which trial-level accuracy is calculated---will be referred to as the
-\emph{final guess}.
+For clarity, we will refer to each new stimulus as a \emph{trial} and to
+each submitted line length estimate within each trial as a \emph{guess}.
+This means that some participants may have submitted multiple guesses
+per trial. The last submitted estimate---the one by which trial-level
+accuracy is calculated---will be referred to as the \emph{final guess}.
 
 All dyads completed 10 training trials (alone) and 15 test trials (with
 their partner). All training and test stimuli were randomly generated
@@ -342,41 +353,128 @@ Likert-style scales, including the perceived difficulty of the task, how
 engaged they were in the task, and questions about their own and their
 partner's cooperativeness and trustworthiness.
 
-\subsection{Measures}\label{measures}
+\subsection{Measures and Model
+Specifications}\label{measures-and-model-specifications}
 
-\subsubsection{Error}\label{error}
+For clarity, we present the measures and model specifications together.
+Each measure used in one of our three models model is defined and
+written in bold bold the first time it is presented in this section. We
+point the reader back to previous sections when variables are reused
+across models.
 
-Error was measured as a ratio relative to the total possible error on a
-given target stimulus trial. That is, rather than taking a given guess's
-error relative to the total line length, error was calculated as the
-maximum \emph{possible} error. For example, if the target stimulus was
-60 units long, participants could either under-estimate the line length
-by 60, or over-estimate it by 40. As such, the maximum possible error
-for that trial would be 60, and the participant's error would be
-calculated relative to that maximum possible error.
+\subsubsection{Model 1: Coordinated Error over
+Time}\label{model-1-coordinated-error-over-time}
 
-\subsubsection{Training Improvement}\label{training-improvement}
+Our first model tested whether individuals' ratings became more similar
+over time while accounting for training improvement.
 
-To provide a baseline for participants' improvement during training, we
-calculated the slope of participants' normalized error over all training
-trials.
+To do that, we first calculated each participant's \textbf{error} for
+\emph{each guess} of \emph{each trial}. Error was measured as a ratio
+relative to the total possible error on a given target stimulus trial.
+That is, rather than taking a given guess's error relative to the total
+line length, error was calculated as the maximum \emph{possible} error.
+For example, if the target stimulus was 60 units long, participants
+could either under-estimate the line length by 60 or over-estimate it by
+40. As such, the maximum possible error for that trial would be 60, and
+the participant's error would be calculated relative to that maximum
+possible error. We chose to use normalized error---rather than real
+error---as a measure of performance that inherently controlled for the
+amount of ``possible wrong-ness'' associated with any given line.
 
-\subsubsection{Coordination}\label{coordination}
+We then quantified perceptual and memory \textbf{coordination} (or how
+similar participants' perceptual and memory systems became over time) as
+the cross-correlation coefficient of participants' error.
+Cross-correlation---a common measure of coordination (Paxton \& Dale,
+2013)---was calculated using all guesses across all trials within a
+window of +/-5 guesses. Although cross-correlation produces information
+about leading and following behavior, we have no \emph{a priori}
+expectations about which of the two participants would emerge as a
+leader (given they have no information about their partner nor any
+assigned roles). Our first-pass analyses therefore ignore any
+directionality by incorporating \textbf{absolute lag}, averaging across
+the each incremental lags (i.e., leading/following in both participants'
+directions).
 
-To measure how participants' perceptual and memory systems became more
-similar over time, we calculated the cross-correlation coefficient of
-participants' guess errors across trials (Paxton \& Dale, 2013), within
-a window of +/-5 guesses. Although cross-correlation produces
-information about leading and following behavior, we have no \emph{a
-priori} expectations about which of the two participants would emerge as
-a leader (given they have no information about their partner nor any
-assigned roles), so our first-pass analyses ignore any directionality by
-averaging across the each incremental lags (i.e., leading/following in
-both participants' directions).
+To provide a baseline measure of \textbf{training improvement}, we
+calculated the slope of each participant's normalized error over all
+training trials. To account for individual differences in the perception
+of difficulty of the task, we used ordinal \textbf{ratings of
+difficulty} that each participant provided after the task.
+
+Our first model was a linear mixed-effects model predicting coordination
+of normalized error with absolute lag and training improvement as fixed
+effects, using dyad and difficulty ratings as random effects.
+
+\subsubsection{\texorpdfstring{Model 2: Learning \emph{and} Coordinative
+Processes}{Model 2: Learning and Coordinative Processes}}\label{model-2-learning-and-coordinative-processes}
+
+During the experiment, both participants are not simply influencing one
+another (as tested in Model 1)---but are also simultaneously learning to
+play the game. To ensure any similarity found by Model 1 would not be
+simply an artifact of both participants improving individually, we
+needed to test the relation between participants' (1) adaptation to
+their partner's perceptual estimation and memory and (2) own performance
+changed over time. If participants were adapting along both avenues, we
+could find evidence of these dual processes through differences in their
+rates of adaptation over time.
+
+To do this, we used the normalized error values (described above) to
+derive two measures. To answer the latter point, we used each
+participant's normalized error for \emph{each guess} in \emph{each
+trial} as their \textbf{true error}---in other words, how much the
+participant differed from the stimulus. To answer the former, we
+calculated the absolute difference between both participant's true error
+to obtain the \textbf{partner error} for \emph{each guess} in \emph{each
+trial}---or how much the participant's guess different from their
+partner's.
+
+Because we are interested in understanding this process dynamically, we
+captured participants' progress over time by creating a
+\textbf{cumulative guess counter}, serving as a form of abstracted time
+spent engaging with one another and the experiment. While the measure of
+coordination in Model 1 presented a time-abstracted measure of
+coordination across the entire experiment, this model provides a
+snapshot of coordination in real time, measuring the learning and
+coordinative processes from guess to guess.
+
+For Model 2, we built a linear mixed-effects model predicting the
+cumulative guess counter with each participant's true error, partner
+error, the interaction term between the two, and training improvement
+(described above) as fixed effects. We also included random effects for
+participant and difficulty. (We did not include dyad as a random effect
+in this model because the variance in the guesses occurred at the
+participant level.)
+
+\subsubsection{Model 3: Social Factors in Minimally Interacting
+Contexts}\label{model-3-social-factors-in-minimally-interacting-contexts}
+
+To explore the role that social judgements can play even in minimally
+interactive contexts, our final model considered how trust might impact
+coordination. For this model, we captured a third measure of
+coordination: the participant's willingness to change their guess, which
+was captured by the \textbf{total number of guesses} that each
+participant submitted in each trial.
+
+Because participants individually chose whether to keep their previous
+guess or submit a new one while being able to see their partner's guess,
+we could expect that participants who trust their partner more would be
+more likely to change their guess---especially if there were large
+\textbf{absolute differences between the partner's first guesses}. Trust
+was measured as each participant's self-reported Likert-style
+\textbf{rating of their trust in their partner} (``How much do you feel
+you trusted your partner's opinion during the experiment?'').
+
+Model 3 was a linear-mixed effects model predicting the total number of
+guesses in a trial with fixed effects for their trust in their partner
+and for the difference in participants' first guess on that trial, while
+controlling for trial number and how much they improved during their own
+training. As with Model 2, the model included participant and difficulty
+as random effects.
 
 \section{Results}\label{results}
 
-All analyses were performed in R (R Core Team, 2016). Linear
+All analyses were performed in R (R Core Team, 2016). Each model was
+built according to the model specifications described above. Linear
 mixed-effects models were performed using the \texttt{lme4} package
 (Bates, Machler, Bolker, \& Walker, 2015) using the maximal random slope
 structure for each random intercept to achieve model convergence (Barr,
@@ -384,15 +482,13 @@ Levy, Scheepers, \& Tily, 2013). All main and interaction terms were
 centered and standardized prior to entry in the model, allowing the
 model estimates to be interpretable as effect sizes (Keith, 2005).
 
-\subsection{Model 1: Coordinated Error over
-Time}\label{model-1-coordinated-error-over-time}
+While we do not have sufficient space in the current paper to provide
+the precise model specifications, our code is fully and freely available
+in the GitHub repository for this project:
+\url{http://www.github.com/a-paxton/perception-memory-coordination}.
 
-Our first model tested whether individuals' ratings became more similar
-over time while accounting for training improvement. We constructed a
-linear mixed-effects model predicting cross-correlation coefficients of
-normalized error with absolute lag and training improvement, using
-maximal random effects structures for experiment and ratings of
-difficulty after the experiment.
+\subsection{Model 1: Coordinated Error over
+Time}\label{model-1-coordinated-error-over-time-1}
 
 As predicted, we find that dyads were significantly and strongly coupled
 in their error ratings (\emph{\(\beta\)}=-0.43,
@@ -403,19 +499,18 @@ same time, even across repeated guesses within a single trial,
 regardless of how well-adapted they were to the task during training.
 
 \subsection{\texorpdfstring{Model 2: Learning \emph{and} Coordinative
-Processes}{Model 2: Learning and Coordinative Processes}}\label{model-2-learning-and-coordinative-processes}
+Processes}{Model 2: Learning and Coordinative Processes}}\label{model-2-learning-and-coordinative-processes-1}
 
-However, during the experiment, both participants are learning to play
-the game at the same time that they are influencing one another. To
-ensure that the similarity observed in our first model was not simply an
-artifact of both participants improving individually, we next tested the
-relation between participants' (1) adaptation to their partner's
-perceptual estimation and memory and (2) own performance changed over
-time. If participants were adapting along both avenues, we might find
-evidence of these dual processes through differences in their rates of
-adaptation over time. We calculated the former using normalized error
-(``true error'') and the latter as the absolute difference in the
-participants' guesses (``partner error'').
+As expected, we found that participants' rates of adaptation to their
+partner significantly differed from their rates of adaptation to the
+game (\emph{\(\beta\)}=-0.06, \emph{p}\textless{}0.008; see Figure 2).
+In other words, this model suggests that individuals are simultaneously
+engaging in both learning \emph{and} coordinative processes during the
+game, becoming attuned to the learning task while also synchronizing to
+one another's cognitive processes.
+
+Aside from the main effect of partner adaptation, no other predictors
+reached statistical significance (all \emph{p}s\textgreater{}0.25).
 
 \begin{CodeChunk}
 \begin{figure}[H]
@@ -426,51 +521,38 @@ participants' guesses (``partner error'').
 \end{figure}
 \end{CodeChunk}
 
-To answer this question, we built a linear mixed-effects model
-predicting cumulative guess number with difference between ``true
-error'' and ``partner error'' and participants' training improvement,
-with the maximal random effects structure for participant and
-difficulty. As expected, we did found that participants' rates of
-adaptation to their partner significantly differed from their rates of
-adaptation to the game (\emph{\(\beta\)}=-0.06,
-\emph{p}\textless{}0.008; see Figure 2). In other words, this model
-suggests that individuals are simultaneously engaging in both learning
-\emph{and} coordinative processes during the game, becoming attenuated
-to the learning task while also synchronizing to one another's cognitive
-processes.
-
-No other predictors reached statistical significance (all
-\emph{p}s\textgreater{}0.25).
-
 \subsection{Model 3: Social Factors in Minimally Interacting
-Contexts}\label{model-3-social-factors-in-minimally-interacting-contexts}
-
-To explore the role that social judgements can play even in minimally
-interactive contexts, we finally turned to consider how trust might
-impact coordination. For this model, we captured a third measure of
-coordination: the participant's willingness to change their guess.
-
-We created a linear-mixed effects model predicting the total number of
-times a participant changed their guess during a given trial according
-to their trust rating of their partner and the difference in
-participants' first guess on that trial, while controlling for trial
-number and how much they improved during their own training. Again, the
-model included the maximal random effects structure for participant and
-difficulty.
+Contexts}\label{model-3-social-factors-in-minimally-interacting-contexts-1}
 
 We found that greater trust in their partner predicted a small but
 statisically significant \emph{increase} in the number of iterations of
 guesses within a trial (\emph{\(\beta\)}=0.07,
 \emph{p}\textless{}0.042), although we found no difference in the number
 of guesses based solely on the differences in the partners' first
-guesses (\emph{\(\beta\)}=0.01, \emph{p}=0.65).
+guesses (\emph{\(\beta\)}=0.01, \emph{p}=0.65). In other words, although
+Models 1 and 2 showed people are getting better over time and becoming
+more similar across trials to their partners, we also find that
+participants are more willing to concede that their partner's guess was
+correct when the participant trusted their partner---regardless of how
+similar or different their first guess on the trial was.
 
 Interestingly, we found that participants with greater training
 improvement took more guesses on test trials when they did better in
 their training trials (\emph{\(\beta\)}=0.05, \emph{p}\textless{}0.028).
+Because those with the greatest training improvement would be the most
+poorly performing initial players (i.e., because high-performing
+individuals would have a much narrower band of possible improvement),
+this suggests that poorer-performing players are more likely to divide
+the cognitive labor of the task and follow the lead of their
+higher-performing partner.
+
 We also saw an effect of trial (\emph{\(\beta\)}=-0.05,
 \emph{p}\textless{}0.02), indicating that people changed their guesses
-fewer times in each trial as the game wore on.
+fewer times in each trial as the game progressed. This could be an
+effect of learning (i.e., because both participants are improving and
+becoming more similar from trial to trial), of experiment fatigue (e.g.,
+if participants simply want to end the game more quickly), or some
+combination of the two.
 
 \section{Discussion}\label{discussion}
 
