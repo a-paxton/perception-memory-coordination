@@ -362,7 +362,7 @@ Finally, given the simplicity of this experimental design and the broad particip
 
 # Acknowledgements
 
-Our thanks go to Nelle Varoquaux and to the Dallinger development team for their assistance in debugging the experiment. This work was funded in part by DARPA Cooperative Agreement D17AC00004. This project was funded in part by a Moore-Sloan Data Science Environments Fellowship to AP, thanks to the Gordon and Betty Moore Foundation through Grant GBMF3834 and the Alfred P. Sloan Foundation through Grant 2013-10-27 to the University of California, Berkeley.
+Our thanks go to Nelle Varoquaux and to the Dallinger development team for their assistance in debugging the experiment. This work was funded in part by DARPA Cooperative Agreement D17AC00004, a Moore-Sloan Data Science Environments Fellowship to AP, the Gordon and Betty Moore Foundation through Grant GBMF3834, and the Alfred P. Sloan Foundation through Grant 2013-10-27 to the University of California, Berkeley.
 
 # References 
 
