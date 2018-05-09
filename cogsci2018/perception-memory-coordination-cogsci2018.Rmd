@@ -4,15 +4,16 @@ bibliography: library.bib
 csl: apa6.csl
 document-params: "10pt, letterpaper"
 
-author-information: > 
+author-information: >
     \author{{\large \bf Alexandra Paxton} \\ \texttt{paxton.alexandra@gmail.com} \\ Institute of Cognitive and Brain Sciences \\ Berkeley Institute for Data Science \\ University of California, Berkeley
     \And {\large \bf Thomas J. H. Morgan} \\ \texttt{thomas.j.h.morgan@asu.edu} \\ School of Human Evolution and Social Change \\ Arizona State University
     \AND {\large \bf Jordan W. Suchow} \\ \texttt{suchow@berkeley.edu} \\ Social Science Matrix \\ University of California, Berkeley
     \And {\large \bf Thomas L. Griffiths} \\ \texttt{tom\_griffiths@berkeley.edu} \\ Department of Psychology \\ University of California, Berkeley}
     
 abstract: 
-    "The subtle hum of interpersonal coordination that runs throughout social communication and interaction shows how individuals can subtly influence one another's behaviors, thoughts, and emotions over time. While the majority of research on coordination has been done on face-to-face interaction, recent advances in crowdsourcing have opened the opportunity to conduct large-scale, real-time social interaction experiments. We take advantage of these tools to explore the interpersonal coordination in a ``minimally interactive context,'' distilling the richness of natural communication into a tightly controlled setting to explore how people become coupled in their perceptual and memory systems while performing a task together. Consistent with previous work on postural sway and gaze, we find that individuals become coupled to one another's cognitive processes without needing to be co-located or fully interactive with their partner; interestingly---although participants had no information about nor direct communication with their partner---we also find hints of the context-shaping effects that social forces can play in face-to-face interaction."
-    
+
+    "The quiet hum of interpersonal coordination that runs throughout social communication and interaction shows how individuals can subtly influence one another's behaviors, thoughts, and emotions over time. While the majority of research on coordination has been done on face-to-face interaction, recent advances in crowdsourcing have opened the opportunity to conduct large-scale, real-time social interaction experiments. We take advantage of these tools to explore the interpersonal coordination in a ``minimally interactive context,'' distilling the richness of natural communication into a tightly controlled setting to explore how people become coupled in their perceptual and memory systems while performing a task together. Consistent with previous work on postural sway and gaze, we find that individuals become coupled to one another's cognitive processes without needing to be co-located or fully interactive with their partner; interestingly---although participants had no information about nor direct communication with their partner---we also find hints of the context-shaping effects that social forces can play in face-to-face interaction."
+
 keywords:
     "interpersonal coordination; human communication; online experiments; social interaction"
     
