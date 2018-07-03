@@ -260,14 +260,14 @@ partner_vs_truth_slope_plot = ggplot(differences_in_error,
 ggsave(plot = partner_vs_truth_slope_plot,
        height = 3,
        width = 5,
-       filename = './figures/pmc-partner_vs_truth_slope_plot.jpg')
+       filename = './figures/study_1-neutral/pmc-partner_vs_truth_slope_plot.jpg')
 
 # save a smaller version of the plot for knitr
 ggsave(plot = partner_vs_truth_slope_plot,
        height = 3,
        width = 5,
        dpi=100,
-       filename = './figures/pmc-partner_vs_truth_slope_plot-knitr.jpg')
+       filename = './figures/study_1-neutral/pmc-partner_vs_truth_slope_plot-knitr.jpg')
 
 # plot
 partner_vs_truth_slope_plot
