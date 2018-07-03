@@ -60,7 +60,7 @@ participant_files = data.frame()
 for (experiment in experiment_files){
   
   # read in the next experiment's files and add ID to each
-  exp_id = strsplit(as.character(experiment),"/|-")[[1]][3]
+  exp_id = basename(experiment)
   next_vector = read.table(paste(experiment,'/vector.csv',sep=''), sep=',',
                            header=TRUE, stringsAsFactors = FALSE) %>%
     mutate(experiment = exp_id)
@@ -506,43 +506,6 @@ winnowed_info_df = right_join(unique_participant_ids, winnowed_info_df,
 
 ```
 
-## Calculate correct bonuses for participants
-
-```{r correct-bonuses}
-# 
-# # for reporting, correct the errors in calculating bonuses
-# z = winnowed_info_df %>% 
-#   
-#   # calculate the participant's correct bonus
-#   group_by(experiment, dyad, participant, trial_number) %>%
-#   dplyr::filter(response_counter==max(response_counter) & trial_number > 9) %>%
-#   select(experiment, original_dyad, original_participant, participant, dyad, trial_number, response_counter, guess, guess_error) %>%
-#   mutate(guess_accuracy = (100-abs(guess_error))/100) %>%
-#   ungroup() %>%
-#   group_by(experiment, original_dyad, original_participant) %>%
-#   summarize(corrected_bonus = round(mean(guess_accuracy)*2,2)) %>%
-#   
-#   # join to the original table
-#   left_join(participation_descriptives, 
-#             ., 
-#             by=c('experiment',
-#                  'dyad'= 'original_dyad',
-#                  'id'='original_participant')) %>%
-# 
-#   # clean it up
-#   
-#   ####STILL NEED TO FIGURE THIS OUT
-# 
-#   
-# winnowed_info_df %>%
-#   dplyr::filter(experiment=='5534b851' &
-#                participant==117)
-# # export bonuses
-# write.table(participation_descriptives, './data/study_1-neutral/participation_descriptives.csv', 
-#             sep=',', append = FALSE, quote = FALSE, row.names = FALSE, col.names = TRUE)
-  
-```
-
 ## Increment all counters by 1
 
 Data were collected using Pythonic counters (i.e., starting from 0). We'll here update the dataframe to reflect R conventions (i.e., starting from 1).
@@ -805,7 +768,8 @@ rm(list=ls())
 source('./supplementary-code/libraries_and_functions-pmc.r')
 
 # read in dataset
-winnowed_info_df = read.table('./data/study_1-neutral/winnowed_data.csv', sep=',',header = TRUE)
+winnowed_info_df = read.table('./data/study_1-neutral/winnowed_data.csv', 
+                              sep=',',header = TRUE)
 
 ```
 
