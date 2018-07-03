@@ -49,7 +49,7 @@ rmd2rscript(infile = './perception_memory_coordination-study_1.Rmd',
 source(paste0(most_recent_pmd,'[rmd2r].R'))
 
 # load in participant information
-participation_descriptives = read.table('./data/participation_descriptives.csv', sep = ',',
+participation_descriptives = read.table('/data/study_1-neutral/participation_descriptives.csv', sep = ',',
                                         header=TRUE)
 
 ```

@@ -11,7 +11,7 @@ This R markdown provides the data preparation for our manuscript, "Interpersonal
 
 To run this from scratch, you will need the following files:
 
-* `./data/`: Contains experimental data. All data for included dyads are freely available in the OSF repository for the project: `https://osf.io/8fu7x/`.
+* `./data/study_1-neutral/`: Contains experimental data. All data for included dyads are freely available in the OSF repository for the project: `https://osf.io/8fu7x/`.
 * `./supplementary-code/required_packages-pmc.r`: Installs required libraries, if they are not already installed. **NOTE**: This should be run *before* running this script.
 * `./supplementary-code/libraries_and_functions-pmc.r`: Loads in necessary libraries and creates new functions for our analyses.
 
@@ -471,7 +471,7 @@ participation_descriptives = node_files %>%
 ```{r export-bonus-and-duration-data}
 
 # export bonuses
-write.table(participation_descriptives, './data/participation_descriptives.csv', 
+write.table(participation_descriptives, './data/study_1-neutral/participation_descriptives.csv', 
             sep=',', append = FALSE, quote = FALSE, row.names = FALSE, col.names = TRUE)
 
 ```
@@ -538,7 +538,7 @@ winnowed_info_df = right_join(unique_participant_ids, winnowed_info_df,
 #   dplyr::filter(experiment=='5534b851' &
 #                participant==117)
 # # export bonuses
-# write.table(participation_descriptives, './data/participation_descriptives.csv', 
+# write.table(participation_descriptives, './data/study_1-neutral/participation_descriptives.csv', 
 #             sep=',', append = FALSE, quote = FALSE, row.names = FALSE, col.names = TRUE)
   
 ```
@@ -710,7 +710,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
 
 ```{r export-data}
 
-write.table(winnowed_info_df, './data/winnowed_data.csv', sep=',',
+write.table(winnowed_info_df, './data/study_1-neutral/winnowed_data.csv', sep=',',
             append = FALSE, quote = FALSE, na = "NA", row.names = FALSE, col.names = TRUE)
 
 ```
@@ -732,7 +732,7 @@ rm(list=ls())
 source('./supplementary-code/libraries_and_functions-pmc.r')
 
 # read in dataset
-winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
+winnowed_info_df = read.table('./data/study_1-neutral/winnowed_data.csv', sep=',',header = TRUE)
 
 ```
 
@@ -740,7 +740,7 @@ winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
 
 ```{r import-bonuses-and-duration}
 
-participation_descriptives = read.table('./data/participation_descriptives.csv', 
+participation_descriptives = read.table('./data/study_1-neutral/participation_descriptives.csv', 
                                         sep=',', header = TRUE)
 
 ```
@@ -805,7 +805,7 @@ rm(list=ls())
 source('./supplementary-code/libraries_and_functions-pmc.r')
 
 # read in dataset
-winnowed_info_df = read.table('./data/winnowed_data.csv', sep=',',header = TRUE)
+winnowed_info_df = read.table('./data/study_1-neutral/winnowed_data.csv', sep=',',header = TRUE)
 
 ```
 
@@ -1107,34 +1107,34 @@ ccf_st = ccf_df %>%
 ```{r export-analysis-datasets}
 
 # export standardized and plotting info datasets
-write.table(info_plot, './data/info_plot.csv', sep=',',
+write.table(info_plot, './data/study_1-neutral/info_plot.csv', sep=',',
             append = FALSE, quote = FALSE, na = "NA", 
             row.names = FALSE, col.names = TRUE)
-write.table(info_st, './data/info_st.csv', sep=',',
+write.table(info_st, './data/study_1-neutral/info_st.csv', sep=',',
             append = FALSE, quote = FALSE, na = "NA", 
             row.names = FALSE, col.names = TRUE)
 
 # export standardized and plotting first-guess datasets
-write.table(first_guess_plot, './data/first_guess_plot.csv', sep=',',
+write.table(first_guess_plot, './data/study_1-neutral/first_guess_plot.csv', sep=',',
             append = FALSE, quote = FALSE, na = "NA", 
             row.names = FALSE, col.names = TRUE)
-write.table(first_guess_st, './data/first_guess_st.csv', sep=',',
+write.table(first_guess_st, './data/study_1-neutral/first_guess_st.csv', sep=',',
             append = FALSE, quote = FALSE, na = "NA", 
             row.names = FALSE, col.names = TRUE)
 
 # export standardized and plotting final-guess datasets
-write.table(final_guess_plot, './data/final_guess_plot.csv', sep=',',
+write.table(final_guess_plot, './data/study_1-neutral/final_guess_plot.csv', sep=',',
             append = FALSE, quote = FALSE, na = "NA", 
             row.names = FALSE, col.names = TRUE)
-write.table(final_guess_st, './data/final_guess_st.csv', sep=',',
+write.table(final_guess_st, './data/study_1-neutral/final_guess_st.csv', sep=',',
             append = FALSE, quote = FALSE, na = "NA", 
             row.names = FALSE, col.names = TRUE)
 
 # export standardized and plotting ccf datasets
-write.table(ccf_plot, './data/ccf_plot.csv', sep=',',
+write.table(ccf_plot, './data/study_1-neutral/ccf_plot.csv', sep=',',
             append = FALSE, quote = FALSE, na = "NA", 
             row.names = FALSE, col.names = TRUE)
-write.table(ccf_st, './data/ccf_st.csv', sep=',',
+write.table(ccf_st, './data/study_1-neutral/ccf_st.csv', sep=',',
             append = FALSE, quote = FALSE, na = "NA", 
             row.names = FALSE, col.names = TRUE)
 
