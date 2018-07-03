@@ -49,7 +49,7 @@ source('./supplementary-code/libraries_and_functions-pmc.r')
 ```{r concatenate-data, warning = FALSE, error = FALSE, message = FALSE}
 
 # get list of individual experiments included in the data
-experiment_files = list.dirs('./data', recursive=FALSE)
+experiment_files = list.dirs('./data/study_1-neutral', recursive=FALSE)
 
 # concatenate the files
 vector_files = data.frame()
