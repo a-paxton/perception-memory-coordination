@@ -1,5 +1,5 @@
 ---
-title: "Data preparation: Interpersonal coordination in perception and memory"
+title: "Data preparation: Interpersonal coordination in perception and memory (Study 1)"
 author: "A. Paxton, T. J. H. Morgan, J. Suchow, & T. L. Griffiths"
 output:
   html_document:
@@ -7,7 +7,7 @@ output:
     number_sections: yes
 ---
 
-This R markdown provides the data preparation for our manuscript, "Interpersonal coordination in perception and memory" (Paxton, Morgan, Suchow, & Griffiths, *in preparation*).
+This R markdown provides the data preparation for our manuscript, "Interpersonal coordination in perception and memory" (Paxton, Morgan, Suchow, & Griffiths, *in preparation*). This R markdown file presents the data preparation for Study 1, which includes only the neutral condition.
 
 To run this from scratch, you will need the following files:
 
@@ -17,11 +17,11 @@ To run this from scratch, you will need the following files:
 
 Additional files will be created during the initial run that will help reduce processing time. Several of these files are available as CSVs from the OSF repository listed above.
 
-As part of our manuscript for the proceedings of the 2018 annual meeting of the Cognitive Science Society (see `cogsci2018/` directory within this repository), this R markdown file will be converted into an .R script and embedded into the manuscript. Each time the CogSci proceeding is compiled, it will generate a new .R version of this file, dated to the last time this file was changed.
+As part of our manuscript for the proceedings of the 2018 annual meeting of the Cognitive Science Society (see `study_1-cogsci2018/` directory within this repository), this R markdown file will be converted into an .R script and embedded into the manuscript. Each time the CogSci proceeding is compiled, it will generate a new .R version of this file, dated to the last time this file was changed.
 
 **Code written by**: A. Paxton (University of California, Berkeley)
 
-**Date last modified**: 26 January 2018
+**Date last modified**: 03 July 2018
 
 ***
 

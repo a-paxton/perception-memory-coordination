@@ -39,10 +39,10 @@ knitr::opts_chunk$set(fig.width=3, fig.height=3, fig.crop = F, fig.pos = "tb",
 source('./supplementary-code/required_packages-pmc.r')
 source('./supplementary-code/libraries_and_functions-pmc.r')
 
-# convert the most recent 'perception-memory-coordination.Rmd' to file
+# convert the most recent 'perception_memory_coordination-study_1.Rmd' to file
 most_recent_pmd = paste0("./supplementary-code/pmc-rmd_to_code-",
-                    as.character(as.Date(file.info('perception-memory-coordination.Rmd')$mtime)))
-rmd2rscript(infile = './perception-memory-coordination.Rmd',
+                    as.character(as.Date(file.info('perception_memory_coordination-study_1.Rmd')$mtime)))
+rmd2rscript(infile = './perception_memory_coordination-study_1.Rmd',
             outname = most_recent_pmd)
 
 # then source it
@@ -83,7 +83,7 @@ All research activities were completed in compliance with oversight from the Com
 ## Participants
 
 ```{r 2-col-image, fig.env = "figure*", fig.pos = "h", fig.width=7, fig.align = "center", set.cap.width=F, num.cols.cap=2, fig.cap = "Experiment flow"}
-img <- png::readPNG("./cogsci2018/figs/workflow_figure.png")
+img <- png::readPNG("./study_1-cogsci2018/figs/workflow_figure.png")
 grid::grid.raster(img)
 ```
 
