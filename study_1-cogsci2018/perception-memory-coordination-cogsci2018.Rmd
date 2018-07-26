@@ -374,6 +374,53 @@ training_row = 5
 
 ```
 
+```{r plot-social-factors, include=FALSE}
+
+# create dataframe
+social_param_plot_df = social_parameters %>% ungroup() %>%
+  mutate(trust_ntile = factor(ntile(trust_partner, 2)))
+
+# set colors
+viridis_low_color = inferno(6)[2]
+viridis_high_color = inferno(6)[5]
+
+# plot the data
+social_factor_plot = ggplot(data = social_param_plot_df,
+                            aes(y = guess_counter,
+                                x = trial_number,
+                                color = trust_ntile)) +
+  
+  # and the aggregate group paths
+  stat_smooth(method='lm',
+              formula=y~x) +
+  
+  # add titles
+  ylab('Guesses submitted') +
+  xlab('Trial number') +
+  ggtitle("Willingness to change guess\nby trial and trust in partner") +
+  theme(legend.position="bottom",
+        legend.direction="horizontal")  +
+  scale_colour_manual(name="Trust in partner",
+                       labels=c('Low', 'High'),
+                       values=c(viridis_low_color, 
+                                viridis_high_color))
+
+# save a high-resolution version of the plot
+ggsave(plot = social_factor_plot,
+       height = 4,
+       width = 4,
+       filename = './figures/study_1-neutral/pmc-social_factor_plot.jpg')
+
+# save a smaller version of the plot for knitr
+ggsave(plot = social_factor_plot,
+       height = 4,
+       width = 4,
+       dpi=100,
+       filename = './figures/study_1-neutral/pmc-social_factor_plot-knitr.jpg')
+
+
+```
+
 We found that greater trust in their partner predicted a small but statistically significant *increase* in the number of iterations of guesses within a trial (*\(\beta\)*=`r round(trust_model_model_readable$Estimate[trust_partner_row],2)`, *p*<`r trust_model_model_readable$"p-value"[trust_partner_row]`), although we found no difference in the number of guesses based solely on the difference between the partners' first guesses (*\(\beta\)*=`r round(trust_model_model_readable$Estimate[first_error_row],2)`, *p*=`r trust_model_model_readable$"p-value"[first_error_row]`). Ratings of partner trust were normally distributed around a mean of `r round(mean(social_parameters$trust_partner), 2)` (SD: `r round(sd(social_parameters$trust_partner), 2)`; range: `r min(social_parameters$trust_partner)`--`r max(social_parameters$trust_partner)`). In other words, although Models 1 and 2 showed participants improving and becoming more similar across trials, participants were more willing to concede that their partner's guess was correct when the participant trusted their partner---regardless of how similar or different the two partners' first guesses were on that trial.
 
 Interestingly, we found that participants took more guesses on test trials when they improved more in their training trials (*\(\beta\)*=`r round(trust_model_model_readable$Estimate[training_row],2)`, *p*<`r trust_model_model_readable$"p-value"[training_row]`). Assuming that those with the greatest training improvement were the most poorly performing initial players, this suggested that poorer-performing players were more likely to divide the cognitive labor of the task and follow the lead of their higher-performing partner.
