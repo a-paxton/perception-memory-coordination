@@ -166,6 +166,51 @@ training_row = 3
 
 As predicted, we found that dyads were significantly and strongly coupled in their error ratings  (*\(\beta\)*=`r round(ccf_main_model_readable$Estimate[lag_row],2)`, *p*<`r ccf_main_model_readable$"p-value"[lag_row]+.0001`), with no effect of training improvement (*\(\beta\)*=`r round(ccf_main_model_readable$Estimate[training_row],2)`, *p*=`r ccf_main_model_readable$"p-value"[training_row]`). In other words, players were more likely to produce lines with similar errors at the same time, even across repeated guesses within a single trial, regardless of how well-adapted they were to the task during training.
 
+```{r plot-cross-correlation, include=FALSE}
+
+# make a new variable to capture whether they were higher or lower than the mean 
+cross_corr_plot_df = ccf_plot %>% ungroup() %>%
+  mutate(training_half = ifelse(is.na(training_improvement),
+                                FALSE,
+                                training_improvement > mean(training_improvement, na.rm=TRUE)))
+
+# specify colors
+viridis_ccf_low = viridis(10)[3]
+viridis_ccf_high = viridis(10)[7]
+
+# construct the cross-correlation plot
+cross_corr_plot = ggplot(data = cross_corr_plot_df,
+                         aes(x = lag,
+                             y = r,
+                             color = training_half)) +
+  stat_smooth() +
+  
+  # add titles
+  ylab('Similarity of normalized error (r)') +
+  xlab('Absolute lag (in turns)') +
+  ggtitle("Cross-correlation plot of normalized error") +
+  theme(legend.position="bottom",
+        legend.direction="horizontal")  +
+  scale_colour_manual(name="Training improvement",
+                       breaks=c(FALSE, TRUE),
+                       labels=c('Lower', 'Higher'),
+                       values=c(viridis_ccf_low, viridis_ccf_high))
+
+# save a high-resolution version of the plot
+ggsave(plot = cross_corr_plot,
+       height = 5,
+       width = 4,
+       filename = './figures/study_1-neutral/pmc-cross_corr_plot.jpg')
+
+# save a smaller version of the plot for knitr
+ggsave(plot = cross_corr_plot,
+       height = 5,
+       width = 4,
+       dpi=100,
+       filename = './figures/study_1-neutral/pmc-cross_corr_plot-knitr.jpg')
+  
+```
+
 ```{r build-model-2}
 
 # difference the scores between own and partners' error
