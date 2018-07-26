@@ -7,7 +7,7 @@ Suchow, & Griffiths, 2018, *Proceedings of the Cognitive Science Society*).
 ## Proceedings
 
 The proceedings paper was written using an R template for reproducible CogSci
-proceedings papers ( (`cogsci2016`)[http://github.com/kemacdonald/cogsci2016] ).
+proceedings papers ([`cogsci2016`](http://github.com/kemacdonald/cogsci2016)).
 The `.Rmd`, `.tex`, and PDF that result from that are available in the
 `study_1-cogsci2018` directory in this repository.
 
