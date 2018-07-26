@@ -223,7 +223,7 @@ We found that participants' rates of adaptation to their partner significantly d
 
 Aside from the main effect of partner adaptation, no other predictors reached statistical significance (all *p*s>`r round(min(c(checking_rates_model_readable$"p-value"[normalized_error_row],checking_rates_model_readable$"p-value"[both_errors_row],checking_rates_model_readable$"p-value"[training_row])),2)`).
 
-```{r , fig.env = "figure", fig.pos = "H", fig.align='left', fig.width=3, fig.height=3, set.cap.width=T, num.cols.cap=1, fig.cap = "Difference over time in coordinative and learning processes, or the change in guess deviation from truth (in blue) and from their partner's guess (in red) over the game."}
+```{r , fig.env = "figure", fig.pos = "H", fig.align='left', fig.width=3, fig.height=3, set.cap.width=T, num.cols.cap=1, fig.cap = "Difference over time in coordinative and learning processes, or the change in guess deviation from truth (in yellow) and from their partner's guess (in red) over the game."}
 
 # create a plot to show difference in slopes
 partner_vs_truth_slope_plot = ggplot(differences_in_error,
@@ -254,7 +254,8 @@ partner_vs_truth_slope_plot = ggplot(differences_in_error,
         plot.title = element_text(size = 10),
         legend.text=element_text(size=6),
         legend.title=element_text(size=7)) +
-  scale_colour_discrete(name="Error source")
+  scale_colour_viridis(name="Error source",
+                       discrete=TRUE)
 
 # save a high-resolution version of the plot
 ggsave(plot = partner_vs_truth_slope_plot,
