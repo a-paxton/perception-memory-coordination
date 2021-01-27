@@ -1311,21 +1311,43 @@ write.table(ccf_st, './data/study_2-neut_comp_coop/ccf_st.csv', sep=',',
 
 ```
 
-# Plot by experiment to make sure they all look similar
+***
 
-```{r}
+# Data visualization
 
-ggplot(ccf_df, 
-       aes(x = lag, y = r, group = factor(condition), color = factor(condition))) + 
+Let's take a look at the cross-correlation profiles. 
+
+```{r plot-ccf-by-condition, echo=FALSE, warning = FALSE, error = FALSE, message = FALSE}
+
+# plot aggregated cross-correlation profile
+ccf_by_condition_plot = ggplot(ccf_df, 
+       aes(x = lag, y = r, 
+           group = factor(condition), 
+           color = factor(condition))) + 
   geom_smooth() + 
   ggtitle('Cross-correlation plot of normalized error') +
-  scale_color_discrete(limits = c(0, 1, 2),
+  scale_color_viridis_d(limits = c(0, 1, 2),
                        name = "Condition",
                        labels = c("Neutral", "Cooperative", "Competitive")) +
   xlab("Absolute Lag (Turns)") +
   ylab("Similarity of normalized error (r)")
 
+# save a high-resolution version of the plot
+ggsave(plot = ccf_by_condition_plot,
+       height = 3,
+       width = 5,
+       filename = './figures/study_2-neut_comp_coop/pmc-ccf_by_condition.jpg')
+
+# save a smaller version of the plot for knitr
+ggsave(plot = ccf_by_condition_plot,
+       height = 3,
+       width = 5,
+       dpi=100,
+       filename = './figures/study_2-neut_comp_coop/pmc-ccf_by_condition-knitr.jpg')
+
 ```
+
+![*Figure*. Cross-correlation plot of normalized errors between partners across conditions.](./figures/study_2-neut_comp_coop/pmc-ccf_by_condition-knitr.jpg)
 
 ```{r}
 
