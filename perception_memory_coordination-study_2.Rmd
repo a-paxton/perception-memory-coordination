@@ -1153,14 +1153,14 @@ first_guess_df = winnowed_info_df %>% ungroup() %>%
          -contains('condition.')) %>%
   
   # all interactions with condition
-  mutate_at(vars(contains('error'),
-                 contains('cooperative'),
-                 contains('trust')), 
-             .funs = funs(condition = . * (as.numeric(condition) + 1))) %>%
-   rename_at(vars(contains( "_condition")), 
-             funs(paste("condition", gsub("_condition", "", .), sep = "."))) %>%
+  mutate(condition_interaction = as.numeric(condition) + 1) %>%
+  mutate(across(c(contains('error'),
+                  contains('cooperative'),
+                  contains('trust')), 
+                .fns = list(~.*condition_interaction),
+                .names = "condition.{col}")) %>%
   rename(condition.error = condition.normalized_error) %>%
-  select(-condition.guess_error)
+  select(-condition.guess_error, -condition_interaction)
 
 ```
 
@@ -1179,14 +1179,14 @@ final_guess_df = winnowed_info_df %>% ungroup() %>%
          -contains('condition.')) %>%
   
   # all interactions with condition
-  mutate_at(vars(contains('error'),
-                 contains('cooperative'),
-                 contains('trust')), 
-             .funs = funs(condition = . * (as.numeric(condition) + 1))) %>%
-   rename_at(vars(contains( "_condition")), 
-             funs(paste("condition", gsub("_condition", "", .), sep = "."))) %>%
+  mutate(condition_interaction = as.numeric(condition) + 1) %>%
+  mutate(across(c(contains('error'),
+                  contains('cooperative'),
+                  contains('trust')), 
+                .fns = list(~.*condition_interaction),
+                .names = "condition.{col}")) %>%
   rename(condition.error = condition.normalized_error) %>%
-  select(-condition.guess_error)
+  select(-condition.guess_error, -condition_interaction)
 
 ```
 
