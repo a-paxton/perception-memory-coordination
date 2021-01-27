@@ -1129,14 +1129,14 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
   dplyr::filter(trial_type=='test') %>%
   
   # all interactions with condition
-  mutate_at(vars(contains('error'),
-                 contains('cooperative'),
-                 contains('trust')), 
-            .funs = funs(condition = . * (as.numeric(condition) + 1))) %>%
-  rename_at(vars(contains( "_condition")), 
-            funs(paste("condition", gsub("_condition", "", .), sep = "."))) %>%
+  mutate(condition_interaction = as.numeric(condition) + 1) %>%
+  mutate(across(c(contains('error'),
+                  contains('cooperative'),
+                  contains('trust')), 
+                .fns = list(~.*condition_interaction),
+                .names = "condition.{col}")) %>%
   rename(condition.error = condition.normalized_error) %>%
-  select(-condition.guess_error)
+  select(-condition.guess_error, -condition_interaction)
 
 ```
 
@@ -1305,7 +1305,6 @@ write.table(ccf_st, './data/study_2-neut_comp_coop/ccf_st.csv', sep=',',
             row.names = FALSE, col.names = TRUE)
 
 ```
-
 
 # Plot by experiment to make sure they all look similar
 
