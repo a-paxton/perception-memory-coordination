@@ -30,8 +30,16 @@ required_packages = c(
   'RCurl'
 )
 
-# load required packages
-invisible(lapply(required_packages, require, character.only = TRUE))
+# load required packages (thanks to https://gist.github.com/smithdanielle/9913897)
+check.packages <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, 
+                     dependencies = TRUE,
+                     repos="http://cloud.r-project.org/")
+  sapply(pkg, require, character.only = TRUE)
+}
+check.packages(required_packages)
 
 #### Prevent scientific notation ####
 options(scipen=999)

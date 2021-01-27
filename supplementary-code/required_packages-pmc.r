@@ -25,7 +25,9 @@ required_packages = c(
   'tidyr',
   'tibble',
   'devtools',
-  'xtable'
+  'xtable',
+  'RCurl',
+  'broom'
 )
 
 # install missing packages (adapted from <http://stackoverflow.com/a/4090208>)
