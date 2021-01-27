@@ -1206,14 +1206,15 @@ ccf_df = left_join(ccf_df, lag_vals,
                    by = c("lag" = "raw_lag")) %>%
   
   # create all interactions with condition
-  mutate_at(vars(contains('error'),
-                 contains('cooperative'),
-                 contains('trust'),
-                 contains('ot')), 
-             .funs = funs(condition = . * (as.numeric(condition) + 1))) %>%
-   rename_at(vars(contains( "_condition")), 
-             funs(paste("condition", gsub("_condition", "", .), sep = "."))) %>%
+  mutate(condition_interaction = as.numeric(condition) + 1) %>%
+  mutate(across(c(contains('error'),
+                  contains('cooperative'),
+                  contains('trust'),
+                  contains('ot')), 
+                .fns = list(~.*condition_interaction),
+                .names = "condition.{col}")) %>%
   mutate(condition.lag = (lag+1) * (condition+1))
+
 ```
 
 ## Create standardized datasets
