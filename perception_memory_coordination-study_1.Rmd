@@ -94,7 +94,7 @@ for (experiment in experiment_files){
 
 # clean up the questionnaire files
 question_trimmed = questionnaire_files %>%
-  select(experiment, participant_id, number, question, response)
+  dplyr::select(experiment, participant_id, number, question, response)
 
 # clean up the participant files
 participant_trimmed = participant_files %>%
@@ -102,7 +102,7 @@ participant_trimmed = participant_files %>%
   mutate(creation_time = ymd_hms(creation_time)) %>%
   mutate(end_time = ymd_hms(end_time)) %>%
   mutate(duration = (end_time - creation_time)) %>%
-  select(experiment, worker_id, status, base_pay, bonus, duration)
+  dplyr::select(experiment, worker_id, status, base_pay, bonus, duration)
 
 # join the files and omit any folks that aren't completely included in both dataframes
 participation_descriptives = full_join(question_trimmed, participant_trimmed,
@@ -111,7 +111,7 @@ participation_descriptives = full_join(question_trimmed, participant_trimmed,
   na.omit() %>%
   
   # remove actual question data
-  select(-response, -question, -status, -number)
+  dplyr::select(-response, -question, -status, -number)
 
 ```
 
@@ -126,7 +126,7 @@ vector_df = vector_files %>%
   
   # convert time to integer and winnow out unnecessary variables and nodes
   mutate(t = round(as.numeric(ymd_hms(creation_time)), 0)) %>%
-  select(experiment, t, origin_id, destination_id, network_id) %>%
+  dplyr::select(experiment, t, origin_id, destination_id, network_id) %>%
   dplyr::filter(!origin_id == 1) %>%
   
   # find pairs from vector files
@@ -136,19 +136,19 @@ vector_df = vector_files %>%
   ungroup() %>%
   
   # get unique pairs and number them
-  select(-origin_id, -destination_id) %>%
+  dplyr::select(-origin_id, -destination_id) %>%
   distinct() %>%
   mutate(dyad = seq_along(min_id)) %>%
 
   # gather the participants into a single column
   gather(key="id",value="participant", min_id, max_id) %>%
-  select(-id)
+  dplyr::select(-id)
 
 # figure out which stimuli were sent to which dyads
 dyad_df = info_files %>%
   mutate(t = round(as.numeric(ymd_hms(creation_time)), 0)) %>%
   dplyr::filter(origin_id == 1) %>%
-  select(experiment, t, contents) 
+  dplyr::select(experiment, t, contents) 
 
 # combine the contents and the dyad info, allowing room for error with timestamp
 dyad_df = data.table(dyad_df)
@@ -156,7 +156,7 @@ vector_df = data.table(vector_df)
 setkey(dyad_df, experiment, t)
 setkey(vector_df, experiment, t)
 dyad_df = dyad_df[vector_df,roll="nearest"] %>%
-  select(-t)
+  dplyr::select(-t)
 
 ```
 
@@ -175,7 +175,7 @@ info_df = info_files %>% ungroup() %>%
   
   # convert time and get rid of unnecessary variables
   mutate(t = round(as.numeric(ymd_hms(creation_time)), 0)) %>%
-  select(experiment, t, property3, origin_id, network_id, contents) %>%
+  dplyr::select(experiment, t, property3, origin_id, network_id, contents) %>%
     
   # read in `contents` as JSONs
   cbind(., jsonlite::stream_in(textConnection(.$contents))) %>%
@@ -191,7 +191,7 @@ info_df = info_files %>% ungroup() %>%
                 length = chosenStimulusLength) %>%
   
   # get rid of unnecessary variables and arrange rows
-  select(-property3, -finalAccuracy, -contents) %>%
+  dplyr::select(-property3, -finalAccuracy, -contents) %>%
   dplyr::arrange(experiment, participant, trial_number, response_counter) %>%
   
   # remove the automatically generated infos that produced NAs in `guess`
@@ -200,7 +200,7 @@ info_df = info_files %>% ungroup() %>%
   # determine uniqueness without considering time
   group_by(experiment, participant, network_id, trial_type,
            trial_number, guess_counter, response_counter) %>%
-  summarise_all(first) %>%
+  dplyr::summarise_all(first) %>%
   ungroup() %>%
   
   # replace NAs from guesses and calculate error with each guess
@@ -221,7 +221,7 @@ sanity_df = info_df %>% ungroup() %>%
   
   # count number of times we see the same response counter
   group_by(experiment, participant, trial_type, trial_number, guess_counter, response_counter) %>%
-  summarise(n = n()) %>%
+  dplyr::summarise(n = n()) %>%
   ungroup() %>%
   
   # filter to include only test-condition duplicates
@@ -259,7 +259,7 @@ paired_individuals = info_df %>%
   
   # count the number of infos and trials per participant
   group_by(experiment,participant) %>%
-  summarise(trials = max(trial_number),
+  dplyr::summarise(trials = max(trial_number),
             dyad = ifelse(length(unique(dyad)==1),
                           unique(dyad),
                           NA),
@@ -269,8 +269,12 @@ paired_individuals = info_df %>%
   dplyr::filter(infos > 23) %>%
   
   # count the infos sent by each participant in each dyad
+  dplyr::mutate(original_participant = participant) %>%
   group_by(experiment, dyad) %>%
-  mutate(participant = paste('p',(participant - min(participant)),sep='')) %>%
+  dplyr::mutate(participant_num = 1:n()) %>%
+  dplyr::mutate(participant_num = participant_num-1) %>%
+  mutate(participant = paste('p',participant_num,sep='')) %>%
+  dplyr::select(-participant_num,-original_participant) %>%
   spread(key = participant, value = infos) %>%
   ungroup() %>%
   mutate(difference_in_responses = abs(p1-p0)) %>%
@@ -286,7 +290,7 @@ paired_individuals = info_df %>%
 ```{r print-paired-individuals, invisible=TRUE, echo=FALSE}
 
 total_paired_individuals = paired_individuals %>% ungroup() %>%
-  select(experiment, dyad) %>%
+  dplyr::select(experiment, dyad) %>%
   distinct()
 
 cat('Total pairs who finished: ',dim(total_paired_individuals)[1], sep='')
@@ -307,7 +311,7 @@ discarded_trials_df = info_df %>%
   
   # count the number of infos per trial per participant
   group_by(experiment,participant,trial_number) %>%
-  summarise(dyad = ifelse(length(unique(dyad)==1),
+  dplyr::summarise(dyad = ifelse(length(unique(dyad)==1),
                           unique(dyad),
                           NA),
             infos = n()) %>%
@@ -331,7 +335,7 @@ discarded_trials_df = info_df %>%
 # share information on how many trials will be removed
 total_removed_trials = discarded_trials_df %>% ungroup() %>%
   group_by(experiment, dyad) %>%
-  summarise(total_discarded = n())
+  dplyr::summarise(total_discarded = n())
 
 cat('Total trials discarded: ',sum(total_removed_trials$total_discarded),' (across ', length(unique(total_removed_trials$dyad)),' dyads) ', sep='')
 
@@ -348,7 +352,7 @@ winnowed_info_df = info_df %>% ungroup() %>%
                    by = c("experiment","dyad","trial_number")) %>%
   dplyr::filter(is.na(difference_in_responses)) %>%
   mutate(t = round(t,-1)) %>%
-  select(experiment, t, dyad, participant, 
+  dplyr::select(experiment, t, dyad, participant, 
          trial_type, trial_number, response_counter, guess_counter, accept_type, 
          length, guess, guess_error, network_id) %>%
   na.omit()
@@ -378,7 +382,7 @@ For sanity, let's also check that everyone included in our winnowed dataset comp
 
 # ensure that everyone completed both training and test
 only_one_trial_type = winnowed_info_df %>% ungroup() %>%
-  select(experiment, participant, trial_type) %>%
+  dplyr::select(experiment, participant, trial_type) %>%
   distinct() %>%
   group_by(experiment, participant) %>%
   summarize(n=n()) %>%
@@ -408,13 +412,13 @@ In the experiment's current form, different tables include different information
 
 # clean up questionnaire data by converting the stringified JSONs to a new variable
 question_df = questionnaire_files %>% ungroup() %>%
-  select(experiment, participant_id, response) %>%
+  dplyr::select(experiment, participant_id, response) %>%
   cbind(., jsonlite::stream_in(textConnection(.$response))) %>%
-  select(-response)
+  dplyr::select(-response)
 
 # clean up the node dataframe
 node_df = node_files %>% ungroup() %>%
-  select(experiment, participant_id, id) %>%
+  dplyr::select(experiment, participant_id, id) %>%
   na.omit()
 
 # join questionnaire data wth infos and remove any participants whose survey data we don't have
@@ -430,10 +434,10 @@ winnowed_info_df = left_join(question_df, node_df,
 
 # identify how many dyads have matching infos and complete questionnaire data
 usable_question_dyads = winnowed_info_df %>% ungroup() %>%
-  select(experiment, dyad, participant) %>%
+  dplyr::select(experiment, dyad, participant) %>%
   distinct() %>%
   group_by(experiment, dyad) %>%
-  summarise(included_p = n()) %>%
+  dplyr::summarise(included_p = n()) %>%
   ungroup() %>%
   dplyr::filter(included_p==2)
 
@@ -455,7 +459,7 @@ cat('Total dyads with all guess and questionnaire data: ',dim(usable_question_dy
 
 # link participants to their bonus and duration data
 participation_descriptives = node_files %>%
-  select(experiment, id, participant_id, network_id) %>%
+  dplyr::select(experiment, id, participant_id, network_id) %>%
   full_join(., participation_descriptives,
             by = c('participant_id',
                    'experiment')) %>%
@@ -464,7 +468,7 @@ participation_descriptives = node_files %>%
                     'experiment',
                     'network_id')) %>%
   dplyr::filter(dyad %in% usable_question_dyads$dyad & experiment %in% usable_question_dyads$experiment) %>%
-  select(-contents, -network_id)
+  dplyr::select(-contents, -network_id)
 
 ```
 
@@ -484,13 +488,13 @@ Dallinger provides numeric IDs for each participant that are unique only within 
 
 # create unique dyad IDs
 unique_dyad_ids = winnowed_info_df %>% ungroup() %>%
-  select(experiment, dyad) %>%
+  dplyr::select(experiment, dyad) %>%
   distinct() %>%
   mutate(unique_dyad = row_number())
 
 # create unique participant IDs
 unique_participant_ids = winnowed_info_df %>% ungroup() %>%
-  select(experiment, participant) %>%
+  dplyr::select(experiment, participant) %>%
   distinct() %>%
   mutate(unique_participant = row_number())
 
@@ -544,13 +548,13 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
                                     which(normalized_error<0L), 
                                     0)) %>%
   
-  select(participant, trial_type, trial_number, normalized_error) %>%
+  dplyr::select(participant, trial_type, trial_number, normalized_error) %>%
   na.omit() %>%
   dplyr::filter(trial_type == 'train') %>%
   group_by(participant) %>%
   do(broom::tidy(lm(abs(.$normalized_error) ~ .$trial_number))) %>%
   dplyr::filter(term=='.$trial_number') %>%
-  select(participant, estimate) %>%
+  dplyr::select(participant, estimate) %>%
   dplyr::rename(training_improvement = estimate) %>%
   left_join(winnowed_info_df, .,
             by='participant') %>%
@@ -600,7 +604,7 @@ ggsave(plot = training_slope_plot,
 # figure out what our equal x-axis limits will be
 x_limit = winnowed_info_df %>% ungroup() %>%
   na.omit() %>%
-  summarise(lim = max(abs(normalized_error))) %>%
+  dplyr::summarise(lim = max(abs(normalized_error))) %>%
   .$lim
 
 # create plot
@@ -657,7 +661,7 @@ winnowed_info_df = winnowed_info_df %>% ungroup() %>%
   ungroup() %>%
 
   # gather into multiple values
-  select(self_id, partner_id, normalized_error, trial_number, response_counter) %>%
+  dplyr::select(self_id, partner_id, normalized_error, trial_number, response_counter) %>%
   dplyr::rename(partner_error = normalized_error) %>%
   distinct() %>%
   
@@ -725,7 +729,7 @@ cat('Average particpant performance bonus (minus flat completion bonus):  $',
 # adapted from https://drsimonj.svbtle.com/quick-plot-of-all-variables
 all_variable_plot = winnowed_info_df %>%
   mutate_all(funs(as.numeric)) %>%
-  select(one_of(questionnaire_variables),
+  dplyr::select(one_of(questionnaire_variables),
          normalized_error, experiment, dyad, training_improvement) %>%
   gather() %>%                
   ggplot(aes(value)) +
@@ -781,7 +785,7 @@ First, we prepare the dataframe for cross-correlation by transitioning from long
 
 # strip out unnecessary information
 infos = winnowed_info_df %>% ungroup() %>%
-  select(experiment,dyad,participant,t,normalized_error,trial_number,response_counter) %>%
+  dplyr::select(experiment,dyad,participant,t,normalized_error,trial_number,response_counter) %>%
   
   # create participant binary values
   group_by(experiment, dyad) %>%
@@ -801,10 +805,10 @@ infos = winnowed_info_df %>% ungroup() %>%
 binary_dfs = split(infos, infos$partner_binary)
 p0_df = data.frame(binary_dfs[[1]]) %>%
   dplyr::rename(error0 = normalized_error) %>%
-  select(experiment, dyad, trial_number, response_counter, error0)
+  dplyr::select(experiment, dyad, trial_number, response_counter, error0)
 p1_df = data.frame(binary_dfs[[2]]) %>%
   dplyr::rename(error1 = normalized_error) %>%
-  select(experiment, dyad, trial_number, response_counter, error1)
+  dplyr::select(experiment, dyad, trial_number, response_counter, error1)
 
 ```
 
@@ -823,7 +827,7 @@ ccf_df = full_join(p0_df,p1_df,
   ungroup() %>%
   
   # extract cross-correlations from the embedded list
-  select(ccf) %>%
+  dplyr::select(ccf) %>%
   dplyr::pull(ccf) %>%
   unlist() %>%
   matrix(.,ncol=length(unique(winnowed_info_df$dyad))) %>%
@@ -855,7 +859,7 @@ Because we don't have any theoretical expectations about or experimental manipul
 ccf_df = ccf_df %>% ungroup() %>%
   mutate(lag = abs(lag)) %>%
   group_by(dyad,lag) %>%
-  summarise(r = mean(r))
+  dplyr::summarise(r = mean(r))
 
 ```
 
@@ -865,7 +869,7 @@ Once we've calculated the cross-correlation coefficients for each dyad, we merge
 
 # grab what we need for the cross-correlation analyses
 questions_only = winnowed_info_df %>%
-  select(one_of(c('experiment','dyad','participant',
+  dplyr::select(one_of(c('experiment','dyad','participant',
                   questionnaire_variables, 'training_improvement'))) %>%
   
   # create a mean training improvement score for the dyad
@@ -934,7 +938,7 @@ first_guess_df = winnowed_info_df %>% ungroup() %>%
   dplyr::filter(response_counter==1) %>%
   
   # filter out "turn" variables
-  select(-contains("turn")) %>%
+  dplyr::select(-contains("turn")) %>%
   
   # recreate the interactions at the trial level
   mutate(error.length = (normalized_error+.00001) * length) %>%
@@ -955,7 +959,7 @@ final_guess_df = winnowed_info_df %>% ungroup() %>%
   ungroup() %>%
   
   # filter out "turn" variables
-  select(-contains("turn")) %>%
+  dplyr::select(-contains("turn")) %>%
   
   # recreate the error interactions at the trial level
   mutate(error.length = (normalized_error+.00001) * length) %>%
